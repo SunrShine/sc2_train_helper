@@ -197,6 +197,95 @@
    "note": "野 2VS（星港）出大和；前半是防守思路讲解，编号步骤只到 2；后续步骤需补读"
   },
   {
+   "number": 24,
+   "bvid": "BV1mr4y1z79t",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "双气 2 死神 导弹车（Maru vs Clem 对局讲解）",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：双气 2 死神 导弹车",
+     "tags": [
+      "gas:2",
+      "unit:reaper×2",
+      "unit:cyclone"
+     ],
+     "clock": null,
+     "video_t": 8,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "本篇用 Maru 对阵 Clem 的第一盘讲解",
+     "tags": [],
+     "clock": null,
+     "video_t": 12,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "拖 2 个气矿农民采集晶体矿、砸矿骡",
+     "tags": [
+      "gas:1",
+      "tech:mule"
+     ],
+     "clock": null,
+     "video_t": 20,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "探路的农民过来下 2 基地",
+     "tags": [
+      "expand"
+     ],
+     "clock": null,
+     "video_t": 24,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "可以判断对手正常的两死神一火车开",
+     "tags": [
+      "unit:reaper×2",
+      "unit:hellion"
+     ],
+     "clock": null,
+     "video_t": 95,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "400 块下三基地，在 4 分 40 秒左右",
+     "tags": [
+      "expand"
+     ],
+     "clock": "4:40",
+     "video_t": 200,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "通过枪兵开视野侦查对手的部队走向",
+     "tags": [
+      "unit:marine"
+     ],
+     "clock": null,
+     "video_t": 230,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "职业对局讲解型（Maru vs Clem），标注是解说节点而非编号步骤；有一条明确到「4:40 下三基地」"
+  },
+  {
    "number": 25,
    "bvid": "BV1Fi4y1171Y",
    "title": "【星际一招鲜 25】TVT双气2死1火1雷   TVT职业选手常用运营开局是什么？",
@@ -560,6 +649,75 @@
     }
    ],
    "note": "静帧卡片法抽取；标注按「第一时间…」排列，句式统一，适合直接转成步骤表"
+  },
+  {
+   "number": 31,
+   "bvid": "BV1hL4y1u78c",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "5 死神 3 火车 机械化（Bunny vs Heromarine 录像）",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：5 死神 3 火车 机械化",
+     "tags": [
+      "gas:2",
+      "unit:reaper×5",
+      "unit:hellion×3",
+      "style:mech"
+     ],
+     "clock": null,
+     "video_t": 8,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "本期 rep 来自 Bunny 对阵 Heromarine",
+     "tags": [],
+     "clock": null,
+     "video_t": 20,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 1,
+     "action": "首先是 TVT 常见开局：兵营双气开",
+     "tags": [
+      "build:barracks",
+      "gas:1",
+      "gas:2"
+     ],
+     "clock": null,
+     "video_t": 30,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "使 3 个气矿农民采集晶体矿",
+     "tags": [
+      "gas:2",
+      "unit:SCV"
+     ],
+     "clock": null,
+     "video_t": 55,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "探路农民回来下 2 基地",
+     "tags": [
+      "expand"
+     ],
+     "clock": null,
+     "video_t": 62,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "机械化路线：开局与死神流相同，后续转重工；标注以解说为主"
   },
   {
    "number": 32,
