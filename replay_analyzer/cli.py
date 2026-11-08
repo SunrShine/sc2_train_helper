@@ -364,10 +364,23 @@ def main(argv=None):
     dag_cmd.add_argument("--open", dest="open_after", action="store_true",
                          help="生成后自动用浏览器打开")
 
+    flow_cmd = sub.add_parser("flow", help="整局流程分类（先 TvT）：给双方打法归类，供人工核对命名")
+    flow_cmd.add_argument("--matchup", default="TvT", help="对位（目前主要做 TvT）")
+    flow_cmd.add_argument("--mine", default=None, help="我的录像目录")
+    flow_cmd.add_argument("--pro", default=None, help="职业选手录像目录")
+    flow_cmd.add_argument("--limit", type=int, default=60, help="我的录像抽样局数")
+    flow_cmd.add_argument("--pro-limit", dest="pro_limit", type=int, default=30, help="职业录像局数")
+    flow_cmd.add_argument("--seed", type=int, default=None, help="抽样随机种子")
+    flow_cmd.add_argument("-o", "--output", dest="flow_json", default=None, help="JSON 输出路径")
+    flow_cmd.add_argument("--html", dest="flow_html", default=None,
+                          help="同时生成命名核对表 HTML（默认 reports/tvt-flows.html）")
+    flow_cmd.add_argument("--open", dest="open_after", action="store_true",
+                          help="生成后自动用浏览器打开")
+
     # 允许省略子命令：直接给一个 replay 路径就当作 analyze
     raw_args = list(sys.argv[1:] if argv is None else argv)
     known = {"analyze", "batch", "dump", "micro", "library", "compare", "card", "fog",
-             "econ", "bo", "dag"}
+             "econ", "bo", "dag", "flow"}
     if raw_args and not raw_args[0].startswith("-") and raw_args[0] not in known:
         if os.path.isfile(raw_args[0]) or raw_args[0].lower().endswith(".sc2replay"):
             raw_args = ["analyze"] + raw_args
@@ -628,6 +641,33 @@ def main(argv=None):
         dag_module.main(forwarded)
         if args.open_after:
             _open_in_browser(output)
+        return 0
+
+    if args.command == "flow":
+        from . import flow as flow_module
+
+        forwarded = ["--matchup", args.matchup, "--limit", str(args.limit),
+                     "--pro-limit", str(args.pro_limit)]
+        if args.mine:
+            forwarded += ["--mine", args.mine]
+        if args.pro:
+            forwarded += ["--pro", args.pro]
+        if args.seed is not None:
+            forwarded += ["--seed", str(args.seed)]
+        json_path = args.flow_json or os.path.join("reports", "tvt-flows.json")
+        forwarded += ["--json", json_path]
+        flow_module.main(forwarded)
+        html_path = args.flow_html or os.path.join("reports", "tvt-flows.html")
+        try:
+            from . import flow_report
+
+            with open(json_path, "r", encoding="utf-8") as handle:
+                payload = json.load(handle)
+            flow_report.write(payload, html_path)
+        except Exception as exc:
+            print("生成核对表失败（JSON 可能没写出来）：%s" % exc)
+        if args.open_after:
+            _open_in_browser(html_path)
         return 0
 
     if args.command == "dump":

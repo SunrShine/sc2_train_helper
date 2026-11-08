@@ -54,6 +54,9 @@ ZERG_PLAYERS = ["Serral", "Reynor", "Dark", "Rogue", "Solar"]
 PROTOSS_PLAYERS = ["Stats", "Zest", "Classic", "Trap", "ShoWTimE"]   # 站点/回放里写作 ShoWTimE
 KNOWN_PLAYERS = DEFAULT_PLAYERS + ZERG_PLAYERS + PROTOSS_PLAYERS
 RACE_NAMES = {"T": "Terran", "Z": "Zerg", "P": "Protoss"}
+# 以对位命名的目录（replays/pro/tvt/）里没有单一目标选手；--verify-only 时跳过选手名检查
+MATCHUP_DIR_NAMES = {"tvt": "TvT", "tvz": "TvZ", "tvp": "TvP",
+                     "zvz": "ZvZ", "pvp": "PvP", "pvz": "PvZ"}
 MIN_BUILD = 80001          # 只要 5.x（5.0 的 build 都 > 80000）
 MIN_SECONDS = 120          # 太短的残局对 BO 分析没意义
 CHUNK = 64 * 1024
@@ -634,14 +637,21 @@ def cmd_verify(args):
                 display = entry["player"]
                 break
         display = canonical_player(display or name)
+        # 以对位命名的目录（如 replays/pro/tvt/）里没有单一目标选手，跳过选手名检查
+        matchup_dir = MATCHUP_DIR_NAMES.get(name.lower())
+        if matchup_dir:
+            display = matchup_dir
         new_entries = []
         print("\n[%s] %d file(s)" % (name, len(files)))
         for fn in files:
             path = os.path.join(directory, fn)
             total += 1
             try:
-                _, info = verify_replay(path, player=display, min_build=args.min_build,
-                                        race=args.race, opponent_race=args.opponent_race)
+                kwargs = {"min_build": args.min_build, "race": args.race,
+                          "opponent_race": args.opponent_race}
+                if not matchup_dir:
+                    kwargs["player"] = display
+                _, info = verify_replay(path, **kwargs)
             except Rejected as exc:
                 bad += 1
                 print("  BAD %-52s %s" % (fn[:52], exc))
@@ -665,6 +675,10 @@ def cmd_verify(args):
                 entry["source"] = old.get("source", "")
                 entry["contest_date"] = old.get("contest_date", "")
                 entry["map_listed"] = old.get("map_listed", "")
+                # 保留人工/脚本补充的元数据（如 quality / playable），别在复验时丢掉
+                for key in ("quality", "playable", "version_data_files", "notes"):
+                    if key in old:
+                        entry[key] = old[key]
             new_entries.append(entry)
         merged = write_manifest(directory, new_entries)
         print("  manifest: %d entries" % len(merged))

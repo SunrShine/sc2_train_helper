@@ -1,0 +1,695 @@
+[
+  {
+    "player": "TvT",
+    "file": "tvt_Kelazhur_vs_ratgameplay_10000_Feet_LE_b95841_89551.SC2Replay",
+    "id": "89551",
+    "map": "10000 Feet LE",
+    "matchup": "TvT",
+    "duration": 872.06,
+    "build": 95841,
+    "protocol_build": 95299,
+    "date": "2026-01-30",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Kelazhur",
+        "race": "T",
+        "toon": "2-S2-1-3437982",
+        "result": "win"
+      },
+      {
+        "name": "ratgameplay",
+        "race": "T",
+        "toon": "2-S2-1-1143713",
+        "result": "loss"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/89551/",
+    "bytes": 119191,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "need-download",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_Kelazhur_vs_ratgameplay_Winter_Madness_LE_b95841_89602.SC2Replay",
+    "id": "89602",
+    "map": "Winter Madness LE",
+    "matchup": "TvT",
+    "duration": 791.56,
+    "build": 95841,
+    "protocol_build": 95299,
+    "date": "2026-01-30",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Kelazhur",
+        "race": "T",
+        "toon": "2-S2-1-3437982",
+        "result": "win"
+      },
+      {
+        "name": "ratgameplay",
+        "race": "T",
+        "toon": "2-S2-1-1143713",
+        "result": "loss"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/89602/",
+    "bytes": 105773,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "need-download",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_Spirit_vs_BabyMarine_Ley_Lines_b94137_86883.SC2Replay",
+    "id": "86883",
+    "map": "Ley Lines",
+    "matchup": "TvT",
+    "duration": 627.69,
+    "build": 94137,
+    "protocol_build": 93333,
+    "date": "2025-06-27",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Spirit",
+        "race": "T",
+        "toon": "2-S2-1-5179818",
+        "result": "loss"
+      },
+      {
+        "name": "BabyMarine",
+        "race": "T",
+        "toon": "2-S2-1-4054275",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/86883/",
+    "bytes": 109207,
+    "fetched_at": "2026-11-08T20:09:20",
+    "quality": "pro",
+    "playable": "no-version-94137",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_Spirit_vs_BabyMarine_Ultralove_b94137_86882.SC2Replay",
+    "id": "86882",
+    "map": "Ultralove",
+    "matchup": "TvT",
+    "duration": 621.94,
+    "build": 94137,
+    "protocol_build": 93333,
+    "date": "2025-06-27",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Spirit",
+        "race": "T",
+        "toon": "2-S2-1-5179818",
+        "result": "loss"
+      },
+      {
+        "name": "BabyMarine",
+        "race": "T",
+        "toon": "2-S2-1-4054275",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/86882/",
+    "bytes": 112905,
+    "fetched_at": "2026-11-08T20:09:20",
+    "quality": "pro",
+    "playable": "no-version-94137",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_HeroMarine_vs_Kelazhur_Tokamak_LE_b94137_86853.SC2Replay",
+    "id": "86853",
+    "map": "Tokamak LE",
+    "matchup": "TvT",
+    "duration": 1042.88,
+    "build": 94137,
+    "protocol_build": 93333,
+    "date": "2025-06-28",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "HeroMarine",
+        "race": "T",
+        "toon": "2-S2-1-2361139",
+        "result": "win"
+      },
+      {
+        "name": "Kelazhur",
+        "race": "T",
+        "toon": "2-S2-1-3437982",
+        "result": "loss"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/86853/",
+    "bytes": 168103,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "no-version-94137",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_HeroMarine_vs_Kelazhur_Ultralove_b94137_86854.SC2Replay",
+    "id": "86854",
+    "map": "Ultralove",
+    "matchup": "TvT",
+    "duration": 823.12,
+    "build": 94137,
+    "protocol_build": 93333,
+    "date": "2025-06-28",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "HeroMarine",
+        "race": "T",
+        "toon": "2-S2-1-2361139",
+        "result": "win"
+      },
+      {
+        "name": "Kelazhur",
+        "race": "T",
+        "toon": "2-S2-1-3437982",
+        "result": "loss"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/86854/",
+    "bytes": 123427,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "no-version-94137",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_Moja_vs_Remarcable_Ley_Lines_b94137_86822.SC2Replay",
+    "id": "86822",
+    "map": "Ley Lines",
+    "matchup": "TvT",
+    "duration": 474.25,
+    "build": 94137,
+    "protocol_build": 93333,
+    "date": "2025-06-28",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Moja",
+        "race": "T",
+        "toon": "2-S2-1-2102879",
+        "result": "loss"
+      },
+      {
+        "name": "Remarcable",
+        "race": "T",
+        "toon": "2-S2-1-1143713",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/86822/",
+    "bytes": 78198,
+    "fetched_at": "2026-11-08T20:09:20",
+    "quality": "pro",
+    "playable": "no-version-94137",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_Moja_vs_Remarcable_Tokamak_LE_b94137_86823.SC2Replay",
+    "id": "86823",
+    "map": "Tokamak LE",
+    "matchup": "TvT",
+    "duration": 521.94,
+    "build": 94137,
+    "protocol_build": 93333,
+    "date": "2025-06-28",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Moja",
+        "race": "T",
+        "toon": "2-S2-1-2102879",
+        "result": "loss"
+      },
+      {
+        "name": "Remarcable",
+        "race": "T",
+        "toon": "2-S2-1-1143713",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/86823/",
+    "bytes": 87093,
+    "fetched_at": "2026-11-08T20:09:20",
+    "quality": "pro",
+    "playable": "no-version-94137",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_BabyMarine_vs_VITRyung_Pylon_LE_b94137_86915.SC2Replay",
+    "id": "86915",
+    "map": "Pylon LE",
+    "matchup": "TvT",
+    "duration": 1381.62,
+    "build": 94137,
+    "protocol_build": 93333,
+    "date": "2025-06-29",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "BabyMarine",
+        "race": "T",
+        "toon": "2-S2-1-4054275",
+        "result": "loss"
+      },
+      {
+        "name": "VITRyung",
+        "race": "T",
+        "toon": "2-S2-1-9608032",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/86915/",
+    "bytes": 212364,
+    "fetched_at": "2026-11-08T20:09:18",
+    "quality": "pro",
+    "playable": "no-version-94137",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_Cure_vs_Maru_Magannatha_LE_b94137_87433.SC2Replay",
+    "id": "87433",
+    "map": "Magannatha LE",
+    "matchup": "TvT",
+    "duration": 1251.31,
+    "build": 94137,
+    "protocol_build": 93333,
+    "date": "2025-07-24",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Cure",
+        "race": "T",
+        "toon": "2-S2-1-9691216",
+        "result": "win"
+      },
+      {
+        "name": "Maru",
+        "race": "T",
+        "toon": "2-S2-1-9687740",
+        "result": "loss"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/87433/",
+    "bytes": 205620,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "no-version-94137",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_ByuN_vs_Percival_Tokamak_LE_b94137_88058.SC2Replay",
+    "id": "88058",
+    "map": "Tokamak LE",
+    "matchup": "TvT",
+    "duration": 868.19,
+    "build": 94137,
+    "protocol_build": 93333,
+    "date": "2025-07-30",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "ByuN",
+        "race": "T",
+        "toon": "3-S2-1-5866161",
+        "result": "win"
+      },
+      {
+        "name": "Percival",
+        "race": "T",
+        "toon": "3-S2-1-6839334",
+        "result": "loss"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/88058/",
+    "bytes": 180826,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "no-version-94137",
+    "version_data_files": 0
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_bluzilla_vs_Wwadisaa_Whispers_of_Gold_b93333_28966.SC2Replay",
+    "id": "28966",
+    "map": "Whispers of Gold",
+    "matchup": "TvT",
+    "duration": 1734.62,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-01-22",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "bluzilla",
+        "race": "T",
+        "toon": "1-S2-1-13240995",
+        "result": "loss"
+      },
+      {
+        "name": "Wwadisaa",
+        "race": "T",
+        "toon": "1-S2-1-20667219",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28966",
+    "bytes": 107548,
+    "fetched_at": "2026-11-08T20:09:20",
+    "quality": "ladder",
+    "playable": "yes",
+    "version_data_files": 2
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_BoranveArya_vs_TERRANblet_unknown_b93333_28968.SC2Replay",
+    "id": "28968",
+    "map": "Неоновая площадь РВ",
+    "matchup": "TvT",
+    "duration": 524.69,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-02-02",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "BoranveArya",
+        "race": "T",
+        "toon": "2-S2-1-3007734",
+        "result": "loss"
+      },
+      {
+        "name": "TERRANblet",
+        "race": "T",
+        "toon": "2-S2-1-10185642",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28968",
+    "bytes": 46309,
+    "fetched_at": "2026-11-08T20:09:18",
+    "quality": "ladder",
+    "playable": "yes",
+    "version_data_files": 2
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_ByuN_vs_HeroMarine_Ley_Lines_b93333_85053.SC2Replay",
+    "id": "85053",
+    "map": "Ley Lines",
+    "matchup": "TvT",
+    "duration": 638.5,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-03-12",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "ByuN",
+        "race": "T",
+        "toon": "1-S2-1-9628827",
+        "result": "loss"
+      },
+      {
+        "name": "HeroMarine",
+        "race": "T",
+        "toon": "1-S2-1-3805273",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/85053/",
+    "bytes": 70444,
+    "fetched_at": "2026-11-08T20:09:18",
+    "quality": "pro",
+    "playable": "yes",
+    "version_data_files": 2
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_ByuN_vs_LiquidCure_Amygdala_b93333_88052.SC2Replay",
+    "id": "88052",
+    "map": "Amygdala",
+    "matchup": "TvT",
+    "duration": 828.62,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-03-14",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "ByuN",
+        "race": "T",
+        "toon": "3-S2-1-5866161",
+        "result": "loss"
+      },
+      {
+        "name": "LiquidCure",
+        "race": "T",
+        "toon": "3-S2-1-3938571",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/88052/",
+    "bytes": 93784,
+    "fetched_at": "2026-11-08T20:09:18",
+    "quality": "pro",
+    "playable": "yes",
+    "version_data_files": 2
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_ByuN_vs_LiquidCure_Ley_Lines_b93333_88053.SC2Replay",
+    "id": "88053",
+    "map": "Ley Lines",
+    "matchup": "TvT",
+    "duration": 888.5,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-03-14",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "ByuN",
+        "race": "T",
+        "toon": "3-S2-1-5866161",
+        "result": "loss"
+      },
+      {
+        "name": "LiquidCure",
+        "race": "T",
+        "toon": "3-S2-1-3938571",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/88053/",
+    "bytes": 97155,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "yes",
+    "version_data_files": 2
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_ByuN_vs_LiquidCure_TLMC20_Magannatha_b93333_88059.SC2Replay",
+    "id": "88059",
+    "map": "[TLMC20] Magannatha",
+    "matchup": "TvT",
+    "duration": 1003.31,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-04-22",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "ByuN",
+        "race": "T",
+        "toon": "3-S2-1-5866161",
+        "result": "loss"
+      },
+      {
+        "name": "LiquidCure",
+        "race": "T",
+        "toon": "3-S2-1-3938571",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/88059/",
+    "bytes": 232573,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "yes",
+    "version_data_files": 2
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_ByuN_vs_LiquidCure_TLMC20_Persephone_b93333_88060.SC2Replay",
+    "id": "88060",
+    "map": "[TLMC20] Persephone",
+    "matchup": "TvT",
+    "duration": 229.5,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-04-22",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "ByuN",
+        "race": "T",
+        "toon": "3-S2-1-5866161",
+        "result": "loss"
+      },
+      {
+        "name": "LiquidCure",
+        "race": "T",
+        "toon": "3-S2-1-3938571",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/88060/",
+    "bytes": 67239,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "yes",
+    "version_data_files": 2
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_Reckoner_vs_Deathdnb_Tokamak_LE_b93333_28977.SC2Replay",
+    "id": "28977",
+    "map": "Tokamak LE",
+    "matchup": "TvT",
+    "duration": 1830.19,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-05-18",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Reckoner",
+        "race": "T",
+        "toon": "2-S2-1-9513860",
+        "result": "loss"
+      },
+      {
+        "name": "Deathdnb",
+        "race": "T",
+        "toon": "2-S2-1-11043216",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28977",
+    "bytes": 125416,
+    "fetched_at": "2026-11-08T20:09:20",
+    "quality": "ladder",
+    "playable": "yes",
+    "version_data_files": 2
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_ByuN_vs_Bunny_Ley_Lines_b93333_86411.SC2Replay",
+    "id": "86411",
+    "map": "Ley Lines",
+    "matchup": "TvT",
+    "duration": 956.44,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-05-29",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "ByuN",
+        "race": "T",
+        "toon": "3-S2-1-2343882",
+        "result": "loss"
+      },
+      {
+        "name": "Bunny",
+        "race": "T",
+        "toon": "3-S2-1-2342294",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/86411/",
+    "bytes": 115168,
+    "fetched_at": "2026-11-08T20:09:18",
+    "quality": "pro",
+    "playable": "yes",
+    "version_data_files": 2
+  },
+  {
+    "player": "TvT",
+    "file": "tvt_GuMiho_vs_Bunny_Ultralove_b93333_86408.SC2Replay",
+    "id": "86408",
+    "map": "Ultralove",
+    "matchup": "TvT",
+    "duration": 696.75,
+    "build": 93333,
+    "protocol_build": 93333,
+    "date": "2025-05-29",
+    "contest_date": "",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "GuMiho",
+        "race": "T",
+        "toon": "3-S2-1-2341765",
+        "result": "loss"
+      },
+      {
+        "name": "Bunny",
+        "race": "T",
+        "toon": "3-S2-1-2342294",
+        "result": "win"
+      }
+    ],
+    "source": "https://lotv.spawningtool.com/86408/",
+    "bytes": 90297,
+    "fetched_at": "2026-11-08T20:09:19",
+    "quality": "pro",
+    "playable": "yes",
+    "version_data_files": 2
+  }
+]
