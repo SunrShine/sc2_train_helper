@@ -175,9 +175,22 @@ def timeline_svg(median, max_seconds=720.0, width=920.0, height=150.0, title="")
 
 # --------------------------------------------------------------------------- 区块
 
+def _sequence_chips(cluster):
+    """典型开局序列：token 中文名 + 中位出现时间，横向串联。"""
+    rows = cluster.get("sequence_medians") or []
+    if not rows:
+        return ""
+    parts = []
+    for index, row in enumerate(rows):
+        parts.append('<span class="chip"><b>%s</b> %s</span>' % (
+            h(row.get("label") or row.get("token")),
+            h(clock(row.get("t")))))
+    return "".join(parts)
+
+
 def _cluster_card(cluster, max_seconds, tone=0, show_members=True):
-    colors = ("#7c9cff", "#46d17e")
-    color = colors[tone % 2]
+    colors = ("#7c9cff", "#46d17e", "#f2c45a", "#b48cff", "#ff8b6b", "#62b0ff")
+    color = colors[tone % len(colors)]
     parts = ['<div class="card" style="margin-bottom:14px">',
              '<div class="cluster-head">',
              '<span class="name">%s</span>' % h(cluster["name"]),
@@ -188,12 +201,18 @@ def _cluster_card(cluster, max_seconds, tone=0, show_members=True):
              '<div class="share-bar"><span style="width:%.1f%%;background:%s"></span></div>'
              % (max(1.0, cluster["share"] * 100.0), color)]
 
+    parts.append('<div class="mini">典型 0–3 分钟序列：%s</div>' % h(
+        " → ".join("%s" % (row.get("label") or row.get("token"))
+                   for row in (cluster.get("sequence_medians") or []))))
+    parts.append(_sequence_chips(cluster))
+
     median = cluster.get("median") or {}
     mean = cluster.get("mean") or {}
     chips = []
     for key, label, _color in TIMELINE_NODES:
         value = median.get(key)
         chips.append(_chip(label, clock(value)))
+    parts.append('<div class="mini">整局关键点（中位）：</div>')
     parts.append("".join(chips))
     parts.append('<div class="mini">平均值：%s</div>' % h(" · ".join(
         "%s %s" % (label, clock(mean.get(key))) for key, label, _c in TIMELINE_NODES)))
@@ -216,6 +235,76 @@ def _cluster_card(cluster, max_seconds, tone=0, show_members=True):
         parts.append('<div class="mini">示例：%s</div>' % h(" / ".join(examples)))
     parts.append("</div>")
     return "".join(parts)
+
+
+def _k_selection_block(meta):
+    """选 k 的依据：k=2..6 的 silhouette / 类内平均距离 / 最小类占比。"""
+    clustering = meta.get("clustering") or {}
+    scores = clustering.get("scores") or []
+    if not scores:
+        return ""
+    chosen = clustering.get("k")
+    rows = []
+    for entry in scores:
+        mark = ' style="color:#46d17e;font-weight:700"' if entry["k"] == chosen else ""
+        rows.append("<tr><td>k=%d</td><td%s>%.3f</td><td>%.3f</td><td>%s</td></tr>" % (
+            entry["k"], mark, entry["silhouette"], entry["within_mean"],
+            _pct(entry.get("min_share"))))
+    outliers = clustering.get("outliers") or []
+    return (
+        '<div class="card" style="margin-bottom:12px">'
+        "<h3>为什么选 k=%s</h3>"
+        '<div class="mini">口径：%s。</div>'
+        '<table class="data" style="margin-top:8px"><thead><tr>'
+        "<th>k</th><th>平均轮廓系数 ↑</th><th>类内平均距离 ↓</th><th>最小类占比</th>"
+        "</tr></thead><tbody>%s</tbody></table>"
+        '<div class="mini" style="margin-top:6px">离群（最近邻距离大于阈值、单独归入「其他」）'
+        "：%d 局。</div></div>" % (
+            h(str(chosen)), h(clustering.get("criterion") or "-"),
+            "".join(rows), len(outliers)))
+
+
+def _version_block(meta):
+    """版本过滤：8/12 农民两个版本、排除多少局、实际用了哪段时间。"""
+    version = meta.get("version_filter") or {}
+    if not version:
+        return ""
+    table = version.get("version_table") or []
+    dates = version.get("dates_used") or {}
+    rows = "".join(
+        "<tr><td>%s</td><td>%s 农民</td><td>%s</td><td>%d 局</td></tr>" % (
+            h(entry.get("month") or "?"), h(str(entry.get("start_workers"))),
+            h(str(entry.get("build"))), entry.get("games", 0))
+        for entry in table)
+    pace = meta.get("pace_dimension") or {}
+    pace_text = "仍然存在" if pace.get("survives") else "基本消失（已被版本过滤吸收）"
+    pace_detail = "第一气矿 p10~p90 = %s~%s（跨度 %s 秒），二矿 %s~%s（跨度 %s 秒）" % (
+        clock(pace.get("gas_p10")), clock(pace.get("gas_p90")), h(_num(pace.get("gas_spread"))),
+        clock(pace.get("expand_p10")), clock(pace.get("expand_p90")),
+        h(_num(pace.get("expand_spread"))))
+    return (
+        '<div class="card" style="margin-bottom:12px">'
+        "<h3>版本过滤（开局农民数 = %s）</h3>"
+        '<div class="mini">排除 8 农民版本 %d 局、按日期排除 %d 局；'
+        "实际使用日期 %s ~ %s。判据用开局农民数（版本无关），日期只是可选项。</div>"
+        '<table class="data" style="margin-top:8px"><thead><tr>'
+        "<th>月份</th><th>开局农民</th><th>replay build</th><th>扫到局数</th>"
+        "</tr></thead><tbody>%s</tbody></table>"
+        '<div class="mini" style="margin-top:8px">8 农民版本会让同一个 build 的开局时间点'
+        "整体前移 20~30 秒，混在一起聚出来的是版本差而不是打法差——所以整批排除。"
+        "过滤后「慢/快节奏」这个维度<b>%s</b>：%s。</div></div>" % (
+            h(str(version.get("start_workers"))),
+            version.get("excluded_by_workers", 0), version.get("excluded_by_date", 0),
+            h(dates.get("min") or "-"), h(dates.get("max") or "-"),
+            rows, h(pace_text), h(pace_detail)))
+
+
+def _num(value, suffix=""):
+    if value is None:
+        return "-"
+    if isinstance(value, float):
+        return ("%.1f%s" % (value, suffix)) if value != int(value) else ("%d%s" % (int(value), suffix))
+    return "%s%s" % (value, suffix)
 
 
 def _comparison_rows(comparison):
@@ -369,6 +458,11 @@ def render(summary):
     parts.append('<div class="sub">阶段按时间切：%s</div>' % h(
         " / ".join("%s %s–%s" % (PHASE_ZH[p], clock(s), clock(e) if e else "∞")
                    for p, s, e in PHASES)))
+    sampling = (summary.get("sampling") or {}).get("mine") or {}
+    if sampling.get("scanned"):
+        parts.append('<div class="sub">语料：扫描 %d 个 replay 文件 → 入选 %d 局'
+                     '（其余被 matchup / 人类对手 / 版本 / 时长等条件筛掉）。</div>' % (
+                         sampling.get("scanned", 0), sampling.get("matched", 0)))
     parts.append("</header>")
 
     # ---------------- 结论
@@ -377,19 +471,22 @@ def render(summary):
     sig_counts = comparison["mine"]["signatures"] or {}
     top_sig = next(iter(sig_counts.items()), ("-", 0))
     insight = [
-        ("info", "你的 TvZ 只有一个主要开局",
-         "我 %d 局里 %d 局（%s）是 %s。" % (
+        ("info", "开局签名集中在 %s" % h(top_sig[0]),
+         "我 %d 局里 %d 局（%s）是 %s；签名是整局打法的短标签，开局细节看下面的序列聚类。" % (
              meta["mine_games"], top_sig[1],
-             _pct(top_sig[1] / float(meta["mine_games"] or 1)), top_sig[0])),
-        ("good", "聚出来的两类",
+             _pct(top_sig[1] / float(meta["mine_games"] or 1)), h(top_sig[0]))),
+        ("good", "按 0–3 分钟序列聚出 %d 类（k=%s）" % (
+            len(mine_clusters), (meta.get("clustering") or {}).get("k")),
          " / ".join("%s（%d 局，%s）" % (h(c["name"]), c["games"], _pct(c["share"]))
                     for c in mine_clusters) or "-"),
         ("info", "节奏对照",
-         "二矿中位：我 %s / %s %s；气矿中位：我 %s / %s %s。" % (
+         "二矿中位：我 %s / %s %s；气矿中位：我 %s / %s %s；版本过滤后「慢/快」维度%s。" % (
              clock(comparison["mine"]["median"].get("first_expand")),
              h(meta["pro"]), clock(comparison["pro"]["median"].get("first_expand")),
              clock(comparison["mine"]["median"].get("first_gas")),
-             h(meta["pro"]), clock(comparison["pro"]["median"].get("first_gas")))),
+             h(meta["pro"]), clock(comparison["pro"]["median"].get("first_gas")),
+             "仍存在" if (meta.get("pace_dimension") or {}).get("survives")
+             else "基本消失")),
     ]
     for tone, title, desc in insight:
         parts.append('<div class="insight %s"><div class="t">%s</div><div class="d">%s</div></div>'
@@ -431,10 +528,12 @@ def render(summary):
                     for s in check["segments"])))
             parts.append("</div>")
 
-    # ---------------- 我的两类
-    parts.append("<h2>我的 TvZ 开局：聚成两类</h2>")
+    # ---------------- 我的开局（按 0–3 分钟序列聚类）
+    parts.append("<h2>我的 %s 开局：按 0–3 分钟建造序列聚类</h2>" % h(meta["matchup"]))
+    parts.append(_version_block(meta))
+    parts.append(_k_selection_block(meta))
     if not mine_clusters:
-        parts.append('<div class="card mini">样本不足，聚不出两类。</div>')
+        parts.append('<div class="card mini">样本不足，聚不出开局。</div>')
     for tone, cluster in enumerate(mine_clusters):
         parts.append(_cluster_card(cluster, max_seconds, tone))
 
@@ -514,8 +613,13 @@ def render(summary):
                  "判定顺序（先命中先算，同一局永远得同一标签）：扩张前兵营数 → 3-rax / "
                  "2-rax-fast-expand / 1-rax-fast-expand → mech → 3-rax(5 分钟内) → "
                  "2-1-1 → 1-1-1 → unknown。<br>"
+                 "聚类轴 = <b>0–180 秒建造序列</b>：序列 → 归一化 Levenshtein 距离 → "
+                 "平均连接层次聚类；k 在 2~6 里按平均轮廓系数选（见上面那张表）。<br>"
+                 "版本过滤：只收开局农民数 = %s 的局（8 农民版本的开局时间点整体前移，"
+                 "混进来聚出的就是版本差）。<br>"
                  "每局的 steps 来自 <b>parsed.build_events</b>（loop/16 = 秒），"
-                 "cost 由 <b>units.cost()</b> 补齐，morph 事件不重复计费。</div>")
+                 "cost 由 <b>units.cost()</b> 补齐，morph 事件不重复计费。</div>" % h(
+                     str((meta.get("version_filter") or {}).get("start_workers"))))
     parts.append(_expand_filter_block(meta, summary))
     parts.append("</div>")
 
@@ -525,8 +629,12 @@ def render(summary):
             parts.append("%s：%s<br>" % (h(item.get("file", "?")), h(item.get("error", ""))))
         parts.append("</div>")
 
-    parts.append('<footer>复现：<code>python -m replay_analyzer.bo --limit %d --replay "&lt;某个 .SC2Replay 路径&gt;"</code>'
-                 ' · 报告离线生成，无外部依赖</footer>' % meta.get("mine_games", 0))
+    version = meta.get("version_filter") or {}
+    parts.append('<footer>复现：<code>python -m replay_analyzer.bo --limit %d '
+                 '--start-workers %s --replay "&lt;某个 .SC2Replay 路径&gt;"</code>'
+                 ' · 可选 <code>--since/--until YYYY-MM-DD</code> 限定日期区间'
+                 ' · 报告离线生成，无外部依赖</footer>' % (
+                     meta.get("mine_games", 0), h(str(version.get("start_workers")))))
     parts.append("</div></body></html>")
     return "".join(parts)
 

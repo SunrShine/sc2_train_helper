@@ -592,7 +592,7 @@ def _label(phase, signature):
 
 
 def build_dag(game_bos, min_edge=2, info_events=None, sampling=None,
-              sampling_start=None):
+              sampling_start=None, phases=None):
     """把多局的段序列拼成 DAG。
 
     参数
@@ -603,6 +603,8 @@ def build_dag(game_bos, min_edge=2, info_events=None, sampling=None,
                   ``info_events`` 字段。
     sampling : 实测的位置采样起点，数字或 ``{"min": x, "median": y}``，
                只影响 precision_note 的文案（``sampling_start`` 是同义旧名）。
+    phases : 只保留这些阶段（例如 ``("opening", "early")``）。给职业 Z/P 做
+             "开局选择面"时只看前两段，后期段签名太碎、也不回答那个问题。
 
     返回严格符合契约第三节的 dict，另外多几个报告用得上的字段
     （``reaction`` / ``sequences`` / ``top_paths`` / ``dropped_edges`` / ``precision_note``）。
@@ -641,6 +643,10 @@ def build_dag(game_bos, min_edge=2, info_events=None, sampling=None,
 
         segments = [segment for segment in (game.get("segments") or [])
                     if segment.get("signature") is not None]
+        if phases:
+            allowed = set(phases)
+            segments = [segment for segment in segments
+                        if normalize_phase(segment.get("phase")) in allowed]
         ids = []
         for segment in segments:
             phase = normalize_phase(segment.get("phase"))
@@ -795,6 +801,7 @@ def build_dag(game_bos, min_edge=2, info_events=None, sampling=None,
                                          if sampling_min is None
                                          else float(sampling_min)),
             "segmentation": "phase_buckets_with_step_anchor",
+            "phases": list(phases) if phases else list(PHASES),
             "game_signatures": dict(sorted(game_signatures.items(),
                                            key=lambda item: -item[1])),
         },

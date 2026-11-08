@@ -1,0 +1,152 @@
+[
+  {
+    "player": "Classic",
+    "file": "classic_vs_DRG_TLMC15_Glittering_Ashes_29-10-2021_b86383_28149.SC2Replay",
+    "id": "28149",
+    "map": "[TLMC15] Glittering Ashes",
+    "matchup": "PvZ",
+    "duration": 708.31,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-10-22",
+    "contest_date": "29.10.2021",
+    "map_listed": "[TLMC15] Glittering Ashes",
+    "players": [
+      {
+        "name": "Classic",
+        "race": "P",
+        "toon": "3-S2-1-3067840",
+        "result": "loss"
+      },
+      {
+        "name": "DRG",
+        "race": "Z",
+        "toon": "3-S2-1-154269",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28149",
+    "bytes": 275937,
+    "fetched_at": "2026-11-08T15:08:30"
+  },
+  {
+    "player": "Classic",
+    "file": "classic_vs_LiquidClem_2000_Atmospheres_LE_29-10-2021_b86383_28154.SC2Replay",
+    "id": "28154",
+    "map": "2000 Atmospheres LE",
+    "matchup": "TvP",
+    "duration": 1242.69,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-10-22",
+    "contest_date": "29.10.2021",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "LiquidClem",
+        "race": "T",
+        "toon": "1-S2-1-20701842",
+        "result": "win"
+      },
+      {
+        "name": "Classic",
+        "race": "P",
+        "toon": "1-S2-1-6120206",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28154",
+    "bytes": 448345,
+    "fetched_at": "2026-11-08T15:08:30"
+  },
+  {
+    "player": "Classic",
+    "file": "classic_vs_LiquidClem_Blackburn_LE_29-10-2021_b86383_28156.SC2Replay",
+    "id": "28156",
+    "map": "Blackburn LE",
+    "matchup": "TvP",
+    "duration": 752.06,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-10-22",
+    "contest_date": "29.10.2021",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "LiquidClem",
+        "race": "T",
+        "toon": "1-S2-1-20701842",
+        "result": "win"
+      },
+      {
+        "name": "Classic",
+        "race": "P",
+        "toon": "1-S2-1-6120206",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28156",
+    "bytes": 272312,
+    "fetched_at": "2026-11-08T15:08:30"
+  },
+  {
+    "player": "Classic",
+    "file": "classic_vs_LiquidClem_TLMC15_Berlingrad_29-10-2021_b86383_28157.SC2Replay",
+    "id": "28157",
+    "map": "[TLMC15] Berlingrad",
+    "matchup": "TvP",
+    "duration": 1041.94,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-10-22",
+    "contest_date": "29.10.2021",
+    "map_listed": "[TLMC15] Berlingrad",
+    "players": [
+      {
+        "name": "Classic",
+        "race": "P",
+        "toon": "1-S2-1-6120206",
+        "result": "loss"
+      },
+      {
+        "name": "LiquidClem",
+        "race": "T",
+        "toon": "1-S2-1-20701842",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28157",
+    "bytes": 347800,
+    "fetched_at": "2026-11-08T15:08:30"
+  },
+  {
+    "player": "Classic",
+    "file": "classic_vs_LiquidClem_TLMC15_Curious_Minds_29-10-2021_b86383_28155.SC2Replay",
+    "id": "28155",
+    "map": "[TLMC15] Curious Minds",
+    "matchup": "TvP",
+    "duration": 919.62,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-10-22",
+    "contest_date": "29.10.2021",
+    "map_listed": "[TLMC15] Curious Minds",
+    "players": [
+      {
+        "name": "LiquidClem",
+        "race": "T",
+        "toon": "1-S2-1-20701842",
+        "result": "loss"
+      },
+      {
+        "name": "Classic",
+        "race": "P",
+        "toon": "1-S2-1-6120206",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28155",
+    "bytes": 341716,
+    "fetched_at": "2026-11-08T15:08:30"
+  }
+]

@@ -330,6 +330,12 @@ def main(argv=None):
     bo_cmd.add_argument("--pro-limit", dest="pro_limit", type=int, default=30, help="职业录像局数")
     bo_cmd.add_argument("--matchup", default="TvZ", help="只比对位，例如 TvZ / TvP")
     bo_cmd.add_argument("--seed", type=int, default=None, help="抽样随机种子")
+    bo_cmd.add_argument("--since", default=None, help="只收这一天之后的录像（YYYY-MM-DD）")
+    bo_cmd.add_argument("--until", default=None, help="只收这一天之前的录像（YYYY-MM-DD）")
+    bo_cmd.add_argument("--start-workers", dest="start_workers", type=int, default=None,
+                        help="只收开局农民数为 N 的版本（默认 12；传 0 关闭）")
+    bo_cmd.add_argument("--k-min", dest="k_min", type=int, default=None, help="聚类 k 下限")
+    bo_cmd.add_argument("--k-max", dest="k_max", type=int, default=None, help="聚类 k 上限")
     bo_cmd.add_argument("--replay", action="append", default=[], metavar="FILE",
                         help="额外单独分析某局（可重复），会打印 signature")
     bo_cmd.add_argument("-o", "--output", dest="bo_html", default=None, help="HTML 输出路径")
@@ -566,6 +572,16 @@ def main(argv=None):
             forwarded += ["--pro", args.pro]
         if args.seed is not None:
             forwarded += ["--seed", str(args.seed)]
+        if args.since:
+            forwarded += ["--since", args.since]
+        if args.until:
+            forwarded += ["--until", args.until]
+        if args.start_workers is not None:
+            forwarded += ["--start-workers", str(args.start_workers)]
+        if args.k_min is not None:
+            forwarded += ["--k-min", str(args.k_min)]
+        if args.k_max is not None:
+            forwarded += ["--k-max", str(args.k_max)]
         for replay in args.replay:
             forwarded += ["--replay", replay]
         output = args.bo_html or os.path.join("reports", "bo.html")

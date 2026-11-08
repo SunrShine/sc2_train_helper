@@ -1,0 +1,152 @@
+[
+  {
+    "player": "ShoWTimE",
+    "file": "showtime_vs_Moja_Ley_Lines_01-01-2025_b93272_28854.SC2Replay",
+    "id": "28854",
+    "map": "Ley Lines",
+    "matchup": "TvP",
+    "duration": 1229.38,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-11-29",
+    "contest_date": "01.01.2025",
+    "map_listed": "Ley Lines",
+    "players": [
+      {
+        "name": "ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "win"
+      },
+      {
+        "name": "Moja",
+        "race": "T",
+        "toon": "2-S2-1-2102879",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28854",
+    "bytes": 132192,
+    "fetched_at": "2026-11-08T15:10:20"
+  },
+  {
+    "player": "ShoWTimE",
+    "file": "showtime_vs_Moja_Neon_Violet_Square_LE_01-01-2025_b93272_28855.SC2Replay",
+    "id": "28855",
+    "map": "Neon Violet Square LE",
+    "matchup": "TvP",
+    "duration": 1558.75,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-11-29",
+    "contest_date": "01.01.2025",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "win"
+      },
+      {
+        "name": "Moja",
+        "race": "T",
+        "toon": "2-S2-1-2102879",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28855",
+    "bytes": 168584,
+    "fetched_at": "2026-11-08T15:10:21"
+  },
+  {
+    "player": "ShoWTimE",
+    "file": "showtime_vs_Spirit_Ultralove_01-01-2025_b93272_28848.SC2Replay",
+    "id": "28848",
+    "map": "Ultralove",
+    "matchup": "TvP",
+    "duration": 1369.56,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-11-29",
+    "contest_date": "01.01.2025",
+    "map_listed": "Ultralove",
+    "players": [
+      {
+        "name": "ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "loss"
+      },
+      {
+        "name": "Spirit",
+        "race": "T",
+        "toon": "2-S2-1-5179818",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28848",
+    "bytes": 268944,
+    "fetched_at": "2026-11-08T15:10:21"
+  },
+  {
+    "player": "ShoWTimE",
+    "file": "showtime_vs_VITmaru_Amygdala_01-01-2025_b93272_28859.SC2Replay",
+    "id": "28859",
+    "map": "Amygdala",
+    "matchup": "TvP",
+    "duration": 576.75,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-11-29",
+    "contest_date": "01.01.2025",
+    "map_listed": "Amygdala",
+    "players": [
+      {
+        "name": "VITmaru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "win"
+      },
+      {
+        "name": "ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28859",
+    "bytes": 101223,
+    "fetched_at": "2026-11-08T15:10:21"
+  },
+  {
+    "player": "ShoWTimE",
+    "file": "showtime_vs_VITmaru_Ultralove_01-01-2025_b93272_28858.SC2Replay",
+    "id": "28858",
+    "map": "Ultralove",
+    "matchup": "TvP",
+    "duration": 538.69,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-11-29",
+    "contest_date": "01.01.2025",
+    "map_listed": "Ultralove",
+    "players": [
+      {
+        "name": "VITmaru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "win"
+      },
+      {
+        "name": "ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28858",
+    "bytes": 88348,
+    "fetched_at": "2026-11-08T15:10:21"
+  }
+]

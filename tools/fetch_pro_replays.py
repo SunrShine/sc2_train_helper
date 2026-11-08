@@ -1,26 +1,28 @@
-"""从 sc2rep.ru 批量抓职业人族 replay，并逐个验证。
+"""从 sc2rep.ru 批量抓职业选手 replay（人族/异虫/星灵都能抓），并逐个验证。
 
 和 tools/fetch_maru.py 的区别：那个是给 Maru 专用的一次性脚本；这个是参数化的，
-支持多名选手、多种输出目录，并且下载后**必须**通过三道校验才会留在仓库里：
+支持多名选手、多种族、多种输出目录，并且下载后**必须**通过三道校验才会留在仓库里：
 
 1. 文件头是 MPQ（前 4 字节 ``MPQ\\x1a``/``MPQ\\x1b``，或 0x200 处有 MPQ 头）
    —— 站点对无效 id 会 302 回首页返回 HTML 广告页，必须挡掉；
 2. 能过我们自己的 loader（``load_replay`` 不抛异常）；
-3. 对局里确实有目标选手，且是 5.x（build > 80000）的 1v1。
+3. 对局里确实有目标选手（种族对得上），且是 5.x（build > 80000）的 1v1。
 
 不满足的立即删除，绝不留在 replays/pro/ 下。
 
 用法::
 
-    # 只看候选，不下载
+    # 只看候选（选手 / 版本 / 对手 / 时长），不下载
     python tools\\fetch_pro_replays.py --player Clem,Cure --limit 8 --list
+    python tools\\fetch_pro_replays.py --player Serral,Reynor --race Z --list
 
     # 下载（--limit 是每个选手最多"新增成功"多少个）
     python tools\\fetch_pro_replays.py --player Maru --limit 10 --out replays\\pro
     python tools\\fetch_pro_replays.py --all-terran --limit 6 --out replays\\pro
+    python tools\\fetch_pro_replays.py --player Serral --race Z --limit 5 --out replays\\pro
 
-    # 不联网，重新校验已有目录并刷新 manifest.json
-    python tools\\fetch_pro_replays.py --verify-only --out replays\\pro
+    # 不联网，重新校验已有目录并刷新 manifest.json（可用 --player 限定目录）
+    python tools\\fetch_pro_replays.py --verify-only --out replays\\pro --player Serral
 
 输出：
 - ``replays/pro/<player>/<file>.SC2Replay``
@@ -47,7 +49,11 @@ HEADERS = {
     "Referer": BASE + "/",
 }
 DEFAULT_OUT = os.path.join("replays", "pro")
-DEFAULT_PLAYERS = ["Maru", "Clem", "ByuN", "TY", "Cure", "HeroMarine"]
+DEFAULT_PLAYERS = ["Maru", "Clem", "ByuN", "TY", "Cure", "HeroMarine"]   # 默认：职业人族
+ZERG_PLAYERS = ["Serral", "Reynor", "Dark", "Rogue", "Solar"]
+PROTOSS_PLAYERS = ["Stats", "Zest", "Classic", "Trap", "ShoWTimE"]   # 站点/回放里写作 ShoWTimE
+KNOWN_PLAYERS = DEFAULT_PLAYERS + ZERG_PLAYERS + PROTOSS_PLAYERS
+RACE_NAMES = {"T": "Terran", "Z": "Zerg", "P": "Protoss"}
 MIN_BUILD = 80001          # 只要 5.x（5.0 的 build 都 > 80000）
 MIN_SECONDS = 120          # 太短的残局对 BO 分析没意义
 CHUNK = 64 * 1024
@@ -161,8 +167,8 @@ def entry_matchup(entry):
 
 
 def canonical_player(name):
-    """目录名/小写选手名 -> 规范写法（maru -> Maru）。"""
-    for known in DEFAULT_PLAYERS:
+    """目录名/小写选手名 -> 规范写法（maru -> Maru, showtime -> ShowTime）。"""
+    for known in KNOWN_PLAYERS:
         if known.lower() == (name or "").lower():
             return known
     return name
@@ -242,8 +248,8 @@ def build_of(version):
         return 0
 
 
-def pick_candidates(player, rows, limit, min_build, seen_ids, seen_keys):
-    """过滤出：5.x、目标是 T、还没在语料里的对局，按版本/日期从新到旧。"""
+def pick_candidates(player, rows, limit, min_build, seen_ids, seen_keys, race="any"):
+    """过滤出：5.x、目标选手种族对得上、还没在语料里的对局，按版本/日期从新到旧。"""
     chosen = []
     for row in rows.values():
         if build_of(row["version"]) <= min_build:
@@ -251,7 +257,9 @@ def pick_candidates(player, rows, limit, min_build, seen_ids, seen_keys):
         if not row["version"].startswith("5."):
             continue
         target = [p for p in row["players"] if name_matches(player, p["name"])]
-        if not target or target[0]["race"] != "T":
+        if not target:
+            continue
+        if race != "any" and target[0]["race"] != race:
             continue
         if len(row["players"]) != 2:
             continue
@@ -269,7 +277,7 @@ def pick_candidates(player, rows, limit, min_build, seen_ids, seen_keys):
 
 
 # --------------------------------------------------------------------------- 校验
-def verify_replay(path, player=None, min_build=MIN_BUILD, max_bytes=None):
+def verify_replay(path, player=None, min_build=MIN_BUILD, max_bytes=None, race="any"):
     """解析校验；合格返回 (parsed, info)，不合格抛 Rejected。"""
     if not os.path.isfile(path):
         raise Rejected("missing-file")
@@ -306,8 +314,10 @@ def verify_replay(path, player=None, min_build=MIN_BUILD, max_bytes=None):
         matched = [p for p in players if name_matches(player, p.name)]
         if not matched:
             raise Rejected("no-target-player(%s)" % ",".join(p.name for p in players))
-        if not any(p.race == "T" for p in matched):
-            raise Rejected("target-not-terran(%s)" % ",".join(p.race for p in matched))
+        if race != "any" and not any(p.race == race for p in matched):
+            raise Rejected("target-race-mismatch(want %s, got %s)"
+                           % (RACE_NAMES.get(race, race),
+                              ",".join(p.race for p in matched)))
 
     info = {
         "build": build,
@@ -400,32 +410,47 @@ def write_manifest(directory, new_entries):
 
 
 # --------------------------------------------------------------------------- 列候选
-def describe_row(player, row):
-    return " vs ".join("%s(%s)" % (p["name"], p["race"]) for p in row["players"])
+def opponent_of(player, row):
+    """候选行里的对手（名字 + 种族）。"""
+    others = [p for p in row["players"] if not name_matches(player, p["name"])]
+    if not others:
+        return "-"
+    return "%s(%s)" % (others[0]["name"], others[0]["race"])
 
 
 def cmd_list(args, players):
     seen_ids, seen_keys, _ = load_corpus_index(args.out)
     all_rows = []
+    shown = set()          # 同一局可能同时出现在双方选手的搜索结果里，只列一次
     for player in players:
         print("searching %s ..." % player)
         rows = search_player(player, args.pages, (args.gap_min, args.gap_max), args.timeout)
         candidates = pick_candidates(player, rows, args.limit, args.min_build,
-                                     seen_ids, seen_keys)
-        all_rows.extend((player, row) for row in candidates)
-        print("  %-11s total=%-3d usable=%d" % (player, len(rows), len(candidates)))
+                                     seen_ids, seen_keys, race=args.race)
+        fresh = [row for row in candidates if row["id"] not in shown]
+        for row in fresh:
+            shown.add(row["id"])
+        all_rows.extend((player, row) for row in fresh)
+        print("  %-11s total=%-3d candidates=%d (new after cross-player dedupe: %d)"
+              % (player, len(rows), len(candidates), len(fresh)))
     print()
     print("candidates (not downloaded):")
-    print("  %-4s %-11s %-6s %-7s %-11s %-28s %-44s %s" % (
-        "#", "player", "build", "ver", "date", "map", "players", "id"))
+    print("  %-4s %-11s %-14s %-6s %-22s %-7s %-28s %s" % (
+        "#", "player", "version", "build", "opponent", "dur", "map", "id"))
     for index, (player, row) in enumerate(all_rows, 1):
-        print("  %-4d %-11s %-6d %-7s %-11s %-28s %-44s %s" % (
-            index, player, build_of(row["version"]), row["version"][:7], row["date"],
-            (row["map"] or "-")[:28], describe_row(player, row)[:44], row["id"]))
+        print("  %-4d %-11s %-14s %-6d %-22s %-7s %-28s %s" % (
+            index, player, row["version"][:14], build_of(row["version"]),
+            opponent_of(player, row)[:22], row["length"] or "-",
+            (row["map"] or "-")[:28], row["id"]))
     print()
     print("total candidates: %d" % len(all_rows))
     if args.json:
-        payload = [dict(row, requested_player=player) for player, row in all_rows]
+        payload = []
+        for player, row in all_rows:
+            item = dict(row)
+            item["requested_player"] = player
+            item["opponent"] = opponent_of(player, row)
+            payload.append(item)
         with open(args.json, "w", encoding="utf-8") as handle:
             json.dump(payload, handle, ensure_ascii=False, indent=2)
         print("json: %s" % os.path.abspath(args.json))
@@ -465,8 +490,9 @@ def cmd_fetch(args, players):
         print("\n[%s] search -> %s" % (player, player_dir))
         rows = search_player(player, args.pages, (args.gap_min, args.gap_max), args.timeout)
         candidates = pick_candidates(player, rows, args.limit, args.min_build,
-                                     seen_ids, seen_keys)
-        print("  candidates=%d (limit=%d)" % (len(candidates), args.limit))
+                                     seen_ids, seen_keys, race=args.race)
+        print("  candidates=%d (limit=%d, race=%s)" % (len(candidates), args.limit,
+                                                      args.race))
 
         new_entries = []
         stats = {"ok": 0, "rejected": 0, "http_fail": 0}
@@ -504,7 +530,7 @@ def cmd_fetch(args, players):
                 handle.write(raw)
             try:
                 _, info = verify_replay(path, player=player, min_build=args.min_build,
-                                        max_bytes=args.max_bytes)
+                                        max_bytes=args.max_bytes, race=args.race)
                 key = (str(info["map"]).strip().lower(),
                        tuple(sorted((p.toon or norm_name(p.name)) for p in info["players"])),
                        round(info["duration"]))
@@ -563,16 +589,22 @@ def cmd_fetch(args, players):
 
 # --------------------------------------------------------------------------- 复验
 def cmd_verify(args):
-    """不联网，重扫输出目录：逐个解析、报告问题、（可选）删掉坏文件、刷新 manifest。"""
+    """不联网，重扫输出目录：逐个解析、报告问题、（可选）删掉坏文件、刷新 manifest。
+
+    ``--player`` 可以限定只复验某几个选手的目录（避免动到别人的目录）。
+    """
     out_root = args.out
     if not os.path.isdir(out_root):
         print("no such dir: %s" % out_root)
         return 1
+    wanted = {safe_slug(p, 40).lower() for p in split_players(args.player)}
     total = bad = 0
     dirs = 0
     for name in sorted(os.listdir(out_root)):
         directory = os.path.join(out_root, name)
         if not os.path.isdir(directory):
+            continue
+        if wanted and name.lower() not in wanted:
             continue
         files = sorted(fn for fn in os.listdir(directory) if fn.lower().endswith(".sc2replay"))
         if not files:
@@ -585,15 +617,15 @@ def cmd_verify(args):
             if entry.get("player"):
                 display = entry["player"]
                 break
-        display = display or canonical_player(name)
-        display = canonical_player(display)
+        display = canonical_player(display or name)
         new_entries = []
         print("\n[%s] %d file(s)" % (name, len(files)))
         for fn in files:
             path = os.path.join(directory, fn)
             total += 1
             try:
-                _, info = verify_replay(path, player=None, min_build=args.min_build)
+                _, info = verify_replay(path, player=display, min_build=args.min_build,
+                                        race=args.race)
             except Rejected as exc:
                 bad += 1
                 print("  BAD %-52s %s" % (fn[:52], exc))
@@ -601,15 +633,11 @@ def cmd_verify(args):
                     os.remove(path)
                     print("      deleted")
                 continue
-            target_ok = ""
-            if name.lower() != "maru":
-                target_ok = "" if any(name_matches(name, p.name) for p in info["players"]) \
-                    else "  (no %s in players)" % name
-            print("  ok  %-52s build=%-6d %-11s %4d:%02d %s%s" % (
+            print("  ok  %-52s build=%-6d %-11s %4d:%02d %s" % (
                 fn[:52], info["build"],
                 canonical_matchup([p.race for p in info["players"]]),
                 int(info["duration"]) // 60, int(info["duration"]) % 60,
-                info["map"][:26], target_ok))
+                info["map"][:30]))
             row = {}
             old = old_by_file.get(fn)
             if old:
@@ -644,8 +672,12 @@ def main(argv=None):
         description="从 sc2rep.ru 抓职业人族 replay（参数化 + 逐个校验）",
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--player", action="append", default=[],
-                        help="选手名，可重复或逗号分隔（默认 %s）"
-                             % "/".join(DEFAULT_PLAYERS))
+                        help="选手名，可重复或逗号分隔（默认职业人族 %s；"
+                             "异虫可用 %s，星灵可用 %s）"
+                             % ("/".join(DEFAULT_PLAYERS), "/".join(ZERG_PLAYERS),
+                                "/".join(PROTOSS_PLAYERS)))
+    parser.add_argument("--race", default="any", choices=["any", "T", "Z", "P"],
+                        help="只抓目标选手是该种族的对局（T/Z/P，默认 any）")
     parser.add_argument("--all-terran", action="store_true",
                         help="抓默认的六名职业人族")
     parser.add_argument("--limit", type=int, default=10, help="每个选手最多新增多少局")
@@ -664,7 +696,7 @@ def main(argv=None):
     parser.add_argument("--log", default=os.path.join(".tmp", "fetch_pro_replays.json"),
                         help="抓取日志路径（默认 .tmp/fetch_pro_replays.json）")
     parser.add_argument("--verify-only", action="store_true",
-                        help="不联网，重扫 --out 下所有目录并刷新 manifest")
+                        help="不联网，重扫 --out 下目录并刷新 manifest（可用 --player 限定）")
     parser.add_argument("--prune", action="store_true",
                         help="配合 --verify-only：删掉解析不过的文件")
     args = parser.parse_args(argv)

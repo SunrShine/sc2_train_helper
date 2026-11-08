@@ -1,0 +1,152 @@
+[
+  {
+    "player": "Stats",
+    "file": "stats_vs_Lambo_Alcyone_LE_21-10-2024_b92440_28766.SC2Replay",
+    "id": "28766",
+    "map": "Alcyone LE",
+    "matchup": "PvZ",
+    "duration": 1143.5,
+    "build": 92440,
+    "protocol_build": 92440,
+    "date": "2024-09-07",
+    "contest_date": "21.10.2024",
+    "map_listed": "Alcyone LE",
+    "players": [
+      {
+        "name": "Lambo",
+        "race": "Z",
+        "toon": "2-S2-1-3437681",
+        "result": "loss"
+      },
+      {
+        "name": "Stats",
+        "race": "P",
+        "toon": "2-S2-1-7305140",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28766",
+    "bytes": 204869,
+    "fetched_at": "2026-11-08T15:08:35"
+  },
+  {
+    "player": "Stats",
+    "file": "stats_vs_Lambo_Amphion_LE_21-10-2024_b92440_28767.SC2Replay",
+    "id": "28767",
+    "map": "Amphion LE",
+    "matchup": "PvZ",
+    "duration": 1383.88,
+    "build": 92440,
+    "protocol_build": 92440,
+    "date": "2024-09-07",
+    "contest_date": "21.10.2024",
+    "map_listed": "Amphion LE",
+    "players": [
+      {
+        "name": "Stats",
+        "race": "P",
+        "toon": "2-S2-1-7305140",
+        "result": "loss"
+      },
+      {
+        "name": "Lambo",
+        "race": "Z",
+        "toon": "2-S2-1-3437681",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28767",
+    "bytes": 250450,
+    "fetched_at": "2026-11-08T15:08:35"
+  },
+  {
+    "player": "Stats",
+    "file": "stats_vs_Lambo_ESL_Oceanborn_21-10-2024_b92440_28765.SC2Replay",
+    "id": "28765",
+    "map": "[ESL] Oceanborn",
+    "matchup": "PvZ",
+    "duration": 1257.0,
+    "build": 92440,
+    "protocol_build": 92440,
+    "date": "2024-09-07",
+    "contest_date": "21.10.2024",
+    "map_listed": "[ESL] Oceanborn",
+    "players": [
+      {
+        "name": "Stats",
+        "race": "P",
+        "toon": "2-S2-1-7305140",
+        "result": "loss"
+      },
+      {
+        "name": "Lambo",
+        "race": "Z",
+        "toon": "2-S2-1-3437681",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28765",
+    "bytes": 245213,
+    "fetched_at": "2026-11-08T15:08:36"
+  },
+  {
+    "player": "Stats",
+    "file": "stats_vs_Lambo_Site_Delta_LE_21-10-2024_b92440_28768.SC2Replay",
+    "id": "28768",
+    "map": "Site Delta LE",
+    "matchup": "PvZ",
+    "duration": 325.94,
+    "build": 92440,
+    "protocol_build": 92440,
+    "date": "2024-09-07",
+    "contest_date": "21.10.2024",
+    "map_listed": "Site Delta LE",
+    "players": [
+      {
+        "name": "Stats",
+        "race": "P",
+        "toon": "2-S2-1-7305140",
+        "result": "loss"
+      },
+      {
+        "name": "Lambo",
+        "race": "Z",
+        "toon": "2-S2-1-3437681",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28768",
+    "bytes": 67133,
+    "fetched_at": "2026-11-08T15:08:36"
+  },
+  {
+    "player": "Stats",
+    "file": "stats_vs_trigger_Ghost_River_LE_21-10-2024_b92440_28755.SC2Replay",
+    "id": "28755",
+    "map": "Ghost River LE",
+    "matchup": "PvP",
+    "duration": 1091.06,
+    "build": 92440,
+    "protocol_build": 92440,
+    "date": "2024-09-07",
+    "contest_date": "21.10.2024",
+    "map_listed": "Ghost River LE",
+    "players": [
+      {
+        "name": "Stats",
+        "race": "P",
+        "toon": "2-S2-1-7305140",
+        "result": "win"
+      },
+      {
+        "name": "trigger",
+        "race": "P",
+        "toon": "2-S2-1-6958803",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28755",
+    "bytes": 132250,
+    "fetched_at": "2026-11-08T15:08:36"
+  }
+]

@@ -23,7 +23,6 @@
 词表（机器值全英文；中文只出现在 HTML 展示层）：
 
     mech / 3-rax / 2-rax-fast-expand / 2-1-1 / 1-rax-fast-expand / 1-1-1 / unknown
-
 统计窗口固定为开局到 8:00（480s）。判据只用三件事——**生产建筑数量 + 气矿时机 +
 扩张时机**，不看文件名、地图名、玩家名猜。按顺序命中即返回（先命中先算）：
 
@@ -41,8 +40,40 @@
 
 判定顺序的意义：先看"扩张时机 + 扩张前兵营数"（这套 build 的身份），
 再看"6~8 分钟的生产建筑构成"（有没有转重工/星港）。越极端的打法越先判，
-避免 2-1-1 把 2-rax-fast-expand 吃掉。非人族的 signature 直接 ``unknown``
-（这套词表是给人族开局用的）。
+避免 2-1-1 把 2-rax-fast-expand 吃掉。
+
+## 虫族 / 星灵的 signature（够 DAG 用，不做过度设计）
+
+* 虫族：``hatch-first`` / ``pool-first`` / ``greedy-3hatch`` / ``unknown``。
+  看 0~6 分钟：二矿（Hatchery）与孵化池（SpawningPool）谁先下、6 分钟内下了几个基地。
+* 星灵：``nexus-first`` / ``gateway-expand`` / ``2gate-pressure`` / ``proxy`` / ``unknown``。
+  看二矿（Nexus）与兵营（Gateway）谁先下、5 分钟内兵营数量、以及兵营是否建在
+  离主基地 > 50 格的位置（proxy 的粗略代理）。
+
+## 聚类轴：0–180 秒的建造序列（不是整局关键时间点）
+
+用户说的"两种 BO"指的是**开局 0~3 分钟的流程**，而且可能不止两种。所以
+:func:`cluster_openers` 把每局压缩成 opening 段（0–180s）的结构 token 序列
+（如 ``depot-rax-gas-cc``），然后：
+
+* 距离 = 归一化 Levenshtein（编辑距离 / 较长序列长度）；
+* 聚类 = 平均连接（average-linkage）层次聚类，确定性、无随机种子；
+* 选 k：k=2..6 各跑一遍，用平均轮廓系数（silhouette）最高者，且最小类占比 < 8%
+  的方案不参与竞争（避免切出只有 1 局的噪声类）；每个 k 的分数都会写进
+  ``summary.meta.clustering``，报告里列表可复核。
+* 输出每类的占比、典型序列（簇内最常见序列，票数相同取 medoid）、
+  序列里每个 token 的中位出现时间、以及整局 key_timings 的中位/平均值。
+
+整局的 ``key_timings`` 保留不动，只用于"我 vs 职业"对照表和逐局明细。
+
+## 版本过滤：8 农民 vs 12 农民必须分开
+
+用户录像跨了多个版本：2026-07~10 那批是 **8 农民开局**，其余（2026-01~06、2026-10 部分、
+2026-11）是 **12 农民开局**。8 农民版本会让同一个 build 的开局时间点整体前移 20~30 秒，
+混在一起聚出来的类就是版本差而不是打法差。所以 ``mine_folder`` 默认按
+``start_workers == 12`` 硬过滤（版本无关、不会错杀），``--since/--until`` 只是可选的
+日期区间；报告里会写明实际用了哪段时间、排除了多少局、以及扫到的版本分布表。
+
 
 ## key_timings 的扩张时间：要过滤掉"假扩张"
 
@@ -405,14 +436,21 @@ def _rax_before_expand(steps, first_expand):
 
 
 def signature(parsed, player, steps, timings):
-    """开局签名。
+    """开局签名。分种族判定，词表封闭（见模块 docstring）。
 
-    人族按"生产建筑数量 + 气矿时机 + 扩张时机"判，不看文件名/地图名猜。
-    非人族返回 ``unknown``（契约里的签名集合是给人族用的）。
+    人族用"扩张时机 + 扩张前兵营数 + 6~8 分钟生产建筑构成"；
+    虫族/星灵用 0~6 分钟的建筑顺序（够 DAG 用即可，不追求精确战术名）。
     """
-    if player.race != "T":
-        return "unknown"
+    if player.race == "T":
+        return _terran_signature(parsed, player, steps, timings)
+    if player.race == "Z":
+        return _zerg_signature(parsed, player, steps, timings)
+    if player.race == "P":
+        return _protoss_signature(parsed, player, steps, timings)
+    return "unknown"
 
+
+def _terran_signature(parsed, player, steps, timings):
     rax = _builds(steps, ("Barracks",))
     fac = _builds(steps, ("Factory",))
     sp = _builds(steps, ("Starport",))
@@ -460,6 +498,66 @@ def signature(parsed, player, steps, timings):
     if rax and fac and sp and fac[0] <= 480.0 and sp[0] <= 540.0:
         return "1-1-1"
 
+    return "unknown"
+
+
+def _zerg_signature(parsed, player, steps, timings):
+    """虫族：hatch-first / pool-first / greedy-3hatch / unknown。
+
+    只看 0~6 分钟：扩张基地（Hatchery）与孵化池（SpawningPool）的先后 + 扩张数量。
+    """
+    hatches = _builds(steps, ("Hatchery",))
+    pools = _builds(steps, ("SpawningPool",))
+    hatches_360 = [t for t in hatches if t <= 360.0]
+    pool = pools[0] if pools else None
+
+    # greedy-3hatch：6 分钟内已经下到第 2、第 3 个基地（含主基地共 3 个）。
+    if len(hatches_360) >= 2 and (pool is None or hatches_360[0] <= pool):
+        return "greedy-3hatch"
+    # hatch-first：先开二矿（或先下基地）再补池子。
+    if hatches and (pool is None or hatches[0] < pool):
+        return "hatch-first"
+    # pool-first：池子先于扩张（含不开矿的单矿池开）。
+    if pool is not None:
+        return "pool-first"
+    return "unknown"
+
+
+def _protoss_signature(parsed, player, steps, timings):
+    """星灵：nexus-first / gateway-expand / 2gate-pressure / proxy / unknown。
+
+    判据：第一个 Nexus（二矿）与第一个 Gateway 的先后、Gateway 数量、
+    以及 Gateway 是否建在远离主基地的位置（proxy 的粗略代理：直线距离 > 50）。
+    """
+    nexus = _builds(steps, ("Nexus",))
+    gates = _builds(steps, ("Gateway",))
+    first_nexus = nexus[0] if nexus else None
+    first_gate = gates[0] if gates else None
+
+    # proxy：0~5 分钟内造的兵营离主基地特别远（用单位坐标，不用事件流名字猜）。
+    try:
+        main_base = None
+        for record in parsed.unit_records:
+            if (record.player_id == player.player_id and record.name in ("Nexus", "Hatchery", "CommandCenter")
+                    and (record.start_loop or 0) <= 0 and record.x is not None):
+                main_base = (record.x, record.y)
+                break
+        if main_base:
+            for record in parsed.unit_records:
+                if (record.player_id == player.player_id and record.name == "Gateway"
+                        and record.x is not None and record.start_loop is not None
+                        and 0 < record.start_loop / LOOPS_PER_SECOND <= 300.0
+                        and math.hypot(record.x - main_base[0], record.y - main_base[1]) > 50.0):
+                    return "proxy"
+    except Exception:
+        pass
+
+    if first_nexus is not None and first_nexus <= 240.0 and (first_gate is None or first_nexus < first_gate):
+        return "nexus-first"
+    if len([t for t in gates if t <= 300.0]) >= 2 and (first_nexus is None or first_nexus > 420.0):
+        return "2gate-pressure"
+    if first_gate is not None and first_nexus is not None and first_gate < first_nexus:
+        return "gateway-expand"
     return "unknown"
 
 
@@ -653,10 +751,31 @@ def expand_paths(paths):
     return sorted({os.path.abspath(f) for f in files})
 
 
+def start_workers(parsed, player_id):
+    """开局农民数：loop=0 的 SCV/Probe/Drone 记录数。
+
+    这是**版本无关**的过滤依据：8 农民和 12 农民是两个不同的游戏版本，混在一起
+    会让开局时间点整体前移，聚出来的类就是版本差而不是打法差。
+    正常 12 农民版本返回 12，老版本返回 8；读不到（事件缺失）返回 0。
+    """
+    return len([event for event in parsed.build_events
+                if event.get("player_id") == player_id
+                and (event.get("loop") or 0) == 0
+                and event.get("name") in ud.WORKER_UNITS])
+
+
+def _replay_day(parsed):
+    """replay 的日期（本地时区 YYYY-MM-DD），读不到返回空串。"""
+    if parsed.replay_time is None:
+        return ""
+    return parsed.replay_time.astimezone().strftime("%Y-%m-%d")
+
+
 def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
                 seed=20261108, with_moveout=True, progress=None,
                 ladder_only=False, min_duration=0.0,
-                require_local=False, exclude_ai=False):
+                require_local=False, exclude_ai=False,
+                since=None, until=None, start_workers_only=None):
     """抽样解析一批 replay，返回 ``[GameBO]``。
 
     * ``paths`` 可以是目录或路径列表（递归找 .SC2Replay）
@@ -667,21 +786,28 @@ def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
     * ``min_duration`` 丢掉太短的对局（默认叫 120 秒的残局不算 BO）
     * ``require_local`` 只收"我在里面"的局（排除下载来的别人的录像）
     * ``exclude_ai`` 只收人类对手（人机局的节奏跟天梯不是一回事）
+    * ``since`` / ``until``：按 replay 日期（YYYY-MM-DD，含端点）保留区间，默认都不设
+    * ``start_workers_only``：只收开局农民数等于该值的局（版本硬过滤，**默认 12**）
 
     两段式：先用 ``decode_events=False`` 做**便宜预筛**（只读元信息，约 0.05s/局），
     筛中了才 ``decode_events=True`` 深解析（约 1.2s/局）。所以即使 1000 局里
-    只有 10% 是 TvZ，也不用把 1000 局全解码一遍。
+    只有 10% 是目标 matchup，也不用把 1000 局全解码一遍。
 
     确定性抽样：``random.Random(seed)`` 打乱后顺序扫，同一批文件永远抽到同一组。
+    被过滤掉多少局、各是什么原因，都记在 ``mine_folder.last_stats`` 里（报告要用）。
     """
     files = expand_paths(paths)
     order = list(files)
     random.Random(seed).shuffle(order)
 
-    cheap_only = bool(matchup or require_local or exclude_ai or ladder_only or min_duration)
+    cheap_only = bool(matchup or require_local or exclude_ai or ladder_only or min_duration
+                      or since or until or start_workers_only is not None)
     out = []
     errors = []
-    stats = {"scanned": 0, "matched": 0, "skipped_filter": 0, "deep_parsed": 0}
+    stats = {"scanned": 0, "matched": 0, "skipped_filter": 0, "deep_parsed": 0,
+             "skipped_workers": 0, "skipped_date": 0,
+             "start_workers_seen": {}, "dates_seen": {},
+             "versions_seen": []}
     for path in order:
         if len(out) >= limit:
             break
@@ -712,6 +838,27 @@ def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
             if player.race != matchup[0] or opp is None or opp.race != matchup[2]:
                 stats["skipped_filter"] += 1
                 continue
+        # 版本过滤：开局农民数（版本无关）比日期可靠，所以放在日期前面
+        workers = start_workers(parsed, player.player_id)
+        stats["start_workers_seen"][workers] = stats["start_workers_seen"].get(workers, 0) + 1
+        day = _replay_day(parsed)
+        if day:
+            stats["dates_seen"][day] = stats["dates_seen"].get(day, 0) + 1
+        stats["versions_seen"].append({
+            "file": os.path.basename(path),
+            "date": day,
+            "build": parsed.version.get("build"),
+            "start_workers": workers,
+        })
+        if start_workers_only is not None and workers != start_workers_only:
+            stats["skipped_workers"] += 1
+            continue
+        if since and day and day < since:
+            stats["skipped_date"] += 1
+            continue
+        if until and day and day > until:
+            stats["skipped_date"] += 1
+            continue
         if cheap_only:                                 # 预筛过了，重新按事件解码
             try:
                 parsed = load_replay(path, decode_events=True)
@@ -737,6 +884,7 @@ def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
             })
         out.append(bo)
         stats["matched"] += 1
+        stats.setdefault("matched_dates", []).append(day or "")
         if progress:
             progress(len(out), bo["game"]["file"])
     mine_folder.last_errors = errors
@@ -788,136 +936,224 @@ def opener_features(bo):
     }
 
 
-#: 聚类使用的维度（只看"开局+第一个转型"的时间点，不看兵种风格）。
-CLUSTER_FEATURES = ("first_gas", "first_expand", "second_gas",
-                    "first_factory", "first_starport")
+#: 聚类轴：**opening 段（0–180s）的建造序列**。整局 key_timings 只用于报告对照/对照表，
+#: 不参与聚类——用户说的"两种 BO"指的是开局 0~3 分钟的流程。
+OPENING_PHASE = "opening"
+
+#: 序列里 token 的中文短名（"典型序列"和簇名用）。
+TOKEN_ZH = {
+    "depot": "补给站", "rax": "兵营", "gas": "气矿", "cc": "二矿",
+    "fac": "重工", "sp": "星港", "reac": "反应堆", "lab": "科技实验室",
+    "ebay": "工程站", "armory": "军械库", "bunker": "地堡", "turret": "导弹塔",
+    "gate": "传送门", "core": "控制核心", "twilight": "暮光议会",
+    "robo": "机械厂", "roboBay": "机械湾", "sg": "星门",
+    "forge": "锻炉", "cannon": "光子炮", "battery": "护盾电池",
+    "archives": "圣堂文库", "shrine": "黑暗圣所",
+    "pool": "孵化池", "bane": "爆虫巢", "roachWarren": "蟑螂巢",
+    "evo": "进化腔", "hydra": "刺蛇巢", "spire": "尖塔",
+    "ultra": "雷兽窟", "nydus": "虫道网络", "infect": "感染深渊",
+    "hatch": "基地", "nexus": "基地",
+}
+
+#: 序列参与聚类的最大长度（0~180s 正常 6~12 个建筑，截断防止个别局刷屏）。
+SEQUENCE_LIMIT = 10
 
 
-def _percentile(values, p):
-    vals = sorted(values)
-    if not vals:
-        return 0.0
-    key = (len(vals) - 1) * (p / 100.0)
-    low, high = int(key), min(int(key) + 1, len(vals) - 1)
-    return vals[low] + (vals[high] - vals[low]) * (key - low)
+def opening_sequence(bo, limit=SEQUENCE_LIMIT):
+    """opening 段（0–180s）的建造序列：只取能代表思路的建筑 token。"""
+    tokens = []
+    for segment in bo["segments"]:
+        if segment["phase"] != OPENING_PHASE:
+            continue
+        for step in segment["steps"]:
+            if step["kind"] != "structure":
+                continue
+            token = _SIG_TOKEN.get(step["name"])
+            if token:
+                tokens.append(token)
+    return tokens[:limit]
 
 
-def _feature_matrix(bos, keys=CLUSTER_FEATURES):
-    """特征矩阵：缺失值填"很晚"，再按列做 5%~95% 分位裁剪 + z-score。
+def opening_token_times(bo):
+    """opening 段里每个 token 第一次出现的时间（秒）。"""
+    times = {}
+    for segment in bo["segments"]:
+        if segment["phase"] != OPENING_PHASE:
+            continue
+        for step in segment["steps"]:
+            if step["kind"] != "structure":
+                continue
+            token = _SIG_TOKEN.get(step["name"])
+            if token and token not in times:
+                times[token] = step["t"]
+    return times
 
-    裁剪是为了别让"没开二矿/没下星港"的极端局把质心拽跑（k-means 对离群值很敏感）。
+
+def _edit_distance(a, b):
+    """Levenshtein 距离（token 序列）。"""
+    if not a:
+        return len(b)
+    if not b:
+        return len(a)
+    prev = list(range(len(b) + 1))
+    for i, token_a in enumerate(a, 1):
+        cur = [i]
+        for j, token_b in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1,
+                           prev[j - 1] + (0 if token_a == token_b else 1)))
+        prev = cur
+    return prev[-1]
+
+
+def sequence_distance(seq_a, seq_b):
+    """两条开局序列的距离（0 = 一样，1 = 完全不同）。
+
+    关键点：0–180s 的时间窗会把不同局截在流程的不同位置，所以"一个序列是另一个的
+    前缀"（比如 rax-gas-cc vs rax-gas-cc-fac）不算打法差异，只按长度差轻微惩罚；
+    只有**分叉之后**的部分才用编辑距离算差异。
     """
-    raw = []
-    for bo in bos:
-        row = []
-        for key in keys:
-            value = bo["key_timings"].get(key)
-            row.append(900.0 if value is None else float(value))
-        raw.append(row)
-    cols = list(zip(*raw))
-    bounds = [(_percentile(col, 5), _percentile(col, 95)) for col in cols]
-    clean = [[min(max(v, lo), hi) for v, (lo, hi) in zip(row, bounds)] for row in raw]
-    cols = list(zip(*clean))
-    means = [sum(col) / len(col) for col in cols]
-    scales = [max(1e-6, (sum((v - m) ** 2 for v in col) / len(col)) ** 0.5)
-              for col, m in zip(cols, means)]
-    return [[(v - m) / s for v, m, s in zip(row, means, scales)] for row in clean]
+    if not seq_a and not seq_b:
+        return 0.0
+    denominator = float(max(len(seq_a), len(seq_b), 1))
+    prefix = 0
+    while prefix < min(len(seq_a), len(seq_b)) and seq_a[prefix] == seq_b[prefix]:
+        prefix += 1
+    if prefix == min(len(seq_a), len(seq_b)):
+        # 一个是另一个的前缀：差异只来自时间窗截断
+        return abs(len(seq_a) - len(seq_b)) / denominator
+    return _edit_distance(seq_a[prefix:], seq_b[prefix:]) / denominator
 
 
-def _distance(a, b):
-    return sum((x - y) ** 2 for x, y in zip(a, b)) ** 0.5
+def _distance_matrix(sequences):
+    n = len(sequences)
+    dist = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(i + 1, n):
+            value = sequence_distance(sequences[i], sequences[j])
+            dist[i][j] = dist[j][i] = value
+    return dist
 
 
-def _kmeans2(vectors, iterations=25):
-    """确定性 2-means：按扩张时间排序后对半分作为初始质心，再迭代。"""
-    if len(vectors) < 2:
-        return [0] * len(vectors), [list(v) for v in vectors][:2]
-    order = sorted(range(len(vectors)), key=lambda i: (vectors[i][1], vectors[i][0]))
-    mid = len(order) // 2
-    left = [vectors[i] for i in order[:mid]] or [vectors[order[0]]]
-    right = [vectors[i] for i in order[mid:]] or [vectors[order[-1]]]
-    centers = [
-        [sum(col) / len(col) for col in zip(*left)],
-        [sum(col) / len(col) for col in zip(*right)],
-    ]
-    labels = [0] * len(vectors)
-    for _ in range(iterations):
-        changed = False
-        new_labels = []
-        for index, vec in enumerate(vectors):
-            d0 = _distance(vec, centers[0])
-            d1 = _distance(vec, centers[1])
-            label = 0 if d0 <= d1 else 1
-            new_labels.append(label)
-            if label != labels[index]:
-                changed = True
-        labels = new_labels
-        groups = [[], []]
-        for index, label in enumerate(labels):
-            groups[label].append(vectors[index])
-        for label in (0, 1):
-            if groups[label]:
-                centers[label] = [sum(col) / len(col) for col in zip(*groups[label])]
-        if not changed:
-            break
-    return labels, centers
+def _avg_link(dist, left, right):
+    return sum(dist[i][j] for i in left for j in right) / float(len(left) * len(right))
 
 
-def _cluster_pace(feat):
-    """快/慢节奏：看第一气矿与二矿的中位时间（阈值来自样本分布的双峰位置）。"""
-    gas = _median([f["first_gas"] for f in feat])
-    expand = _median([f["first_expand"] for f in feat])
+def _agglomerate(dist, k):
+    """平均连接（average linkage）层次聚类，切到 k 簇。确定性，无随机。"""
+    n = len(dist)
+    clusters = [[i] for i in range(n)]
+    while len(clusters) > k:
+        best = None
+        for i in range(len(clusters)):
+            for j in range(i + 1, len(clusters)):
+                candidate = _avg_link(dist, clusters[i], clusters[j])
+                if best is None or candidate < best[0]:
+                    best = (candidate, i, j)
+        _, i, j = best
+        clusters[i] = clusters[i] + clusters[j]
+        del clusters[j]
+    clusters.sort(key=lambda idx: (-len(idx), min(idx)))
+    labels = [0] * n
+    for label, indices in enumerate(clusters):
+        for index in indices:
+            labels[index] = label
+    return labels
+
+
+def _silhouette(dist, labels):
+    """平均轮廓系数（用预计算的距离矩阵，0 附近 = 没有结构，越接近 1 越分明）。"""
+    n = len(dist)
+    groups = {}
+    for index, label in enumerate(labels):
+        groups.setdefault(label, []).append(index)
+    if len(groups) < 2:
+        return -1.0
+    scores = []
+    for index in range(n):
+        own = [j for j in groups[labels[index]] if j != index]
+        if not own:
+            scores.append(0.0)
+            continue
+        a = sum(dist[index][j] for j in own) / float(len(own))
+        b = None
+        for label, indices in groups.items():
+            if label == labels[index]:
+                continue
+            mean = sum(dist[index][j] for j in indices) / float(len(indices))
+            if b is None or mean < b:
+                b = mean
+        if b is None or max(a, b) == 0.0:
+            scores.append(0.0)
+        else:
+            scores.append((b - a) / max(a, b))
+    return round(sum(scores) / float(n), 3)
+
+
+def _within_mean(dist, labels):
+    total, count = 0.0, 0
+    for i in range(len(dist)):
+        for j in range(i + 1, len(dist)):
+            if labels[i] == labels[j]:
+                total += dist[i][j]
+                count += 1
+    return round(total / count, 3) if count else 0.0
+
+
+#: 离群判定：到最近邻的距离超过它，就当"不典型的一局"——单独归到 other 类，
+#: 不参与选 k（否则一两个怪局会把 k 顶到 5~6，切出一堆只有 1 局的"类"）。
+OUTLIER_DISTANCE = 0.55
+
+
+def _outlier_flags(dist):
+    flags = []
+    for index, row in enumerate(dist):
+        nearest = min((row[j] for j in range(len(row)) if j != index), default=1.0)
+        flags.append(nearest > OUTLIER_DISTANCE)
+    return flags
+
+
+def choose_k(dist, k_min=2, k_max=6):
+    """k=2..6 各跑一遍，用平均轮廓系数选 k。
+
+    * 会产生只有 1 局的碎类的方案直接淘汰；
+    * 在"轮廓系数不低于最高分 - 0.03"的方案里取**最小的 k**（简约优先，避免过度切分）。
+
+    返回 ``(chosen_k, scores)``；scores 每个 k 带 silhouette / within_mean / min_share，
+    报告里会列表复核。
+    """
+    n = len(dist)
+    k_max = min(k_max, max(2, n - 1))
+    scores = []
+    chosen = k_min
+    for k in range(k_min, k_max + 1):
+        labels = _agglomerate(dist, k)
+        if len(set(labels)) < 2:
+            continue
+        sizes = {}
+        for label in labels:
+            sizes[label] = sizes.get(label, 0) + 1
+        if min(sizes.values()) < 2:                 # 单例方案不参与竞争
+            continue
+        scores.append({
+            "k": k,
+            "silhouette": _silhouette(dist, labels),
+            "within_mean": _within_mean(dist, labels),
+            "min_share": round(min(sizes.values()) / float(n), 3),
+            "sizes": sizes,
+        })
+    if scores:
+        best_score = max(s["silhouette"] for s in scores)
+        chosen = min(s["k"] for s in scores if s["silhouette"] >= best_score - 0.03)
+    return chosen, scores
+
+
+def _pace_of(median):
+    """快/慢节奏标签（只用于展示）：看第一气矿与二矿的中位时间。"""
+    gas = (median or {}).get("first_gas")
+    expand = (median or {}).get("first_expand")
     if (gas is not None and gas < 75.0) or (expand is not None and expand < 155.0):
         return "fast"
     return "slow"
-
-
-def _cluster_title(members):
-    """给一簇开局起个人能读懂的名字（依据簇内的中位时间点，不是硬编码猜的）。"""
-    if not members:
-        return "未知开局"
-    feat = [opener_features(bo) for bo in members]
-    pace = _cluster_pace(feat)
-    n_rax = _mean([f["rax_before_expand"] for f in feat]) or 0
-    expand = _median([f["first_expand"] for f in feat])
-    fac = _median([f["first_factory"] for f in feat])
-
-    pace_text = "快节奏" if pace == "fast" else "慢节奏"
-    if n_rax < 0.5:
-        rax_text = "裸二矿"
-    elif n_rax < 1.5:
-        rax_text = "单兵营"
-    elif n_rax < 2.5:
-        rax_text = "两兵营"
-    else:
-        rax_text = "三兵营"
-    if expand is None:
-        if fac is not None:
-            return "%s %s转机械" % (pace_text, rax_text)
-        return "%s 单矿 %s" % (pace_text, rax_text)
-    if expand <= 200.0:
-        expand_text = "速二矿" if pace == "fast" else "稳二矿"
-    elif expand <= 300.0:
-        expand_text = "标准二矿" if pace == "fast" else "缓二矿"
-    else:
-        expand_text = "晚二矿"
-    if n_rax < 0.5:
-        return "%s %s开" % (pace_text, rax_text)
-    return "%s %s%s" % (pace_text, rax_text, expand_text)
-
-
-def _cluster_key(members, pace):
-    """簇的机器可读 key（英文）：节奏 + 簇内最常见的**已知** signature。"""
-    tally = {}
-    for bo in members:
-        sig = bo["signature"]
-        if sig == "unknown":
-            continue
-        tally[sig] = tally.get(sig, 0) + 1
-    if not tally:
-        return pace + "-other"
-    best = max(tally, key=lambda k: (tally[k], k))
-    return "%s-%s" % (pace, best)
 
 
 def _summarize(members):
@@ -950,73 +1186,114 @@ def _summarize(members):
     }
 
 
-def _distinguish_twins(clusters):
-    """两簇名字撞车时（比如都是"快节奏 单兵营速二矿"），用差异最大的节点补一个后缀。
+def _typical_sequence(sequences):
+    """簇内最常见的开场序列；票数相同就取"离其他成员最近"的那条（medoid）。"""
+    tally = {}
+    for seq in sequences:
+        key = tuple(seq)
+        tally[key] = tally.get(key, 0) + 1
+    if not tally:
+        return []
+    top = max(tally.values())
+    candidates = [key for key, count in tally.items() if count == top]
+    if len(candidates) == 1:
+        return list(candidates[0])
 
-    否则报告里两个类看起来一模一样，读的人不知道该看哪。用中位数相对差最大的那个
-    关键时间点来区分（双气 / 重工 / 星港 / 气矿）。
+    def total_distance(candidate):
+        return sum(sequence_distance(list(candidate), seq) for seq in sequences)
+
+    return list(min(candidates, key=total_distance))
+
+
+def _sequence_label(sequence, limit=5):
+    return " → ".join(TOKEN_ZH.get(token, token) for token in sequence[:limit])
+
+
+def _sequence_medians(members, sequence):
+    """典型序列里每个 token 的中位出现时间。"""
+    rows = []
+    timing_sets = [opening_token_times(bo) for bo in members]
+    for token in sequence:
+        values = [times[token] for times in timing_sets if token in times]
+        rows.append({
+            "token": token,
+            "label": TOKEN_ZH.get(token, token),
+            "t": _median(values),
+        })
+    return rows
+
+
+def cluster_openers(bos, k=None, k_range=(2, 6), info=None):
+    """按 **0–180s 建造序列** 把同一批开局聚成若干类（k 自动选，默认候选 2..6）。
+
+    * 距离 = 前缀感知的归一化编辑距离（见 :func:`sequence_distance`）；
+    * 聚类 = 平均连接（average linkage）层次聚类，确定性、无随机；
+    * 先剔除离群序列（最近邻距离 > :data:`OUTLIER_DISTANCE` 的局归到 other 类，
+      不参与选 k），再在 2..6 里按平均轮廓系数选 k（简约优先，见 :func:`choose_k`）。
+
+    ``info`` 传 dict 时会把选 k 的依据（每个 k 的 silhouette / 类内平均距离 / 最小类占比、
+    离群局数）一起带出去，报告里要展示"为什么选这个 k"。
+
+    返回 ``[{"id","key","name","typical_sequence","sequence_medians","games","share",
+    "pace","mean","median","signatures","styles","first_army","builds","members"}]``，
+    按局数从多到少排序。
     """
-    if len(clusters) != 2:
-        return
-    first, second = clusters
-    if first["name"] != second["name"]:
-        return
-    labels = (("first_gas", "气矿早", "气矿晚"),
-              ("second_gas", "双气早", "双气晚"),
-              ("first_factory", "重工早", "重工晚"),
-              ("first_starport", "星港早", "星港晚"))
-    best = None
-    for key, early_text, late_text in labels:
-        a = (first.get("median") or {}).get(key)
-        b = (second.get("median") or {}).get(key)
-        if a is None or b is None:
-            continue
-        diff = abs(a - b) / max(1.0, min(a, b))
-        if best is None or diff > best[0]:
-            best = (diff, key, a, b, early_text, late_text)
-    if best is None or best[0] < 0.08:
-        return
-    _diff, key, a, b, early_text, late_text = best
-    first["name"] = "%s（%s）" % (first["name"], early_text if a < b else late_text)
-    second["name"] = "%s（%s）" % (second["name"], late_text if a < b else early_text)
-
-    def base_key(cluster):
-        known = [sig for sig in (cluster.get("signatures") or {}) if sig != "unknown"]
-        return "%s-%s" % (cluster.get("pace") or "pace", known[0] if known else "other")
-
-    slug = key.replace("first_", "").replace("second_", "2-").replace("_", "-")
-    first["key"] = "%s-%s-%s" % (base_key(first), slug, "early" if a < b else "late")
-    second["key"] = "%s-%s-%s" % (base_key(second), slug, "late" if a < b else "early")
-
-
-def cluster_openers(bos, k=2):
-    """把一批 GameBO 的开局聚成 k 类（默认 2 类，用户说他常用两种）。
-
-    用 5 个开局/转型时间点做确定性 2-means（分位裁剪 + z-score，见 _feature_matrix），
-    返回 ``[{"id","key","name","pace","games","share","mean","median","signatures",
-    "styles","first_army","builds","members":[file...]}]``，按局数从多到少排序。
-    """
-    usable = [bo for bo in bos if bo["player"]["race"] == "T"]
-    excluded = [bo["game"]["file"] for bo in bos if bo["player"]["race"] != "T"]
-    if not usable:
+    races = {}
+    for bo in bos:
+        race = bo["player"]["race"]
+        races[race] = races.get(race, 0) + 1
+    dominant = max(races, key=lambda r: (races[r], r)) if races else None
+    usable = [bo for bo in bos if bo["player"]["race"] == dominant]
+    excluded = [bo["game"]["file"] for bo in bos if bo["player"]["race"] != dominant]
+    if len(usable) < 2:
         return []
 
-    if k != 2:
-        raise ValueError("cluster_openers 目前只实现 k=2")
-    labels, _centers = _kmeans2(_feature_matrix(usable))
+    sequences = [opening_sequence(bo) for bo in usable]
+    full_dist = _distance_matrix(sequences)
+    outlier_flags = _outlier_flags(full_dist)
+    inliers = [index for index, flag in enumerate(outlier_flags) if not flag]
+    outliers = [index for index, flag in enumerate(outlier_flags) if flag]
+    # 离群太多（>40%）说明这批数据本来就散，别硬切：全部当 inlier
+    if len(inliers) < 4 or len(outliers) > len(usable) * 0.4:
+        inliers = list(range(len(usable)))
+        outliers = []
+    sub_dist = [[full_dist[i][j] for j in inliers] for i in inliers]
+
+    if k is None:
+        chosen_k, scores = choose_k(sub_dist, k_range[0],
+                                    min(k_range[1], max(2, len(inliers) - 1)))
+    else:
+        chosen_k, scores = k, []
+    if info is not None:
+        info["k"] = chosen_k
+        info["scores"] = scores
+        info["race"] = dominant
+        info["outliers"] = [usable[index]["game"]["file"] for index in outliers]
+        info["criterion"] = (
+            "先剔除离群序列（最近邻距离 > %.2f），再按平均轮廓系数选 k；"
+            "会产生单例的方案淘汰，轮廓系数差距 0.03 以内取最小的 k" % OUTLIER_DISTANCE)
+    labels = [chosen_k] * len(usable)                 # 离群局统一标成"最后那个类"
+    for position, index in enumerate(inliers):
+        labels[index] = None
+    if inliers:
+        for position, label in enumerate(_agglomerate(sub_dist, chosen_k)):
+            labels[inliers[position]] = label
 
     clusters = []
-    for label in (0, 1):
-        members = [bo for bo, lab in zip(usable, labels) if lab == label]
-        if not members:
-            continue
+    for label in sorted(set(labels)):
+        indices = [index for index, lab in enumerate(labels) if lab == label]
+        members = [usable[index] for index in indices]
         summary = _summarize(members)
-        feat = [opener_features(bo) for bo in members]
-        pace = _cluster_pace(feat)
+        typical = _typical_sequence([sequences[index] for index in indices])
+        pace = _pace_of(summary["median"])
+        is_other = bool(outliers) and label == chosen_k
         clusters.append({
             "id": label,
-            "key": _cluster_key(members, pace),
-            "name": _cluster_title(members),
+            "key": "other" if is_other else ("-".join(typical[:6]) or ("cluster-%d" % (label + 1))),
+            "name": ("其他（打法不典型，%d 局）" % len(members) if is_other
+                     else (_sequence_label(typical) or ("开局 %d" % (label + 1)))),
+            "typical_sequence": typical,
+            "sequence_medians": _sequence_medians(members, typical),
             "pace": pace,
             "games": summary["games"],
             "share": round(summary["games"] / float(len(usable)), 3),
@@ -1029,8 +1306,7 @@ def cluster_openers(bos, k=2):
             "members": [bo["game"]["file"] for bo in members],
         })
     clusters.sort(key=lambda c: (-c["games"], c["id"]))
-    _distinguish_twins(clusters)
-    # key 必须唯一（两类可能同 pace 同签名），万一还重名就加 -2 / -3
+    # key/name 去重（不同簇可能撞上同一典型序列）
     used = {}
     for cluster in clusters:
         base = cluster["key"]
@@ -1039,7 +1315,7 @@ def cluster_openers(bos, k=2):
             cluster["key"] = "%s-%d" % (base, used[base])
     if excluded:
         for cluster in clusters:
-            cluster["excluded_non_terran"] = excluded
+            cluster["excluded_other_race"] = excluded
     return clusters
 
 
@@ -1097,9 +1373,92 @@ def _unknown_share(bos, field):
     return round(hits / float(len(bos)), 3)
 
 
-def _caveats(clusters, mine, pro, matchup, rejects=None):
+def _version_table(stats, group="mine"):
+    """把扫到的 (月份, 开局农民数, build) 组合汇总成表：版本分布一眼能看出来。"""
+    seen = ((stats or {}).get(group) or {}).get("versions_seen") or []
+    table = {}
+    for entry in seen:
+        month = (entry.get("date") or "")[:7] or "?"
+        key = (month, entry.get("start_workers"), entry.get("build"))
+        table[key] = table.get(key, 0) + 1
+    return [{"month": month, "start_workers": workers, "build": build, "games": count}
+            for (month, workers, build), count in sorted(table.items(),
+                                                         key=lambda kv: (kv[0][0], str(kv[0][1]), str(kv[0][2])))]
+
+
+def _percentile(values, p):
+    vals = sorted(v for v in values if v is not None)
+    if not vals:
+        return None
+    if len(vals) == 1:
+        return round(float(vals[0]), 1)
+    key = (len(vals) - 1) * (p / 100.0)
+    low, high = int(key), min(int(key) + 1, len(vals) - 1)
+    return round(vals[low] + (vals[high] - vals[low]) * (key - low), 1)
+
+
+def _pace_dimension(mine, clusters):
+    """版本过滤后，"慢/快节奏"这个维度还在不在。
+
+    口径：看过滤后全部对局的第一气矿/二矿时间分布（p10~p90 的跨度）。
+    之前那个"快/慢"双峰主要是 8 农民版本和 12 农民版本混在一起造成的；
+    版本过滤后如果跨度收窄到 20 秒以内，就说明这个维度基本消失了。
+    """
+    gas_series = [bo["key_timings"].get("first_gas") for bo in mine]
+    expand_series = [bo["key_timings"].get("first_expand") for bo in mine]
+    gas_p10, gas_p50, gas_p90 = (_percentile(gas_series, p) for p in (10, 50, 90))
+    expand_p10, expand_p50, expand_p90 = (_percentile(expand_series, p) for p in (10, 50, 90))
+    gas_spread = round(gas_p90 - gas_p10, 1) if None not in (gas_p10, gas_p90) else None
+    expand_spread = (round(expand_p90 - expand_p10, 1)
+                     if None not in (expand_p10, expand_p90) else None)
+    survives = bool((gas_spread is not None and gas_spread > 20.0)
+                    or (expand_spread is not None and expand_spread > 25.0))
+    return {
+        "survives": survives,
+        "gas_p10": gas_p10, "gas_p50": gas_p50, "gas_p90": gas_p90,
+        "gas_spread": gas_spread,
+        "expand_p10": expand_p10, "expand_p50": expand_p50, "expand_p90": expand_p90,
+        "expand_spread": expand_spread,
+        "per_cluster": [{"name": c["name"], "first_gas": c["median"].get("first_gas"),
+                         "first_expand": c["median"].get("first_expand")} for c in clusters],
+    }
+
+
+def _version_note(stats):
+    """版本过滤 caveat：写明 8/12 农民两个版本、排除了多少局、为什么必须排除。"""
+    mine_stats = (stats or {}).get("mine") or {}
+    seen = mine_stats.get("start_workers_seen") or {}
+    skipped = mine_stats.get("skipped_workers", 0)
+    table = _version_table(stats, "mine")
+    rows = {}
+    for entry in table:
+        month = entry["month"]
+        rows.setdefault(month, {"workers": set(), "builds": set()})
+        rows[month]["workers"].add(entry["start_workers"])
+        rows[month]["builds"].add(str(entry["build"]))
+    lines = []
+    for month in sorted(rows):
+        info = rows[month]
+        lines.append("%s：%s 农民 / build %s" % (
+            month, "/".join(str(w) for w in sorted(info["workers"], key=str)),
+            "、".join(sorted(info["builds"]))))
+    detail = "；".join(lines) if lines else "-"
+    return (
+        "版本过滤（硬条件：开局农民数 = %s）：扫到的局里开局农民数分布 %s；本次因此排除 %d 局。"
+        "实测版本表：%s。混进 8 农民版本会让开局时间点整体前移（同一个 build 在 8 农民版本上"
+        "会早 20~30 秒），聚出来的类就是版本差而不是打法差——所以 8 农民版本必须整批排除。"
+        % (
+            (mine_stats.get("start_workers_filter") or 12),
+            "、".join("%s 农民 %d 局" % (key, value) for key, value in
+                     sorted(seen.items(), key=lambda kv: str(kv[0]))),
+            skipped, detail))
+
+
+def _caveats(clusters, mine, pro, matchup, rejects=None, stats=None, k_info=None):
     """报告里必须说清楚的话：哪些结论是数据支撑的，哪些只是"看起来像"。"""
     notes = []
+    if stats:
+        notes.append(_version_note(stats))
     for cluster in clusters:
         builds = cluster.get("builds") or {}
         total = sum(builds.values()) or 1
@@ -1116,9 +1475,13 @@ def _caveats(clusters, mine, pro, matchup, rejects=None):
         top_sig, top_n = max(sig_share.items(), key=lambda kv: kv[1])
         if top_n / float(len(mine)) >= 0.8:
             notes.append(
-                "%d/%d 局（%.0f%%）都是同一套开局签名 %s，所以聚出来的两类是同一套"
-                "开局的两种节奏，不是两种完全不同的建造顺序。" % (
+                "%d/%d 局（%.0f%%）都是同一套开局签名 %s。" % (
                     top_n, len(mine), 100.0 * top_n / len(mine), top_sig))
+    if k_info:
+        notes.append(
+            "聚类口径：按 0~180 秒的建造序列（归一化编辑距离 + 平均连接层次聚类），"
+            "k 在 %d~%d 里按平均轮廓系数选，本次 k=%d。" % (
+                k_info.get("k_min", 2), k_info.get("k_max", 6), k_info.get("k", 0)))
 
     rejects = rejects or {}
     games_with_rejects = [item for group in ("mine", "pro")
@@ -1145,15 +1508,29 @@ def _caveats(clusters, mine, pro, matchup, rejects=None):
 
 
 def build_summary(mine, pro_all, mine_label="我", pro_label="Maru", matchup="TvZ",
-                  stats=None):
+                  stats=None, k_range=(2, 6)):
     """把所有分析结果整理成一个 dict（就是 reports/bo.json 的内容）。
 
     ``pro_all`` 是这个职业选手的全部录像；聚类/对照只用其中 matchup 匹配的局
     （Maru 的 TvP 不会污染 TvZ 开局聚类），但 ``games`` 里全都保留。
+    聚类轴 = 0~180s 建造序列（见 :func:`cluster_openers`），k 自动选 2~6。
     """
     pro = [bo for bo in pro_all if not matchup or bo["game"]["matchup"] == matchup]
-    clusters = cluster_openers(mine, 2)
-    pro_clusters = cluster_openers(pro, 2) if len(pro) >= 2 else []
+    mine_info, pro_info = {}, {}
+    clusters = cluster_openers(mine, k=None, k_range=k_range, info=mine_info)
+    pro_clusters = (cluster_openers(pro, k=None, k_range=k_range, info=pro_info)
+                    if len(pro) >= 3 else [])
+    k_info = {
+        "axis": "opening-sequence-0-180s",
+        "criterion": mine_info.get("criterion", ""),
+        "k_min": k_range[0],
+        "k_max": k_range[1],
+        "k": mine_info.get("k"),
+        "scores": mine_info.get("scores") or [],
+        "outliers": mine_info.get("outliers") or [],
+        "pro_k": pro_info.get("k"),
+        "pro_scores": pro_info.get("scores") or [],
+    }
     return {
         "meta": {
             "matchup": matchup,
@@ -1171,6 +1548,13 @@ def build_summary(mine, pro_all, mine_label="我", pro_label="Maru", matchup="Tv
                 "1-1-1": "单兵营 + 重工 + 星港",
                 "3-rax": "三兵营压制，开矿晚",
                 "mech": "重工优先（机械流）",
+                "hatch-first": "虫族：先开二矿再补池",
+                "pool-first": "虫族：池子先于扩张",
+                "greedy-3hatch": "虫族：6 分钟内三基地（贪婪开）",
+                "nexus-first": "星灵：先二矿再兵营",
+                "gateway-expand": "星灵：先兵营再开矿（1 兵营开矿）",
+                "2gate-pressure": "星灵：双兵营压制、不开矿",
+                "proxy": "星灵：兵营贴脸（proxy）",
                 "unknown": "没匹配到已知开局（诚实标注，不硬塞）",
             },
             "style_legend": {
@@ -1197,6 +1581,17 @@ def build_summary(mine, pro_all, mine_label="我", pro_label="Maru", matchup="Tv
                                 ((stats or {}).get("expand_rejects", {}) or {})
                                 .get("pro", [])),
             },
+            "clustering": k_info,
+            "pace_dimension": _pace_dimension(mine, clusters),
+            "version_filter": {
+                "start_workers": ((stats or {}).get("mine") or {}).get("start_workers_filter"),
+                "since": ((stats or {}).get("mine") or {}).get("since"),
+                "until": ((stats or {}).get("mine") or {}).get("until"),
+                "dates_used": _date_span((stats or {}).get("mine")),
+                "excluded_by_workers": ((stats or {}).get("mine") or {}).get("skipped_workers", 0),
+                "excluded_by_date": ((stats or {}).get("mine") or {}).get("skipped_date", 0),
+                "version_table": _version_table(stats, "mine"),
+            },
         },
         "games": mine + pro_all,
         "clusters": {
@@ -1205,7 +1600,7 @@ def build_summary(mine, pro_all, mine_label="我", pro_label="Maru", matchup="Tv
         },
         "comparison": compare_profiles(mine, pro, mine_label, pro_label),
         "caveats": _caveats(clusters, mine, pro, matchup,
-                            (stats or {}).get("expand_rejects")),
+                            (stats or {}).get("expand_rejects"), stats, k_info),
         "sampling": {
             "mine": (stats or {}).get("mine") or {"matched": len(mine)},
             "pro": (stats or {}).get("pro") or {"matched": len(pro_all)},
@@ -1213,6 +1608,17 @@ def build_summary(mine, pro_all, mine_label="我", pro_label="Maru", matchup="Tv
         },
         "errors": mine_folder.last_errors,
     }
+
+
+def _date_span(group_stats):
+    """**入选**对局实际覆盖的日期区间（不是扫描范围）。"""
+    days = [day for day in ((group_stats or {}).get("matched_dates") or []) if day]
+    if not days:
+        seen = (group_stats or {}).get("dates_seen") or {}
+        if not seen:
+            return None
+        return {"min": min(seen), "max": max(seen), "games": sum(seen.values())}
+    return {"min": min(days), "max": max(days), "games": len(days)}
 
 
 def _today():
@@ -1237,27 +1643,35 @@ PRO_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 
 
 def run(mine_dir=MINE_DIR, pro_dir=PRO_DIR, limit=60, pro_limit=30,
-        matchup="TvZ", seed=20261108, progress=None):
+        matchup="TvZ", seed=20261108, progress=None,
+        since=None, until=None, start_workers_only=12, k_range=(2, 6)):
     """挖矿 + 聚类 + 对照，返回 summary dict。
 
-    ``pro_limit`` 默认 30：职业录像文件夹现在有 24 局，得放够才不会抽样截断
-    （Maru 的 TvZ 一共 17 局，截断会漏）。
+    ``pro_limit`` 默认 30：职业录像文件夹现在有 24 局，得放够才不会抽样截断。
+    ``start_workers_only`` 默认 12 = 只收 12 农民版本（8 农民版本的开局时间点整体前移，
+    混在一起聚出来的是版本差，先整批排除）；``since`` / ``until`` 是按 replay 日期的
+    可选区间（默认不设，报告里会写明实际用了哪段时间）。
     """
     mine = mine_folder(mine_dir, limit=limit, matchup=matchup, seed=seed,
                        progress=progress, ladder_only=True, min_duration=120.0,
-                       require_local=True, exclude_ai=True)
+                       require_local=True, exclude_ai=True,
+                       since=since, until=until, start_workers_only=start_workers_only)
     mine_stats = dict(mine_folder.last_stats)
+    mine_stats["start_workers_filter"] = start_workers_only
+    mine_stats["since"] = since
+    mine_stats["until"] = until
     mine_rejects = mine_stats.pop("rejected_expands", [])
     # 职业选手的录像全收（TvP/TvT 也留着），聚类和对照再按 matchup 过滤
     pro = mine_folder(pro_dir, limit=pro_limit, matchup=None, prefer_name="maru",
-                      seed=seed, progress=progress)
+                      seed=seed, progress=progress, start_workers_only=start_workers_only)
     pro_stats = dict(mine_folder.last_stats)
+    pro_stats["start_workers_filter"] = start_workers_only
     pro_rejects = pro_stats.pop("rejected_expands", [])
     return build_summary(mine, pro, "我", "Maru", matchup, stats={
         "mine": mine_stats,
         "pro": pro_stats,
         "expand_rejects": {"mine": mine_rejects, "pro": pro_rejects},
-    })
+    }, k_range=k_range)
 
 
 def main(argv=None):
@@ -1277,6 +1691,14 @@ def main(argv=None):
     parser.add_argument("--html", default=os.path.join("reports", "bo.html"))
     parser.add_argument("--replay", action="append", default=[],
                         help="额外单独分析某局（可重复），会打印 signature")
+    parser.add_argument("--since", default=None,
+                        help="只收该日期之后的局（YYYY-MM-DD，含端点）；默认不设")
+    parser.add_argument("--until", default=None,
+                        help="只收该日期之前的局（YYYY-MM-DD，含端点）；默认不设")
+    parser.add_argument("--start-workers", type=int, default=12, dest="start_workers",
+                        help="只收开局农民数 = N 的局（版本硬过滤，默认 12；传 0 关闭）")
+    parser.add_argument("--k-min", type=int, default=2, help="聚类 k 搜索下界（默认 2）")
+    parser.add_argument("--k-max", type=int, default=6, help="聚类 k 搜索上界（默认 6）")
     args = parser.parse_args(argv)
 
     started = time.time()
@@ -1301,7 +1723,10 @@ def main(argv=None):
 
     summary = run(args.mine, args.pro, args.limit, args.pro_limit,
                   args.matchup, args.seed,
-                  progress=lambda done, name: sys.stderr.write("\r  parsed %d/%d games" % (done, args.limit)))
+                  progress=lambda done, name: sys.stderr.write("\r  parsed %d/%d games" % (done, args.limit)),
+                  since=args.since, until=args.until,
+                  start_workers_only=(args.start_workers or None),
+                  k_range=(args.k_min, args.k_max))
     summary["replay_checks"] = checks
     summary["meta"]["elapsed_seconds"] = round(time.time() - started, 1)
     write_json(summary, args.json)
@@ -1309,15 +1734,21 @@ def main(argv=None):
     from . import bo_report
     bo_report.write_report(summary, args.html)
     sys.stderr.write("\n")
+    clustering = summary["meta"].get("clustering") or {}
+    version = summary["meta"].get("version_filter") or {}
     sys.stdout.write("wrote %s (%d games) and %s in %.1fs\n" % (
         args.json, len(summary["games"]), args.html, time.time() - started))
+    sys.stdout.write("clustering: axis=%s k=%s  (start_workers=%s, excluded by workers=%s by date=%s)\n" % (
+        clustering.get("axis"), clustering.get("k"), version.get("start_workers"),
+        version.get("excluded_by_workers"), version.get("excluded_by_date")))
     for cluster in summary["clusters"]["mine"]:
-        sys.stdout.write("  mine cluster: %-32s %2d games  share=%3.0f%%  (median expand %s)\n" % (
-            cluster["key"], cluster["games"], cluster["share"] * 100,
-            cluster["median"].get("first_expand")))
+        sys.stdout.write("  mine cluster: %-30s %2d games  share=%3.0f%%  seq=%s\n" % (
+            cluster["key"][:30], cluster["games"], cluster["share"] * 100,
+            "-".join(cluster.get("typical_sequence") or [])[:48]))
     for cluster in summary["clusters"]["pro"]:
-        sys.stdout.write("  pro  cluster: %-32s %2d games  share=%3.0f%%\n" % (
-            cluster["key"], cluster["games"], cluster["share"] * 100))
+        sys.stdout.write("  pro  cluster: %-30s %2d games  share=%3.0f%%  seq=%s\n" % (
+            cluster["key"][:30], cluster["games"], cluster["share"] * 100,
+            "-".join(cluster.get("typical_sequence") or [])[:48]))
     return summary
 
 

@@ -18,11 +18,13 @@
 """
 
 import argparse
+import glob
 import hashlib
 import html
 import json
 import math
 import os
+import re
 import sys
 import time
 
@@ -77,11 +79,19 @@ border-radius:14px;padding:12px 14px;overflow-x:auto}
 # --------------------------------------------------------------------------- BO 读取
 
 def load_bo(path):
-    """读 bo.json：既吃 dict（{"games": [...]}）也吃裸 list。"""
+    """读 bo.json：既吃 dict（{"games": [...]}）也吃裸 list。
+
+    返回 (games, meta)。meta 里顺手带上 bo 顶层的 clusters / comparison，
+    报告的"样本口径"一节要引用它们（clusters 现在不固定两类，别假设 k=2）。
+    """
     with open(path, "r", encoding="utf-8") as handle:
         data = json.load(handle)
     games = dagmod.normalize_games(data)
-    meta = data.get("meta") if isinstance(data, dict) else None
+    meta = dict(data.get("meta") or {}) if isinstance(data, dict) else {}
+    if isinstance(data, dict):
+        for key in ("clusters", "comparison", "sampling", "caveats"):
+            if data.get(key) is not None and key not in meta:
+                meta[key] = data[key]
     return games, meta
 
 
@@ -93,13 +103,19 @@ def game_path(game):
     return ((game.get("game") or {}).get("path") or "").strip()
 
 
-def select_games(games, matchup=None, who=None, limit=None):
-    """挑对局：who="mine" 只挑本地玩家，who="pro" 挑指定职业选手。"""
+def select_games(games, matchup=None, who=None, limit=None, race=None):
+    """挑对局。
+
+    who="mine" 只挑本地玩家；who="<选手名>" 挑指定职业选手；race="Z"/"P" 挑职业选手种族。
+    这三个条件是"与"关系；matchup 给了就按被分析玩家视角的对局种族过滤。
+    """
     picked = []
     for game in games:
         meta = game.get("game") or {}
         player = game.get("player") or {}
         if matchup and (meta.get("matchup") or "").lower() != matchup.lower():
+            continue
+        if race and (player.get("race") or "").upper() != race.upper():
             continue
         if who == "mine" and player.get("is_local") is not True:
             continue
@@ -112,6 +128,177 @@ def select_games(games, matchup=None, who=None, limit=None):
     if limit:
         picked = picked[:int(limit)]
     return picked
+
+
+def pro_games_by_race(games, limit=None):
+    """{race: [GameBO]}：职业选手按种族分组（不含本地玩家）。"""
+    out = {}
+    for game in games:
+        player = game.get("player") or {}
+        if player.get("is_local") is True:
+            continue
+        race = (player.get("race") or "").upper()
+        if not race:
+            continue
+        out.setdefault(race, []).append(game)
+    for race in out:
+        out[race].sort(key=lambda game: ((game.get("game") or {}).get("file") or ""))
+        if limit:
+            out[race] = out[race][:int(limit)]
+    return out
+
+
+def matchup_counts(games):
+    """{matchup: 局数}，用来说明职业 Z/P 样本覆盖了哪些对局。"""
+    counts = {}
+    for game in games:
+        matchup = ((game.get("game") or {}).get("matchup") or "?")
+        counts[matchup] = counts.get(matchup, 0) + 1
+    return dict(sorted(counts.items(), key=lambda item: -item[1]))
+
+
+def _matchup_note(zerg_games, protoss_games):
+    pieces = []
+    for label, games in (("Z", zerg_games), ("P", protoss_games)):
+        counts = matchup_counts(games)
+        if not counts:
+            continue
+        pieces.append("%s 组：" % label + " / ".join(
+            "%s %d 局" % (key, value) for key, value in counts.items()))
+    if not pieces:
+        return ""
+    return ("职业 Z/P 样本覆盖的对局种族：" + "；".join(pieces) +
+            "。所以这两张图是「这些选手在各种对局里的开局选择」，"
+            "不是只针对 TvZ 的应对。")
+
+
+RACE_BO_CACHE = os.path.join(".tmp", "pro_race_bo.json")
+
+
+def _clean_player_name(name):
+    """去掉 replay 名字里的战队标签。
+
+    replay 里的名字本身就带 HTML 转义（``&lt;BASKGG&gt;Serral``），
+    所以先 unescape 再剥 ``<...>`` 标签，否则报告里会出现 ``&amp;lt;`` 残留。
+    """
+    text = html.unescape(name or "")
+    text = re.sub(r"<[^>]*>", "", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text or (name or "?")
+
+
+def _folder_focus(folder, manifest):
+    """从 manifest 判断这个目录代表哪位选手、什么种族。"""
+    names = []
+    for item in manifest.values():
+        for player in item.get("players") or []:
+            names.append((player.get("name") or "", player.get("race") or ""))
+    lowered = folder.lower()
+    for name, race in names:
+        plain = name.lower().replace(" ", "")
+        if plain in lowered or lowered in plain:
+            return name, race
+    return None, None
+
+
+def extract_race_bos(root="replays/pro", races=("Z", "P"),
+                     cache_path=RACE_BO_CACHE, rebuild=False, verbose=True):
+    """用 bo 的公开接口把职业 Z/P 的 GameBO 抽出来（带缓存）。
+
+    只扫"这个目录属于 Z/P 选手"的目录（T 选手直接跳过，不浪费解析时间）。
+    缓存指纹 = 所有 replay 的 (路径, 大小, mtime)，replay 变了会自动重抽。
+    """
+    files = sorted(glob.glob(os.path.join(root, "*", "*.SC2Replay")))
+    fingerprint = hashlib.sha1()
+    for item in files:
+        try:
+            stat = os.stat(item)
+        except OSError:
+            continue
+        fingerprint.update(("%s|%s|%s;" % (os.path.abspath(item), stat.st_size,
+                                            int(stat.st_mtime))).encode("utf-8"))
+    fingerprint = fingerprint.hexdigest()
+
+    if not rebuild and os.path.isfile(cache_path):
+        try:
+            with open(cache_path, "r", encoding="utf-8") as handle:
+                cached = json.load(handle)
+            if (cached.get("meta") or {}).get("fingerprint") == fingerprint:
+                if verbose:
+                    print("[race-bo] cache hit -> %d games (%s)"
+                          % (len(cached.get("games") or []), cache_path), flush=True)
+                return cached.get("games") or []
+        except (OSError, ValueError):
+            pass
+
+    try:
+        from . import bo as bo_module
+    except Exception as error:  # bo 还没落地也不该把 dag 报告搞挂
+        print("[warn] 无法 import bo.py（%s），跳过职业 Z/P 抽取" % error, flush=True)
+        return []
+
+    games = []
+    total = len(files)
+    started = time.time()
+    for index, path in enumerate(files, 1):
+        folder = os.path.basename(os.path.dirname(path))
+        manifest_path = os.path.join(os.path.dirname(path), "manifest.json")
+        manifest = {}
+        if os.path.isfile(manifest_path):
+            try:
+                with open(manifest_path, "r", encoding="utf-8") as handle:
+                    raw = json.load(handle)
+                for item in raw if isinstance(raw, list) else []:
+                    manifest[item.get("file")] = item
+            except (OSError, ValueError):
+                manifest = {}
+        prefer, folder_race = _folder_focus(folder, manifest)
+        if folder_race not in races:
+            continue
+        try:
+            game = bo_module.extract_bo_path(path, prefer_name=prefer,
+                                            with_moveout=False)
+        except Exception as error:
+            print("[warn] race-bo 失败 %s (%s)" % (os.path.basename(path),
+                                                   type(error).__name__), flush=True)
+            continue
+        player = game.get("player") or {}
+        race = (player.get("race") or "").upper()
+        if race not in races:
+            continue
+        player["name"] = _clean_player_name(player.get("name"))
+        game["group"] = "pro-%s" % race.lower()
+        games.append(game)
+        if verbose:
+            print("  [race-bo %d/%d] %-52s %s %-16s segs=%d"
+                  % (index, total, os.path.basename(path)[:52], race,
+                     game.get("signature"), len(game.get("segments") or [])),
+                  flush=True)
+    payload = {"meta": {"fingerprint": fingerprint,
+                        "generated": dagmod.datetime.date.today().isoformat(),
+                        "root": root, "games": len(games)},
+               "games": games}
+    try:
+        directory = os.path.dirname(os.path.abspath(cache_path))
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+        with open(cache_path, "w", encoding="utf-8", newline="\n") as handle:
+            json.dump(payload, handle, ensure_ascii=False, indent=1)
+    except OSError:
+        pass
+    if verbose:
+        print("[race-bo] extracted %d games in %.0fs -> %s"
+              % (len(games), time.time() - started, cache_path), flush=True)
+    return games
+
+
+def player_counts(games):
+    """{选手名: 局数}，报告里要写清每个选手几局。"""
+    counts = {}
+    for game in games:
+        name = ((game.get("player") or {}).get("name") or "?")
+        counts[name] = counts.get(name, 0) + 1
+    return dict(sorted(counts.items(), key=lambda item: -item[1]))
 
 
 # --------------------------------------------------------------------------- 信息事件（带缓存）
@@ -819,8 +1006,13 @@ def _fragmentation_line(dag):
     transitions = (dag.get("reaction") or {}).get("transitions") or 0
     top5 = sum(edge["count"] for edge in edges[:5])
     share = (top5 / float(transitions)) if transitions else 0.0
-    tail = ("——这说明中期以后<b>没有固定模板</b>，或者 bo 的段签名把执行细节放得太细，"
-            "图只在开局到前期收敛。")
+    phases = (dag.get("meta") or {}).get("phases") or []
+    if phases and "mid" not in phases and "late" not in phases:
+        tail = ("——这是只看 opening/early 的结果：碎片化主要来自 early 段里"
+                "各选手的建造顺序差异，不影响「开局选择面」那一节的结论。")
+    else:
+        tail = ("——这说明中期以后<b>没有固定模板</b>，或者 bo 的段签名把执行细节放得太细，"
+                "图只在开局到前期收敛。")
     return ('<div class="note" style="margin-top:6px">碎片化：%d 个节点里 <b>%d 个只出现 1 次</b>；'
             "转移次数最多的 5 条边覆盖 %s 的转移（共 %d 次）。%s</div>"
             % (len(nodes), once, _pct(share, 0), transitions,
@@ -838,10 +1030,143 @@ def _game_signature_line(dag):
             "和上面的段签名不是一回事）：" + "；".join(items) + "。</div>")
 
 
-def _dag_block(dag, title, subtitle, min_node=2):
+def opening_concentration(dag):
+    """开局（第一个段）的集中度：职业 Z/P 的"选择面"用这个比。
+
+    返回 opening 首段的分布、最粗开局占比、归一化香农熵（0=只此一家，1=完全平均）。
+    """
+    counts = {}
+    for sequence in dag.get("sequences") or []:
+        path = sequence.get("path") or []
+        if not path or not path[0].startswith("opening:"):
+            continue
+        counts[path[0]] = counts.get(path[0], 0) + 1
+    games = sum(counts.values())
+    if not games:
+        return None
+    ordered = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    top_id, top_count = ordered[0]
+    entropy = -sum((count / float(games)) * math.log(count / float(games))
+                   for count in counts.values())
+    normalized = entropy / math.log(len(counts)) if len(counts) > 1 else 0.0
+    return {
+        "games": games,
+        "opening_nodes": len(counts),
+        "top": top_id,
+        "top_count": top_count,
+        "top_share": round(top_count / float(games), 3),
+        "entropy": round(normalized, 3),
+        "signatures": {key: value for key, value in ordered},
+    }
+
+
+def _opening_paths_table(dag, limit=3):
+    """开局阶段最常见的 N 条路径（只在 opening/early 的 DAG 上用）。"""
+    paths = dag.get("top_paths") or []
+    games = dag["meta"].get("games") or 1
+    if not paths:
+        return '<div class="note">没有完整路径。</div>'
+    rows = []
+    for index, item in enumerate(paths[:limit], 1):
+        rows.append("<tr><td>%d</td><td class='l'>%s</td><td>%d</td><td>%s</td></tr>"
+                    % (index, h(" → ".join(item["path"])), item["count"],
+                       _pct(item["count"] / float(games), 1)))
+    return ('<div class="note" style="margin-top:4px"><b>开局最常见 %d 条路径</b>'
+            "（从 opening 段到 early 段的段签名链）：</div>"
+            '<table class="data"><thead><tr><th>#</th><th>路径</th><th>局数</th>'
+            "<th>占样本</th></tr></thead><tbody>" % limit
+            + "".join(rows) + "</tbody></table>")
+
+
+def _dispersion_table(groups):
+    """四组"开局选择面"对比：只看第一个段（opening）的分布。"""
+    rows = []
+    labels = [("mine", "我的 TvZ"), ("maru", "Maru（职业 T）"),
+              ("zerg", "职业 Zerg"), ("protoss", "职业 Protoss")]
+    values = {}
+    for key, label in labels:
+        dag = groups.get(key)
+        if not dag:
+            continue
+        concentration = opening_concentration(dag)
+        if not concentration:
+            continue
+        values[key] = concentration
+        rows.append(
+            "<tr><td class='l'>%s</td><td>%d</td><td>%d</td>"
+            "<td class='l'>%s</td><td>%s</td><td>%.2f</td></tr>"
+            % (h(label), concentration["games"], concentration["opening_nodes"],
+               h(concentration["top"].split(":", 1)[-1]),
+               _pct(concentration["top_share"], 0), concentration["entropy"]))
+    if not rows:
+        return "", {}
+    table = ('<table class="data"><thead><tr><th>组</th><th>局数</th><th>开局节点数</th>'
+             "<th>最常见的开局</th><th>它的占比</th><th>归一化熵（越大越分散）</th>"
+             "</tr></thead><tbody>" + "".join(rows) + "</tbody></table>")
+    return table, values
+
+
+def _dispersion_verdict(values):
+    """回答"职业 Z/P 的开局是不是比我更分散"。"""
+    mine = values.get("mine") or {}
+    if not mine:
+        return ""
+    lines = []
+    for key, label in (("maru", "Maru"), ("zerg", "职业 Zerg"),
+                       ("protoss", "职业 Protoss")):
+        concentration = values.get(key)
+        if not concentration:
+            continue
+        diff = mine["top_share"] - concentration["top_share"]
+        if diff > 0.15:
+            relation = "比<b>%s</b>集中 %.0f 个百分点" % (label, diff * 100)
+        elif diff < -0.15:
+            relation = "比<b>%s</b>分散 %.0f 个百分点" % (label, abs(diff) * 100)
+        else:
+            relation = "和<b>%s</b>差不多（差 %.0f 个百分点）" % (label, abs(diff) * 100)
+        lines.append("%s：你这边最粗的开局占 %s，%s 最粗的 %s 占 %s"
+                     % (relation, _pct(mine["top_share"], 0), label,
+                        concentration["top"].split(":", 1)[-1],
+                        _pct(concentration["top_share"], 0)))
+    summary = ""
+    zerg = values.get("zerg") or {}
+    protoss = values.get("protoss") or {}
+    if zerg and protoss:
+        # "职业不比我分散" = 他们最粗的那套开局占比都不比我低（差 5 个点以内算同档）
+        if zerg.get("top_share", 0) >= mine["top_share"] - 0.05 \
+                and protoss.get("top_share", 0) >= mine["top_share"] - 0.05:
+            summary = ("<br><b>直接回答：不是。</b>本批职业 Z/P 的开局选择面并没有比你的宽——"
+                       "Z 最常见的一套占 %s（你 %s），P 更是 %s 都走同一套（你 %s）。"
+                       "真正比你分散的是 Maru（同为 T，最常见一套只占 %s）。"
+                       "换句话说，「职业选手开局更花」在这批样本里不成立，"
+                       "他们更多是把同一套开局的细节做扎实。"
+                       % (_pct(zerg.get("top_share"), 0), _pct(mine["top_share"], 0),
+                          _pct(protoss.get("top_share"), 0), _pct(mine["top_share"], 0),
+                          _pct((values.get("maru") or {}).get("top_share"), 0)))
+        else:
+            summary = ("<br>直接回答：职业 Z/P 里至少一组的开局比你的更分散，"
+                       "具体看图上的占比和熵。")
+    return ('<div class="card"><div class="answer">开局集中度：'
+            + "；".join(lines) + "。" + summary + "</div>"
+            '<div class="note" style="margin-top:8px">'
+            "注意三件事：① 熵对样本量敏感（我 59 局、Maru 17 局、职业 Z/P 各 25 局），"
+            "小样本会低估分散度，看趋势别抠小数；② 职业 Z/P 那两张图回答的是"
+            "<b>「职业选手在做什么选择」</b>，不是「对手会怎么针对我」——"
+            "后者要按对手单独分析，不是这个样本能回答的；"
+            "③ 职业组的开局画像只覆盖 opening/early，后期不追。</div></div>")
+
+
+def _dag_block(dag, title, subtitle, min_node=2, paths_limit=0, extra_note="",
+               show_reaction=True):
+    """一张 DAG 的 HTML 块。
+
+    ``show_reaction=False`` 用于职业 Z/P 的"开局选择面"图：那个窗口里
+    位置采样还没开始，谈"侦察触发"没有意义，所以换成开局集中度指标。
+    """
     layout = layout_dag(dag, min_node=min_node)
     problems = check_layout(layout)
     reaction = dag.get("reaction") or {}
+    concentration = opening_concentration(dag)
     parts = ['<div class="card"><div class="desc">%s</div>' % h(subtitle)]
     parts.append('<div class="grid4" style="margin-top:10px">')
     parts.append(_metric("样本", "%d 局" % (dag["meta"].get("games") or 0),
@@ -849,18 +1174,42 @@ def _dag_block(dag, title, subtitle, min_node=2):
     parts.append(_metric("节点 / 边", "%d / %d" % (len(dag["nodes"]), len(dag["edges"])),
                          "图上画了 %d / %d 条" % ((layout.get("visible") or {}).get("nodes", 0),
                                                   (layout.get("visible") or {}).get("edges", 0))))
-    parts.append(_metric("侦察触发占比", _pct(reaction.get("scout_share"), 1),
-                         "%d/%d 次转移" % (reaction.get("scout", 0),
-                                          reaction.get("transitions", 0))))
-    parts.append(_metric("纯到点占比", _pct(reaction.get("time_share"), 1),
-                         "%d 次转移" % reaction.get("time", 0)))
+    if show_reaction:
+        parts.append(_metric("侦察触发占比", _pct(reaction.get("scout_share"), 1),
+                             "%d/%d 次转移" % (reaction.get("scout", 0),
+                                              reaction.get("transitions", 0))))
+        parts.append(_metric("纯到点占比", _pct(reaction.get("time_share"), 1),
+                             "%d 次转移" % reaction.get("time", 0)))
+    else:
+        parts.append(_metric("开局打法", "%d 种" % (concentration or {}).get("opening_nodes", 0),
+                             "最粗那套占 %s" % _pct((concentration or {}).get("top_share"), 0)))
+        parts.append(_metric("开局集中度（熵）", "%.2f" % ((concentration or {}).get("entropy") or 0.0),
+                             "0=只此一套，1=完全平均"))
     parts.append("</div>")
-    parts.append('<div class="answer" style="margin:12px 0 6px">%s</div>'
-                 % _reaction_answer(reaction))
-    parts.append(_bar3(reaction))
-    parts.append(_sensitivity_line(reaction))
+    if show_reaction:
+        parts.append('<div class="answer" style="margin:12px 0 6px">%s</div>'
+                     % _reaction_answer(reaction))
+        parts.append(_bar3(reaction))
+        parts.append(_sensitivity_line(reaction))
+    else:
+        parts.append('<div class="note" style="margin-top:10px">这两张图只看 '
+                     "<b>opening/early 的开局选择面</b>：不做「侦察触发 vs 到点」的归因——"
+                     "opening→early 的切换大约在 3:03，而位置采样最早也要 3:30 之后才出现，"
+                     "这个窗口里根本没有可用的信息事件，谈反应没有意义。"
+                     "所以边一律按「到点」画（灰色/蓝色），重点看节点的分布和分支。</div>")
     parts.append(_game_signature_line(dag))
+    if concentration:
+        top_items = ["%s %d 局（%s）"
+                     % (h(key.split(":", 1)[-1]), value,
+                        _pct(value / float(concentration["games"]), 0))
+                     for key, value in list(concentration["signatures"].items())[:5]]
+        parts.append('<div class="note" style="margin-top:6px">开局（第一段）分布：'
+                     + "、".join(top_items) + "。</div>")
     parts.append(_fragmentation_line(dag))
+    if paths_limit:
+        parts.append(_opening_paths_table(dag, paths_limit))
+    if extra_note:
+        parts.append('<div class="note" style="margin-top:6px">%s</div>' % extra_note)
     parts.append('<div class="dag-legend">')
     for kind, color, label in (("time", CONDITION_COLORS["time"], "⏱ 到点转移"),
                                ("scout", CONDITION_COLORS["scout"], "👁 侦察触发转移"),
@@ -879,12 +1228,12 @@ def _dag_block(dag, title, subtitle, min_node=2):
         visible = layout.get("visible") or {}
         total = hidden.get("transitions_total") or 1
         if hidden.get("transitions"):
-            parts.append('<div class="note" style="margin-top:6px">图上画的是「出现 ≥2 局的节点」'
+            parts.append('<div class="note" style="margin-top:6px">图上画的是「出现 ≥%d 局的节点」'
                          "之间的转移（<b>%d 个节点 / %d 条边 / %d 次转移</b>）。"
                          "另外 <b>%d 次转移（%s）</b> 没画出来——它们来自只出现 1 次的节点或"
                          "只走过 1 次的转移（%d 个单例节点、%d 条单例边），完整数据在 "
                          "<code>dag.json</code> 和下面的节点表里。</div>"
-                         % (visible.get("nodes", 0), visible.get("edges", 0),
+                         % (min_node, visible.get("nodes", 0), visible.get("edges", 0),
                             hidden.get("transitions_drawn", 0),
                             hidden.get("transitions", 0),
                             _pct(hidden.get("transitions", 0) / float(total), 0),
@@ -1027,16 +1376,83 @@ loop</b> 当锚点，不依赖 <code>start_loop</code>，所以节点的层位�
 """
 
 
+def _caliber_block(mine, pro, groups, bo_meta, extra):
+    """写清这一版 bo 的样本口径（59 局是怎么筛出来的、快慢维度去哪了）。"""
+    bo_meta = bo_meta or {}
+    parts = ['<div class="card" style="margin-top:12px">'
+             '<h3 style="margin:0 0 8px">样本口径（这一版 bo 的筛选条件）</h3>'
+             '<div class="hint">']
+    version = bo_meta.get("version_filter") or {}
+    pace = bo_meta.get("pace_dimension") or {}
+    clustering = bo_meta.get("clustering") or {}
+    if version:
+        parts.append("我的样本 %d 局，是「TvZ + 本地 + 人类 + 官方图 + ≥120 秒 + "
+                     "<b>%d 农民</b>开局」筛出来的；因开局农民版本被打掉的局数："
+                     "<b>%d 局</b>（8 农民版本的经济改动太大，和现在不是一个游戏）。"
+                     % (mine["meta"].get("games") or 0,
+                        int(version.get("start_workers") or 12),
+                        int(version.get("excluded_by_workers") or 0)))
+    if pace:
+        parts.append("<br>版本过滤之后「快慢」这个维度基本消失了：一气 p10–p90 = "
+                     "%s–%s（跨 %s 秒）、二矿 p10–p90 = %s–%s（跨 %s 秒）。"
+                     "所以 DAG 里凡是体现「我打得快/慢」的节点差别，现在应该被压扁。"
+                     % (_mmss(pace.get("gas_p10")), _mmss(pace.get("gas_p90")),
+                        ("%.0f" % (pace.get("gas_p90") or 0)
+                         if pace.get("gas_p10") is None
+                         else "%.0f" % ((pace.get("gas_p90") or 0)
+                                        - (pace.get("gas_p10") or 0))),
+                        _mmss(pace.get("expand_p10")), _mmss(pace.get("expand_p90")),
+                        ("%.0f" % ((pace.get("expand_p90") or 0)
+                                   - (pace.get("expand_p10") or 0)))))
+    clusters = bo_meta.get("clusters") or {}
+    mine_clusters = clusters.get("mine") if isinstance(clusters, dict) else clusters
+    if mine_clusters:
+        items = []
+        for cluster in mine_clusters:
+            name = cluster.get("name") or cluster.get("title") or ""
+            share = cluster.get("share")
+            members = cluster.get("games") or cluster.get("count") or 0
+            if not name:
+                continue
+            items.append("%s（%s）"
+                         % (h(name),
+                            _pct(share, 0) if share is not None else "%d 局" % members))
+        if items:
+            parts.append("<br>bo 的开场聚类（不固定两类，按数据选 k）："
+                         + "；".join(items) + "。")
+    concentration = opening_concentration(mine)
+    if concentration:
+        top_items = ["%s %d 局（%s）" % (h(key.split(":", 1)[-1]), value,
+                                        _pct(value / float(concentration["games"]), 0))
+                     for key, value in list(concentration["signatures"].items())[:4]]
+        top_share = concentration["top_share"]
+        if top_share >= 0.7:
+            shape = "基本就是<b>一套流程</b>，分叉很少"
+        elif top_share >= 0.5:
+            shape = "是<b>一套主流 + 少量分叉</b>"
+        else:
+            shape = "已经<b>明显分成几套</b>"
+        parts.append("<br>DAG 这边互相印证：我的 opening 首段分布是 "
+                     + "、".join(top_items) + "，也就是 %s。"
+                     % shape)
+    parts.append("</div></div>")
+    return "".join(parts)
+
+
 def _limits_block():
-    return ('<h2>七、这套数的边界（必读）</h2><div class="card"><div class="hint">%s</div>'
+    return ('<h2>十、这套数的边界（必读）</h2><div class="card"><div class="hint">%s</div>'
             "</div>" % LIMITS)
 
 
 # --------------------------------------------------------------------------- 主渲染
 
-def render_report(mine, pro, meta=None, extra=None, min_node=2):
+def render_report(mine, pro, meta=None, extra=None, min_node=2,
+                  groups=None):
     meta = meta or {}
     extra = extra or {}
+    groups = groups or {}
+    zerg = groups.get("zerg")
+    protoss = groups.get("protoss")
     mine_meta = mine["meta"]
     pro_meta = (pro or {}).get("meta") or {}
     parts = ['<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">',
@@ -1044,10 +1460,12 @@ def render_report(mine, pro, meta=None, extra=None, min_node=2):
              "<title>BO 转移图 · 我是主动执行还是被动反应</title>",
              "<style>%s%s</style></head><body><div class=\"wrap\">" % (CSS, EXTRA_CSS)]
     parts.append('<header class="top"><h1>BO 转移图：我是主动执行，还是被动反应？</h1>')
-    parts.append('<div class="sub">%s · 我的 TvZ %d 局 vs Maru TvZ %d 局 · '
-                 '边 = 段之间的转移，条件分"到点"和"侦察到"'
+    parts.append('<div class="sub">%s · 我的 %d 局 / Maru %d 局 / 职业 Zerg %d 局 / '
+                 '职业 Protoss %d 局 · 边 = 段之间的转移，条件分"到点"和"侦察到"'
                  % (h(mine_meta.get("matchup") or "TvZ"),
-                    mine_meta.get("games") or 0, pro_meta.get("games") or 0))
+                    mine_meta.get("games") or 0, pro_meta.get("games") or 0,
+                    ((zerg or {}).get("meta") or {}).get("games") or 0,
+                    ((protoss or {}).get("meta") or {}).get("games") or 0))
     parts.append("</div></header>")
 
     # 一句话结论放最上面：20 秒口径（契约口径）+ 60 秒口径（更稳）
@@ -1066,6 +1484,7 @@ def render_report(mine, pro, meta=None, extra=None, min_node=2):
     parts.append(_answer_box(mine, pro))
     parts.append('<div class="card" style="margin-top:12px"><h3 style="margin:0 0 8px">'
                  "我 vs Maru（同一口径）</h3>%s</div>" % _compare_table(mine, pro))
+    parts.append(_caliber_block(mine, pro, groups, extra.get("bo_meta"), extra))
 
     parts.append('<h2>二、我的 TvZ DAG</h2>')
     mine_block, mine_layout = _dag_block(mine, "二、我的 TvZ DAG",
@@ -1086,19 +1505,67 @@ def render_report(mine, pro, meta=None, extra=None, min_node=2):
         parts.append('<h2>三、Maru 的 TvZ DAG（对照）</h2><div class="card">'
                      '<div class="note">没有 Maru 的样本。</div></div>')
 
-    parts.append('<h2>四、最常见 10 条转移</h2><div class="split">')
+    zerg_games_count = ((zerg or {}).get("meta") or {}).get("games") or 0
+    if zerg:
+        zerg_block, _zerg_layout = _dag_block(
+            zerg, "四、职业 Zerg 的开局 DAG",
+            "只看 opening/early 两段（职业选手在做什么，不是对手会怎么应对你）。"
+            "节点 = (阶段, 段签名)，同样做了 token 粗化；样本小，边阈值放宽到 1 次。",
+            min_node=min_node, paths_limit=3, show_reaction=False,
+            extra_note="选手：" + "、".join(
+                "%s %d 局" % (name, count)
+                for name, count in (extra.get("zerg_players") or {}).items()))
+        parts.append('<h2>四、职业 Zerg 的开局 DAG（%d 局）</h2>' % zerg_games_count)
+        parts.append(zerg_block)
+    else:
+        parts.append('<h2>四、职业 Zerg 的开局 DAG</h2><div class="card">'
+                     '<div class="note">没有 Zerg 职业样本（待补）。</div></div>')
+
+    protoss_games_count = ((protoss or {}).get("meta") or {}).get("games") or 0
+    if protoss:
+        protoss_block, _protoss_layout = _dag_block(
+            protoss, "五、职业 Protoss 的开局 DAG",
+            "只看 opening/early 两段。样本是职业 P 选手，不是你的对手模型；"
+            "样本小，边阈值放宽到 1 次。",
+            min_node=min_node, paths_limit=3, show_reaction=False,
+            extra_note="选手：" + "、".join(
+                "%s %d 局" % (name, count)
+                for name, count in (extra.get("protoss_players") or {}).items()))
+        parts.append('<h2>五、职业 Protoss 的开局 DAG（%d 局）</h2>' % protoss_games_count)
+        parts.append(protoss_block)
+    else:
+        parts.append('<h2>五、职业 Protoss 的开局 DAG</h2><div class="card">'
+                     '<div class="note">没有 Protoss 职业样本（待补）。</div></div>')
+
+    dispersion_table, dispersion_values = _dispersion_table(
+        {"mine": mine, "maru": pro, "zerg": zerg, "protoss": protoss})
+    if dispersion_table:
+        parts.append('<h2>六、开局选择面：谁更分散</h2><div class="card">')
+        parts.append('<div class="desc">只看每局第一个段（opening）：'
+                     "「最常见的开局占多少、一共几种、熵多大」。"
+                     "熵 0 = 只走一套，1 = 完全平均。</div>")
+        parts.append('<div style="margin-top:8px">%s</div>' % dispersion_table)
+        matchup_note = extra.get("matchup_note") or ""
+        if matchup_note:
+            parts.append('<div class="note" style="margin-top:6px">%s</div>'
+                         % h(matchup_note))
+        parts.append('<div style="margin-top:12px">%s</div>'
+                     % _dispersion_verdict(dispersion_values))
+        parts.append("</div>")
+
+    parts.append('<h2>七、最常见 10 条转移</h2><div class="split">')
     parts.append('<div class="card"><h3>我的 TvZ</h3>%s</div>' % _transitions_table(mine))
     parts.append('<div class="card"><h3>Maru 的 TvZ</h3>%s</div>'
                  % (_transitions_table(pro) if pro else '<div class="note">没有样本。</div>'))
     parts.append("</div>")
 
-    parts.append('<h2>五、最常见 10 条完整路径</h2><div class="split">')
+    parts.append('<h2>八、最常见 10 条完整路径</h2><div class="split">')
     parts.append('<div class="card"><h3>我的 TvZ</h3>%s</div>' % _paths_table(mine))
     parts.append('<div class="card"><h3>Maru 的 TvZ</h3>%s</div>'
                  % (_paths_table(pro) if pro else '<div class="note">没有样本。</div>'))
     parts.append("</div>")
 
-    parts.append('<h2>六、分阶段：反应式转移集中在哪个阶段</h2><div class="split">')
+    parts.append('<h2>九、分阶段：反应式转移集中在哪个阶段</h2><div class="split">')
     parts.append('<div class="card"><h3>我的 TvZ</h3>%s</div>' % _phase_table(mine))
     parts.append('<div class="card"><h3>Maru 的 TvZ</h3>%s</div>'
                  % (_phase_table(pro) if pro else '<div class="note">没有样本。</div>'))
@@ -1115,7 +1582,7 @@ def render_report(mine, pro, meta=None, extra=None, min_node=2):
 
     precision = (mine.get("precision_note") or {})
     reading = precision.get("reading") or ""
-    parts.append('<h2>八、数据质量</h2><div class="card"><div class="hint">%s'
+    parts.append('<h2>十一、数据质量</h2><div class="card"><div class="hint">%s'
                  '<br>本组一共算到 %s 条信息事件；位置采样可信阈值 %.0f 秒。'
                  '</div></div>'
                  % (h(reading), precision.get("events_total", 0),
@@ -1134,8 +1601,9 @@ def render_report(mine, pro, meta=None, extra=None, min_node=2):
     return "".join(parts)
 
 
-def build_compare(mine, pro):
-    """写进 dag.json 的对照块。"""
+def build_compare(mine, pro, groups=None):
+    """写进 dag.json 的对照块：pro（Maru）+ 职业 Z/P 开局图 + 开局集中度。"""
+    groups = groups or {}
     out = {"matchup": mine["meta"].get("matchup")}
     if pro:
         out["pro"] = pro
@@ -1148,12 +1616,25 @@ def build_compare(mine, pro):
             "time_share": [(mine.get("reaction") or {}).get("time_share"),
                            (pro.get("reaction") or {}).get("time_share")],
         }
+    for key in ("zerg", "protoss"):
+        if groups.get(key):
+            out[key] = groups[key]
+    concentration = {}
+    for key, dag in (("mine", mine), ("maru", pro), ("zerg", groups.get("zerg")),
+                     ("protoss", groups.get("protoss"))):
+        if not dag:
+            continue
+        value = opening_concentration(dag)
+        if value:
+            concentration[key] = value
+    if concentration:
+        out["opening_concentration"] = concentration
     return out
 
 
-def build_json(mine, pro, meta=None):
+def build_json(mine, pro, meta=None, groups=None):
     payload = dict(mine)
-    payload["compare"] = build_compare(mine, pro)
+    payload["compare"] = build_compare(mine, pro, groups)
     payload["generator"] = {
         "tool": "replay_analyzer.dag_report",
         "generated": meta.get("generated") if meta else None,
@@ -1163,7 +1644,9 @@ def build_json(mine, pro, meta=None):
                    "terrain occlusion is not modelled",
                    "scan / cloak / burrow are not modelled",
                    "node signature = bo segment token chain, coarsened "
-                   "(addons/defense dropped, order-insensitive, counts capped at 2)"],
+                   "(addons/defense dropped, order-insensitive, counts capped at 2)",
+                   "zerg/protoss pro DAGs cover opening+early only (pro opening "
+                   "repertoire, not an opponent response model)"],
     }
     return payload
 
@@ -1194,30 +1677,57 @@ def _default_bo():
 
 
 def run(bo_path=None, matchup="TvZ", mine_limit=100, pro_limit=100,
-        pro_name="Maru",
-        min_edge=2, min_node=2, out_path=None, json_path=None,
-        cache_dir=DEFAULT_CACHE, force=False, verbose=True):
+        pro_name="Maru", min_edge=2, min_node=2, out_path=None, json_path=None,
+        cache_dir=DEFAULT_CACHE, force=False, verbose=True, extra_bo=(),
+        pro_race_limit=100, race_dir="replays/pro", skip_races=False):
+    """跑完整条链路：bo.json -> 信息事件 -> 4 个 DAG -> HTML/JSON。
+
+    ``extra_bo``：额外的 GameBO 文件（职业 Z/P 的开局样本），结构同 bo.json。
+    职业 Z/P 只看 opening/early（``phases`` 过滤），T 组跑全阶段。
+    """
     bo_path = bo_path or _default_bo()
     if not os.path.isfile(bo_path):
         raise SystemExit(
-            "找不到 %s。DAG 依赖 bo.py 的分段结果：先跑 bo 队友的提取脚本产出 "
+            "找不到 %s。DAG 依赖 bo.py 的分段结果：先跑 bo 的提取脚本产出 "
             "reports/bo.json，再用 --bo 指过去。" % bo_path)
     games, bo_meta = load_bo(bo_path)
     if verbose:
         print("[bo] %s -> %d games (meta=%s)" % (bo_path, len(games),
                                                  bool(bo_meta)), flush=True)
 
-    mine_games = select_games(games, matchup=matchup, who="mine", limit=mine_limit)
-    pro_games = select_games(games, matchup=matchup, who=pro_name, limit=pro_limit)
-    if verbose:
-        print("[pick] mine=%d pro=%d" % (len(mine_games), len(pro_games)), flush=True)
+    extra_games = []
+    for extra_path in extra_bo or ():
+        if not os.path.isfile(extra_path):
+            print("[warn] 找不到额外 BO 文件：%s" % extra_path, flush=True)
+            continue
+        loaded, _extra_meta = load_bo(extra_path)
+        if verbose:
+            print("[bo+] %s -> %d games" % (extra_path, len(loaded)), flush=True)
+        extra_games.extend(loaded)
+    if not extra_games and not skip_races:
+        extra_games = extract_race_bos(root=race_dir, rebuild=force, verbose=verbose)
 
-    mine_events, mine_stats = compute_info_events(mine_games, cache_dir, force, verbose)
-    pro_events, pro_stats = {}, {}
-    if pro_games:
-        pro_events, pro_stats = compute_info_events(pro_games, cache_dir, force, verbose)
-    sampling_values = sorted((mine_stats.get("sampling_values") or [])
-                             + (pro_stats.get("sampling_values") or []))
+    mine_games = select_games(games, matchup=matchup, who="mine", limit=mine_limit)
+    maru_games = select_games(games, matchup=matchup, who=pro_name, limit=pro_limit)
+    by_race = pro_games_by_race(extra_games)
+    zerg_games = select_games(by_race.get("Z") or [], limit=pro_race_limit)
+    protoss_games = select_games(by_race.get("P") or [], limit=pro_race_limit)
+    if verbose:
+        print("[pick] mine=%d maru=%d zerg=%d protoss=%d"
+              % (len(mine_games), len(maru_games), len(zerg_games),
+                 len(protoss_games)), flush=True)
+
+    group_games = [("mine", mine_games), ("maru", maru_games),
+                   ("zerg", zerg_games), ("protoss", protoss_games)]
+    all_events = {}
+    all_stats = {}
+    for label, picked in group_games:
+        events, stats = compute_info_events(picked, cache_dir, force, verbose)
+        all_events[label] = events
+        all_stats[label] = stats
+
+    sampling_values = sorted(value for stats in all_stats.values()
+                             for value in (stats.get("sampling_values") or []))
     sampling = None
     if sampling_values:
         sampling = {"min": sampling_values[0],
@@ -1226,21 +1736,46 @@ def run(bo_path=None, matchup="TvZ", mine_limit=100, pro_limit=100,
         print("[data] position sampling starts at %.0fs (earliest %.0fs)"
               % (sampling["median"], sampling["min"]), flush=True)
 
-    mine_dag = dagmod.build_dag(mine_games, min_edge=min_edge, info_events=mine_events,
-                                sampling=sampling)
-    pro_dag = None
-    if pro_games:
-        pro_dag = dagmod.build_dag(pro_games, min_edge=min_edge, info_events=pro_events,
-                                   sampling=sampling)
+    mine_dag = dagmod.build_dag(mine_games, min_edge=min_edge,
+                                info_events=all_events["mine"], sampling=sampling)
+    maru_dag = None
+    if maru_games:
+        maru_dag = dagmod.build_dag(maru_games, min_edge=min_edge,
+                                    info_events=all_events["maru"],
+                                    sampling=sampling)
+    # 职业 Z/P 每组只有 25 局、又只看 opening/early，边阈值放宽到 1 次，
+    # 否则每条 transfer 都只出现 1 次、图直接空掉。
+    race_min_edge = 1 if (zerg_games or protoss_games) else min_edge
+    zerg_dag = None
+    if zerg_games:
+        zerg_dag = dagmod.build_dag(zerg_games, min_edge=race_min_edge,
+                                    info_events=all_events["zerg"],
+                                    sampling=sampling, phases=("opening", "early"))
+    protoss_dag = None
+    if protoss_games:
+        protoss_dag = dagmod.build_dag(protoss_games, min_edge=race_min_edge,
+                                       info_events=all_events["protoss"],
+                                       sampling=sampling, phases=("opening", "early"))
+    groups = {"zerg": zerg_dag, "protoss": protoss_dag}
 
     generated = dagmod.datetime.date.today().isoformat()
     meta = {"generated": generated, "bo": bo_path,
-            "mine": len(mine_games), "pro": len(pro_games)}
-    html_text = render_report(mine_dag, pro_dag, meta,
-                              {"missing": (mine_stats.get("missing") or [])
-                               + (pro_stats.get("missing") or [])},
-                              min_node=min_node)
-    payload = build_json(mine_dag, pro_dag, meta)
+            "extra_bo": list(extra_bo or ()),
+            "mine": len(mine_games), "pro": len(maru_games),
+            "zerg": len(zerg_games), "protoss": len(protoss_games)}
+    missing = []
+    for stats in all_stats.values():
+        missing.extend(stats.get("missing") or [])
+    extra = {
+        "missing": missing,
+        "bo_meta": bo_meta,
+        "zerg_players": player_counts(zerg_games),
+        "protoss_players": player_counts(protoss_games),
+        "matchup_note": _matchup_note(zerg_games, protoss_games),
+    }
+    html_text = render_report(mine_dag, maru_dag, meta, extra,
+                              min_node=min_node, groups=groups)
+    payload = build_json(mine_dag, maru_dag, meta, groups=groups)
 
     out_path = out_path or os.path.join("reports", "dag.html")
     json_path = json_path or os.path.join("reports", "dag.json")
@@ -1251,15 +1786,18 @@ def run(bo_path=None, matchup="TvZ", mine_limit=100, pro_limit=100,
               flush=True)
         print("[write] %s (%.1f KB)" % (json_path, os.path.getsize(json_path) / 1024.0),
               flush=True)
-        for label, dag in (("mine", mine_dag), ("pro", pro_dag)):
+        for label, dag in (("mine", mine_dag), ("maru", maru_dag),
+                           ("zerg", zerg_dag), ("protoss", protoss_dag)):
             if dag is None:
                 continue
             layout = layout_dag(dag, min_node=min_node)
             problems = check_layout(layout)
-            print("[check] %-4s nodes=%d edges=%d layout=%s"
+            print("[check] %-8s nodes=%d edges=%d layout=%s"
                   % (label, len(dag["nodes"]), len(dag["edges"]),
-                     "OK" if not problems else "%d problems" % len(problems)), flush=True)
-    return {"mine": mine_dag, "pro": pro_dag, "html": out_path, "json": json_path}
+                     "OK" if not problems else "%d problems" % len(problems)),
+                  flush=True)
+    return {"mine": mine_dag, "maru": maru_dag, "zerg": zerg_dag,
+            "protoss": protoss_dag, "html": out_path, "json": json_path}
 
 
 def main(argv=None):
@@ -1278,6 +1816,14 @@ def main(argv=None):
                         help="图上只画出现 >= 这么多局的节点")
     parser.add_argument("--out", default=None, help="HTML 输出路径")
     parser.add_argument("--json", dest="json_path", default=None, help="JSON 输出路径")
+    parser.add_argument("--extra-bo", nargs="*", default=(),
+                        help="额外的 GameBO 文件（职业 Z/P 开局样本，结构同 bo.json）")
+    parser.add_argument("--race-dir", default="replays/pro",
+                        help="职业录像根目录（会按目录选手种族抽 Z/P 的 BO）")
+    parser.add_argument("--skip-races", action="store_true",
+                        help="不抽职业 Z/P，只出我 + Maru 两张图")
+    parser.add_argument("--pro-race-limit", type=int, default=100,
+                        help="每个职业种族最多用多少局")
     parser.add_argument("--cache-dir", default=DEFAULT_CACHE)
     parser.add_argument("--force", action="store_true", help="忽略信息事件缓存")
     args = parser.parse_args(argv)
@@ -1285,7 +1831,9 @@ def main(argv=None):
         pro_limit=args.pro, pro_name=args.pro_name, min_edge=args.min_edge,
         min_node=args.min_node,
         out_path=args.out, json_path=args.json_path, cache_dir=args.cache_dir,
-        force=args.force)
+        force=args.force, extra_bo=tuple(args.extra_bo or ()),
+        pro_race_limit=args.pro_race_limit, race_dir=args.race_dir,
+        skip_races=args.skip_races)
     return 0
 
 

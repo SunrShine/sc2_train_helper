@@ -1,0 +1,152 @@
+[
+  {
+    "player": "Trap",
+    "file": "trap_vs_Serral_Blackburn_LE_29-10-2021_b86383_28134.SC2Replay",
+    "id": "28134",
+    "map": "Blackburn LE",
+    "matchup": "PvZ",
+    "duration": 2691.12,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-10-22",
+    "contest_date": "29.10.2021",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Serral",
+        "race": "Z",
+        "toon": "1-S2-1-4182990",
+        "result": "win"
+      },
+      {
+        "name": "Trap",
+        "race": "P",
+        "toon": "1-S2-1-5117691",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28134",
+    "bytes": 324052,
+    "fetched_at": "2026-11-08T15:08:37"
+  },
+  {
+    "player": "Trap",
+    "file": "trap_vs_Serral_TLMC15_Berlingrad_29-10-2021_b86383_28135.SC2Replay",
+    "id": "28135",
+    "map": "[TLMC15] Berlingrad",
+    "matchup": "PvZ",
+    "duration": 1572.88,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-10-22",
+    "contest_date": "29.10.2021",
+    "map_listed": "[TLMC15] Berlingrad",
+    "players": [
+      {
+        "name": "Serral",
+        "race": "Z",
+        "toon": "1-S2-1-4182990",
+        "result": "loss"
+      },
+      {
+        "name": "Trap",
+        "race": "P",
+        "toon": "1-S2-1-5117691",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28135",
+    "bytes": 170720,
+    "fetched_at": "2026-11-08T15:08:37"
+  },
+  {
+    "player": "Trap",
+    "file": "trap_vs_Serral_TLMC15_Glittering_Ashes_29-10-2021_b86383_28137.SC2Replay",
+    "id": "28137",
+    "map": "[TLMC15] Glittering Ashes",
+    "matchup": "PvZ",
+    "duration": 1955.44,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-10-22",
+    "contest_date": "29.10.2021",
+    "map_listed": "[TLMC15] Glittering Ashes",
+    "players": [
+      {
+        "name": "Serral",
+        "race": "Z",
+        "toon": "1-S2-1-4182990",
+        "result": "win"
+      },
+      {
+        "name": "Trap",
+        "race": "P",
+        "toon": "1-S2-1-5117691",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28137",
+    "bytes": 263954,
+    "fetched_at": "2026-11-08T15:08:37"
+  },
+  {
+    "player": "Trap",
+    "file": "trap_vs_Serral_TLMC15_Hardwire_29-10-2021_b86383_28136.SC2Replay",
+    "id": "28136",
+    "map": "[TLMC15] Hardwire",
+    "matchup": "PvZ",
+    "duration": 707.31,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-10-22",
+    "contest_date": "29.10.2021",
+    "map_listed": "[TLMC15] Hardwire",
+    "players": [
+      {
+        "name": "Serral",
+        "race": "Z",
+        "toon": "1-S2-1-4182990",
+        "result": "loss"
+      },
+      {
+        "name": "Trap",
+        "race": "P",
+        "toon": "1-S2-1-5117691",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28136",
+    "bytes": 91335,
+    "fetched_at": "2026-11-08T15:08:38"
+  },
+  {
+    "player": "Trap",
+    "file": "trap_vs_Serral_Glittering_Ashes_LE_01-02-2022_b86383_28264.SC2Replay",
+    "id": "28264",
+    "map": "Glittering Ashes LE",
+    "matchup": "PvZ",
+    "duration": 835.94,
+    "build": 86383,
+    "protocol_build": 86383,
+    "date": "2021-12-12",
+    "contest_date": "01.02.2022",
+    "map_listed": "Glittering Ashes LE",
+    "players": [
+      {
+        "name": "Serral",
+        "race": "Z",
+        "toon": "1-S2-1-4182990",
+        "result": "win"
+      },
+      {
+        "name": "Trap",
+        "race": "P",
+        "toon": "1-S2-1-5117691",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28264",
+    "bytes": 153889,
+    "fetched_at": "2026-11-08T15:08:37"
+  }
+]
