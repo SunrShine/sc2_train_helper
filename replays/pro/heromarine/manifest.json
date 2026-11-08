@@ -1,0 +1,182 @@
+[
+  {
+    "player": "HeroMarine",
+    "file": "heromarine_vs_DnS_Amygdala_01-01-2025_b93272_28892.SC2Replay",
+    "id": "28892",
+    "map": "Amygdala",
+    "matchup": "TvP",
+    "duration": 698.94,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-11-30",
+    "contest_date": "01.01.2025",
+    "map_listed": "Amygdala",
+    "players": [
+      {
+        "name": "HeroMarine",
+        "race": "T",
+        "toon": "2-S2-1-2361139",
+        "result": "win"
+      },
+      {
+        "name": "DnS",
+        "race": "P",
+        "toon": "2-S2-1-2979356",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28892",
+    "bytes": 102456,
+    "fetched_at": "2026-11-08T13:33:58"
+  },
+  {
+    "player": "HeroMarine",
+    "file": "heromarine_vs_DnS_El_Dorado_01-01-2025_b93272_28891.SC2Replay",
+    "id": "28891",
+    "map": "El Dorado",
+    "matchup": "TvP",
+    "duration": 846.06,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-11-30",
+    "contest_date": "01.01.2025",
+    "map_listed": "El Dorado",
+    "players": [
+      {
+        "name": "HeroMarine",
+        "race": "T",
+        "toon": "2-S2-1-2361139",
+        "result": "loss"
+      },
+      {
+        "name": "DnS",
+        "race": "P",
+        "toon": "2-S2-1-2979356",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28891",
+    "bytes": 136096,
+    "fetched_at": "2026-11-08T13:33:58"
+  },
+  {
+    "player": "HeroMarine",
+    "file": "heromarine_vs_gumiho_Amygdala_01-01-2025_b93272_28932.SC2Replay",
+    "id": "28932",
+    "map": "Amygdala",
+    "matchup": "TvT",
+    "duration": 613.38,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-12-01",
+    "contest_date": "01.01.2025",
+    "map_listed": "Amygdala",
+    "players": [
+      {
+        "name": "HeroMarine",
+        "race": "T",
+        "toon": "2-S2-1-2361139",
+        "result": "loss"
+      },
+      {
+        "name": "gumiho",
+        "race": "T",
+        "toon": "2-S2-1-3885137",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28932",
+    "bytes": 80620,
+    "fetched_at": "2026-11-08T13:33:58"
+  },
+  {
+    "player": "HeroMarine",
+    "file": "heromarine_vs_gumiho_Frostline_LE_01-01-2025_b93272_28933.SC2Replay",
+    "id": "28933",
+    "map": "Frostline LE",
+    "matchup": "TvT",
+    "duration": 514.5,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-12-01",
+    "contest_date": "01.01.2025",
+    "map_listed": "Frostline LE",
+    "players": [
+      {
+        "name": "HeroMarine",
+        "race": "T",
+        "toon": "2-S2-1-2361139",
+        "result": "win"
+      },
+      {
+        "name": "gumiho",
+        "race": "T",
+        "toon": "2-S2-1-3885137",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28933",
+    "bytes": 66431,
+    "fetched_at": "2026-11-08T13:33:58"
+  },
+  {
+    "player": "HeroMarine",
+    "file": "heromarine_vs_gumiho_Ultralove_01-01-2025_b93272_28934.SC2Replay",
+    "id": "28934",
+    "map": "Ultralove",
+    "matchup": "TvT",
+    "duration": 1172.81,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-12-01",
+    "contest_date": "01.01.2025",
+    "map_listed": "Ultralove",
+    "players": [
+      {
+        "name": "HeroMarine",
+        "race": "T",
+        "toon": "2-S2-1-2361139",
+        "result": "loss"
+      },
+      {
+        "name": "gumiho",
+        "race": "T",
+        "toon": "2-S2-1-3885137",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28934",
+    "bytes": 133367,
+    "fetched_at": "2026-11-08T13:33:58"
+  },
+  {
+    "player": "HeroMarine",
+    "file": "heromarine_vs_gumiho_Whispers_of_Gold_01-01-2025_b93272_28931.SC2Replay",
+    "id": "28931",
+    "map": "Whispers of Gold",
+    "matchup": "TvT",
+    "duration": 344.0,
+    "build": 93272,
+    "protocol_build": 93272,
+    "date": "2024-12-01",
+    "contest_date": "01.01.2025",
+    "map_listed": "Whispers of Gold",
+    "players": [
+      {
+        "name": "HeroMarine",
+        "race": "T",
+        "toon": "2-S2-1-2361139",
+        "result": "loss"
+      },
+      {
+        "name": "gumiho",
+        "race": "T",
+        "toon": "2-S2-1-3885137",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28931",
+    "bytes": 57251,
+    "fetched_at": "2026-11-08T13:33:58"
+  }
+]

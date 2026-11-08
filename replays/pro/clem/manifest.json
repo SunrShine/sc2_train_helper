@@ -1,0 +1,272 @@
+[
+  {
+    "player": "Clem",
+    "file": "clem_vs_Classic_10000_Feet_LE_22-01-2026_b96163_29021.SC2Replay",
+    "id": "29021",
+    "map": "10000 Feet LE",
+    "matchup": "TvP",
+    "duration": 1645.62,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-17",
+    "contest_date": "22.01.2026",
+    "map_listed": "10000 Feet LE",
+    "players": [
+      {
+        "name": "Classic",
+        "race": "P",
+        "toon": "5-S2-1-12362317",
+        "result": "win"
+      },
+      {
+        "name": "Clem",
+        "race": "T",
+        "toon": "5-S2-1-12361211",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=29021",
+    "bytes": 261378,
+    "fetched_at": "2026-11-08T13:33:56"
+  },
+  {
+    "player": "Clem",
+    "file": "clem_vs_Classic_Old_Republic_LE_22-01-2026_b96163_29020.SC2Replay",
+    "id": "29020",
+    "map": "Old Republic LE",
+    "matchup": "TvP",
+    "duration": 868.44,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-17",
+    "contest_date": "22.01.2026",
+    "map_listed": "Old Republic LE",
+    "players": [
+      {
+        "name": "Classic",
+        "race": "P",
+        "toon": "5-S2-1-12362317",
+        "result": "loss"
+      },
+      {
+        "name": "Clem",
+        "race": "T",
+        "toon": "5-S2-1-12361211",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=29020",
+    "bytes": 137068,
+    "fetched_at": "2026-11-08T13:33:56"
+  },
+  {
+    "player": "Clem",
+    "file": "clem_vs_Classic_Ruby_Rock_LE_22-01-2026_b96163_29018.SC2Replay",
+    "id": "29018",
+    "map": "Ruby Rock LE",
+    "matchup": "TvP",
+    "duration": 964.88,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-17",
+    "contest_date": "22.01.2026",
+    "map_listed": "Ruby Rock LE",
+    "players": [
+      {
+        "name": "Clem",
+        "race": "T",
+        "toon": "5-S2-1-12361211",
+        "result": "win"
+      },
+      {
+        "name": "Classic",
+        "race": "P",
+        "toon": "5-S2-1-12362317",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=29018",
+    "bytes": 158748,
+    "fetched_at": "2026-11-08T13:33:56"
+  },
+  {
+    "player": "Clem",
+    "file": "clem_vs_Classic_Winter_Madness_LE_22-01-2026_b96163_29019.SC2Replay",
+    "id": "29019",
+    "map": "Winter Madness LE",
+    "matchup": "TvP",
+    "duration": 896.38,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-17",
+    "contest_date": "22.01.2026",
+    "map_listed": "Winter Madness LE",
+    "players": [
+      {
+        "name": "Clem",
+        "race": "T",
+        "toon": "5-S2-1-12361211",
+        "result": "win"
+      },
+      {
+        "name": "Classic",
+        "race": "P",
+        "toon": "5-S2-1-12362317",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=29019",
+    "bytes": 148297,
+    "fetched_at": "2026-11-08T13:33:56"
+  },
+  {
+    "player": "Clem",
+    "file": "clem_vs_Reynor_10000_Feet_LE_22-01-2026_b96163_29002.SC2Replay",
+    "id": "29002",
+    "map": "10000 Feet LE",
+    "matchup": "TvZ",
+    "duration": 1168.81,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-18",
+    "contest_date": "22.01.2026",
+    "map_listed": "10000 Feet LE",
+    "players": [
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "loss"
+      },
+      {
+        "name": "Clem",
+        "race": "T",
+        "toon": "5-S2-1-12361211",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=29002",
+    "bytes": 231833,
+    "fetched_at": "2026-11-08T13:33:56"
+  },
+  {
+    "player": "Clem",
+    "file": "clem_vs_Reynor_Mothership_LE_22-01-2026_b96163_28997.SC2Replay",
+    "id": "28997",
+    "map": "Mothership LE",
+    "matchup": "TvZ",
+    "duration": 3087.19,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-18",
+    "contest_date": "22.01.2026",
+    "map_listed": "Mothership LE",
+    "players": [
+      {
+        "name": "Clem",
+        "race": "T",
+        "toon": "5-S2-1-12361211",
+        "result": "loss"
+      },
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28997",
+    "bytes": 312668,
+    "fetched_at": "2026-11-08T13:33:57"
+  },
+  {
+    "player": "Clem",
+    "file": "clem_vs_Reynor_Old_Republic_LE_22-01-2026_b96163_29003.SC2Replay",
+    "id": "29003",
+    "map": "Old Republic LE",
+    "matchup": "TvZ",
+    "duration": 937.75,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-18",
+    "contest_date": "22.01.2026",
+    "map_listed": "Old Republic LE",
+    "players": [
+      {
+        "name": "Clem",
+        "race": "T",
+        "toon": "5-S2-1-12361211",
+        "result": "win"
+      },
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=29003",
+    "bytes": 164506,
+    "fetched_at": "2026-11-08T13:33:57"
+  },
+  {
+    "player": "Clem",
+    "file": "clem_vs_Reynor_Ruby_Rock_LE_22-01-2026_b96163_28999.SC2Replay",
+    "id": "28999",
+    "map": "Ruby Rock LE",
+    "matchup": "TvZ",
+    "duration": 1077.5,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-18",
+    "contest_date": "22.01.2026",
+    "map_listed": "Ruby Rock LE",
+    "players": [
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "win"
+      },
+      {
+        "name": "Clem",
+        "race": "T",
+        "toon": "5-S2-1-12361211",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28999",
+    "bytes": 210087,
+    "fetched_at": "2026-11-08T13:33:57"
+  },
+  {
+    "player": "Clem",
+    "file": "clem_vs_Reynor_Winter_Madness_LE_22-01-2026_b96163_28998.SC2Replay",
+    "id": "28998",
+    "map": "Winter Madness LE",
+    "matchup": "TvZ",
+    "duration": 1223.44,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-18",
+    "contest_date": "22.01.2026",
+    "map_listed": "Winter Madness LE",
+    "players": [
+      {
+        "name": "Clem",
+        "race": "T",
+        "toon": "5-S2-1-12361211",
+        "result": "loss"
+      },
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28998",
+    "bytes": 280307,
+    "fetched_at": "2026-11-08T13:33:57"
+  }
+]

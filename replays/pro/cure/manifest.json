@@ -1,0 +1,182 @@
+[
+  {
+    "player": "Cure",
+    "file": "cure_vs_Solar_Mothership_LE_22-01-2026_b96163_28993.SC2Replay",
+    "id": "28993",
+    "map": "Mothership LE",
+    "matchup": "TvZ",
+    "duration": 1061.25,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-17",
+    "contest_date": "22.01.2026",
+    "map_listed": "Mothership LE",
+    "players": [
+      {
+        "name": "Cure",
+        "race": "T",
+        "toon": "5-S2-1-12361628",
+        "result": "loss"
+      },
+      {
+        "name": "Solar",
+        "race": "Z",
+        "toon": "5-S2-1-12361048",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28993",
+    "bytes": 191683,
+    "fetched_at": "2026-11-08T13:33:58"
+  },
+  {
+    "player": "Cure",
+    "file": "cure_vs_Solar_Old_Republic_LE_22-01-2026_b96163_28992.SC2Replay",
+    "id": "28992",
+    "map": "Old Republic LE",
+    "matchup": "TvZ",
+    "duration": 579.69,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-17",
+    "contest_date": "22.01.2026",
+    "map_listed": "Old Republic LE",
+    "players": [
+      {
+        "name": "Solar",
+        "race": "Z",
+        "toon": "5-S2-1-12361048",
+        "result": "win"
+      },
+      {
+        "name": "Cure",
+        "race": "T",
+        "toon": "5-S2-1-12361628",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28992",
+    "bytes": 97973,
+    "fetched_at": "2026-11-08T13:33:58"
+  },
+  {
+    "player": "Cure",
+    "file": "cure_vs_Solar_White_Rabbit_LE_22-01-2026_b96163_28991.SC2Replay",
+    "id": "28991",
+    "map": "White Rabbit LE",
+    "matchup": "TvZ",
+    "duration": 1135.81,
+    "build": 96163,
+    "protocol_build": 95299,
+    "date": "2026-01-17",
+    "contest_date": "22.01.2026",
+    "map_listed": "White Rabbit LE",
+    "players": [
+      {
+        "name": "Solar",
+        "race": "Z",
+        "toon": "5-S2-1-12361048",
+        "result": "win"
+      },
+      {
+        "name": "Cure",
+        "race": "T",
+        "toon": "5-S2-1-12361628",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28991",
+    "bytes": 177308,
+    "fetched_at": "2026-11-08T13:33:58"
+  },
+  {
+    "player": "Cure",
+    "file": "cure_vs_Reynor_Blackburn_LE_25-09-2021_b84643_28037.SC2Replay",
+    "id": "28037",
+    "map": "Blackburn LE",
+    "matchup": "TvZ",
+    "duration": 1235.88,
+    "build": 84643,
+    "protocol_build": 84643,
+    "date": "2021-09-18",
+    "contest_date": "25.09.2021",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "1-S2-1-10010469",
+        "result": "win"
+      },
+      {
+        "name": "cure",
+        "race": "T",
+        "toon": "1-S2-1-5159620",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28037",
+    "bytes": 299884,
+    "fetched_at": "2026-11-08T13:33:57"
+  },
+  {
+    "player": "Cure",
+    "file": "cure_vs_Reynor_Lightshade_LE_25-09-2021_b84643_28036.SC2Replay",
+    "id": "28036",
+    "map": "Lightshade LE",
+    "matchup": "TvZ",
+    "duration": 1550.56,
+    "build": 84643,
+    "protocol_build": 84643,
+    "date": "2021-09-18",
+    "contest_date": "25.09.2021",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "1-S2-1-10010469",
+        "result": "loss"
+      },
+      {
+        "name": "cure",
+        "race": "T",
+        "toon": "1-S2-1-5159620",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28036",
+    "bytes": 409206,
+    "fetched_at": "2026-11-08T13:33:58"
+  },
+  {
+    "player": "Cure",
+    "file": "cure_vs_Reynor_Romanticide_LE_25-09-2021_b84643_28035.SC2Replay",
+    "id": "28035",
+    "map": "Romanticide LE",
+    "matchup": "TvZ",
+    "duration": 1269.75,
+    "build": 84643,
+    "protocol_build": 84643,
+    "date": "2021-09-18",
+    "contest_date": "25.09.2021",
+    "map_listed": "",
+    "players": [
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "1-S2-1-10010469",
+        "result": "win"
+      },
+      {
+        "name": "cure",
+        "race": "T",
+        "toon": "1-S2-1-5159620",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28035",
+    "bytes": 308862,
+    "fetched_at": "2026-11-08T13:33:58"
+  }
+]

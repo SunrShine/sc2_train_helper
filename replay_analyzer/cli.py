@@ -312,9 +312,48 @@ def main(argv=None):
     fog_cmd.add_argument("--open", dest="open_after", action="store_true",
                          help="生成后自动用浏览器打开")
 
+    # ---- 经济 / 建造顺序 / DAG：参数转发给各自模块的 main()
+    econ_cmd = sub.add_parser("econ", help="经济模型：账本对账 + 收入拟合 + 采矿效率")
+    econ_cmd.add_argument("--limit", type=int, default=90, help="我的录像抽样局数")
+    econ_cmd.add_argument("--replay-dir", dest="replay_dir", default=None, help="我的录像目录")
+    econ_cmd.add_argument("--pro-dir", dest="pro_dir", default=None, help="职业录像目录")
+    econ_cmd.add_argument("--game", dest="game", default=None, help="重点展示哪一局（文件名片段）")
+    econ_cmd.add_argument("-o", "--output", dest="econ_out", default=None, help="HTML 输出路径")
+    econ_cmd.add_argument("--json", dest="json_path", default=None, help="JSON 输出路径")
+    econ_cmd.add_argument("--open", dest="open_after", action="store_true",
+                          help="生成后自动用浏览器打开")
+
+    bo_cmd = sub.add_parser("bo", help="建造顺序：按时间线分段 + 开局分类 + 我 vs 职业对照")
+    bo_cmd.add_argument("--mine", default=None, help="我的录像目录")
+    bo_cmd.add_argument("--pro", default=None, help="职业选手录像目录")
+    bo_cmd.add_argument("--limit", type=int, default=60, help="我的录像抽样局数")
+    bo_cmd.add_argument("--pro-limit", dest="pro_limit", type=int, default=30, help="职业录像局数")
+    bo_cmd.add_argument("--matchup", default="TvZ", help="只比对位，例如 TvZ / TvP")
+    bo_cmd.add_argument("--seed", type=int, default=None, help="抽样随机种子")
+    bo_cmd.add_argument("--replay", action="append", default=[], metavar="FILE",
+                        help="额外单独分析某局（可重复），会打印 signature")
+    bo_cmd.add_argument("-o", "--output", dest="bo_html", default=None, help="HTML 输出路径")
+    bo_cmd.add_argument("--json", dest="json_path", default=None, help="JSON 输出路径")
+    bo_cmd.add_argument("--open", dest="open_after", action="store_true",
+                        help="生成后自动用浏览器打开")
+
+    dag_cmd = sub.add_parser("dag", help="BO 转移 DAG：到点执行还是侦察后反应")
+    dag_cmd.add_argument("--bo", default=None, help="bo.py 产出的 reports/bo.json")
+    dag_cmd.add_argument("--matchup", default="TvZ")
+    dag_cmd.add_argument("--mine", type=int, default=100, help="我的录像最多几局")
+    dag_cmd.add_argument("--pro", type=int, default=100, help="职业录像最多几局")
+    dag_cmd.add_argument("--pro-name", dest="pro_name", default=None, help="职业选手名字，默认 Maru")
+    dag_cmd.add_argument("--min-edge", dest="min_edge", type=int, default=2, help="边上图的最小次数")
+    dag_cmd.add_argument("--force", action="store_true", help="丢弃信息事件缓存重新计算")
+    dag_cmd.add_argument("-o", "--output", dest="dag_html", default=None, help="HTML 输出路径")
+    dag_cmd.add_argument("--json", dest="json_path", default=None, help="JSON 输出路径")
+    dag_cmd.add_argument("--open", dest="open_after", action="store_true",
+                         help="生成后自动用浏览器打开")
+
     # 允许省略子命令：直接给一个 replay 路径就当作 analyze
     raw_args = list(sys.argv[1:] if argv is None else argv)
-    known = {"analyze", "batch", "dump", "micro", "library", "compare", "card", "fog"}
+    known = {"analyze", "batch", "dump", "micro", "library", "compare", "card", "fog",
+             "econ", "bo", "dag"}
     if raw_args and not raw_args[0].startswith("-") and raw_args[0] not in known:
         if os.path.isfile(raw_args[0]) or raw_args[0].lower().endswith(".sc2replay"):
             raw_args = ["analyze"] + raw_args
@@ -493,6 +532,67 @@ def main(argv=None):
                 json.dump(payload, handle, ensure_ascii=False, indent=1)
         _print_fog(result, output, gif)
         print("用时      : %.1fs" % (time.time() - started))
+        if args.open_after:
+            _open_in_browser(output)
+        return 0
+
+    if args.command == "econ":
+        from . import econ as econ_module
+
+        forwarded = ["--limit", str(args.limit)]
+        if args.replay_dir:
+            forwarded += ["--replay-dir", args.replay_dir]
+        if args.pro_dir:
+            forwarded += ["--pro-dir", args.pro_dir]
+        if args.game:
+            forwarded += ["--game", args.game]
+        output = args.econ_out or os.path.join("reports", "econ.html")
+        forwarded += ["--out", output]
+        if args.json_path:
+            forwarded += ["--json", args.json_path]
+        econ_module.main(forwarded)
+        if args.open_after:
+            _open_in_browser(output)
+        return 0
+
+    if args.command == "bo":
+        from . import bo as bo_module
+
+        forwarded = ["--limit", str(args.limit), "--pro-limit", str(args.pro_limit),
+                     "--matchup", args.matchup]
+        if args.mine:
+            forwarded += ["--mine", args.mine]
+        if args.pro:
+            forwarded += ["--pro", args.pro]
+        if args.seed is not None:
+            forwarded += ["--seed", str(args.seed)]
+        for replay in args.replay:
+            forwarded += ["--replay", replay]
+        output = args.bo_html or os.path.join("reports", "bo.html")
+        forwarded += ["--html", output]
+        if args.json_path:
+            forwarded += ["--json", args.json_path]
+        bo_module.main(forwarded)
+        if args.open_after:
+            _open_in_browser(output)
+        return 0
+
+    if args.command == "dag":
+        from . import dag_report as dag_module
+
+        forwarded = ["--matchup", args.matchup, "--mine", str(args.mine),
+                     "--pro", str(args.pro), "--min-edge", str(args.min_edge)]
+        if args.bo:
+            forwarded += ["--bo", args.bo]
+        if args.pro_name:
+            forwarded += ["--pro-name", args.pro_name]
+        output = args.dag_html or os.path.join("reports", "dag.html")
+        forwarded += ["--out", output]
+        if args.json_path:
+            forwarded += ["--json", args.json_path]
+        if args.force:
+            forwarded.append("--force")
+        dag_module.main(forwarded)
         if args.open_after:
             _open_in_browser(output)
         return 0

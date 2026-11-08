@@ -1,0 +1,4758 @@
+{
+ "generated": "2026-11-08 14:22",
+ "corpus": {
+  "replay_dir": "C:\\Users\\sun\\Documents\\StarCraft II\\Accounts\\556922532\\5-S2-1-8354391\\Replays\\Multiplayer",
+  "files_total": 1071,
+  "sampled": 91,
+  "players_used": 104,
+  "income_samples": 10002,
+  "elapsed_seconds": 12.5
+ },
+ "anchor": {
+  "definition": "游戏自带 CollectionRate / 总农民数（每分钟）",
+  "n": 1222,
+  "median": 48.5,
+  "p25": 44.2,
+  "p75": 52.2,
+  "doc_anchor": 47.2
+ },
+ "reported_rate_bias": {
+  "definition": "report_rate / ledger_rate（同一采样点）",
+  "n": 5587,
+  "median_ratio": 1.46,
+  "p25": 1.35,
+  "p75": 1.6
+ },
+ "theoretical": {
+  "mineral_per_worker_per_min": 45.0,
+  "vespene_per_refinery_per_min": 120.0,
+  "source": "干净窗口实测 p90 收敛（lead 独立测量 + 本模块复测；矿物 p90 我的局 45.0 / 职业局 42.9，气体 p50=p90=120.0）",
+  "mining_rule": "单基地、0 气矿、14~16 农民且农民数在窗口内不变、窗口内无任何建造/生产/升级事件；用银行存款（矿物）增量 / 时长 / 农民数，算每分钟每农民收入",
+  "gas_rule": "单气矿、农民数在窗口内不变、窗口内无任何建造/生产/升级事件；用气体银行存款增量 / 时长，算每分钟每气矿收入"
+ },
+ "efficiency": {
+  "mining_rule": "单基地、0 气矿、14~16 农民且农民数在窗口内不变、窗口内无任何建造/生产/升级事件；用银行存款（矿物）增量 / 时长 / 农民数，算每分钟每农民收入",
+  "gas_rule": "单气矿、农民数在窗口内不变、窗口内无任何建造/生产/升级事件；用气体银行存款增量 / 时长，算每分钟每气矿收入",
+  "mine": {
+   "files": 180,
+   "minerals": {
+    "windows": 80,
+    "p50": 23.6,
+    "p75": 40.7,
+    "p90": 45.0,
+    "max": 47.1,
+    "mean": 28.0,
+    "theoretical": 45.0,
+    "efficiency_pct": 52.4
+   },
+   "vespene": {
+    "windows": 231,
+    "p50": 120.0,
+    "p75": 120.0,
+    "p90": 120.0,
+    "max": 120.0,
+    "mean": 100.1,
+    "theoretical": 120.0,
+    "efficiency_pct": 100.0
+   },
+   "by_player": [
+    {
+     "player": "IIIIIIIIIIII",
+     "race": "T",
+     "minerals": {
+      "windows": 66,
+      "p50": 21.4,
+      "p75": 40.7,
+      "p90": 45.0,
+      "max": 47.1,
+      "mean": 27.8,
+      "theoretical": 45.0,
+      "efficiency_pct": 47.6
+     },
+     "vespene": {
+      "windows": 196,
+      "p50": 120.0,
+      "p75": 120.0,
+      "p90": 120.0,
+      "max": 120.0,
+      "mean": 103.7,
+      "theoretical": 120.0,
+      "efficiency_pct": 100.0
+     }
+    },
+    {
+     "player": "IIIIIIIIIIII",
+     "race": "P",
+     "minerals": {
+      "windows": 14,
+      "p50": 25.7,
+      "p75": 42.9,
+      "p90": 42.9,
+      "max": 47.1,
+      "mean": 28.9,
+      "theoretical": 45.0,
+      "efficiency_pct": 57.1
+     },
+     "vespene": {
+      "windows": 22,
+      "p50": 48.0,
+      "p75": 96.0,
+      "p90": 120.0,
+      "max": 120.0,
+      "mean": 67.6,
+      "theoretical": 120.0,
+      "efficiency_pct": 40.0
+     }
+    }
+   ]
+  },
+  "pro": {
+   "files": 51,
+   "minerals": {
+    "windows": 79,
+    "p50": 34.3,
+    "p75": 40.7,
+    "p90": 42.9,
+    "max": 47.1,
+    "mean": 30.2,
+    "theoretical": 45.0,
+    "efficiency_pct": 76.2
+   },
+   "vespene": {
+    "windows": 132,
+    "p50": 120.0,
+    "p75": 120.0,
+    "p90": 120.0,
+    "max": 120.0,
+    "mean": 99.1,
+    "theoretical": 120.0,
+    "efficiency_pct": 100.0
+   },
+   "by_player": [
+    {
+     "player": "maru",
+     "race": "T",
+     "minerals": {
+      "windows": 28,
+      "p50": 21.4,
+      "p75": 36.0,
+      "p90": 40.7,
+      "max": 45.0,
+      "mean": 25.7,
+      "theoretical": 45.0,
+      "efficiency_pct": 47.6
+     },
+     "vespene": {
+      "windows": 27,
+      "p50": 120.0,
+      "p75": 120.0,
+      "p90": 120.0,
+      "max": 120.0,
+      "mean": 102.2,
+      "theoretical": 120.0,
+      "efficiency_pct": 100.0
+     }
+    },
+    {
+     "player": "Clem",
+     "race": "T",
+     "minerals": {
+      "windows": 10,
+      "p50": 40.7,
+      "p75": 40.7,
+      "p90": 40.7,
+      "max": 40.7,
+      "mean": 31.6,
+      "theoretical": 45.0,
+      "efficiency_pct": 90.5
+     },
+     "vespene": {
+      "windows": 24,
+      "p50": 120.0,
+      "p75": 120.0,
+      "p90": 120.0,
+      "max": 120.0,
+      "mean": 106.0,
+      "theoretical": 120.0,
+      "efficiency_pct": 100.0
+     }
+    },
+    {
+     "player": "gumiho",
+     "race": "T",
+     "minerals": {
+      "windows": 7,
+      "p50": 38.6,
+      "p75": 42.9,
+      "p90": 42.9,
+      "max": 42.9,
+      "mean": 33.2,
+      "theoretical": 45.0,
+      "efficiency_pct": 85.7
+     },
+     "vespene": {
+      "windows": 14,
+      "p50": 120.0,
+      "p75": 120.0,
+      "p90": 120.0,
+      "max": 120.0,
+      "mean": 109.7,
+      "theoretical": 120.0,
+      "efficiency_pct": 100.0
+     }
+    },
+    {
+     "player": "&lt;RBLN&gt;<sp/>ByuN",
+     "race": "T",
+     "minerals": {
+      "windows": 6,
+      "p50": 21.4,
+      "p75": 36.4,
+      "p90": 40.7,
+      "max": 40.7,
+      "mean": 24.9,
+      "theoretical": 45.0,
+      "efficiency_pct": 47.6
+     },
+     "vespene": {
+      "windows": 1,
+      "p50": 48.0,
+      "p75": 48.0,
+      "p90": 48.0,
+      "max": 48.0,
+      "mean": 48.0,
+      "theoretical": 120.0,
+      "efficiency_pct": 40.0
+     }
+    },
+    {
+     "player": "&lt;mouz&gt;<sp/>HeroMarine",
+     "race": "T",
+     "minerals": {
+      "windows": 6,
+      "p50": 40.7,
+      "p75": 40.7,
+      "p90": 45.0,
+      "max": 45.0,
+      "mean": 33.2,
+      "theoretical": 45.0,
+      "efficiency_pct": 90.5
+     },
+     "vespene": {
+      "windows": 1,
+      "p50": 48.0,
+      "p75": 48.0,
+      "p90": 48.0,
+      "max": 48.0,
+      "mean": 48.0,
+      "theoretical": 120.0,
+      "efficiency_pct": 40.0
+     }
+    },
+    {
+     "player": "Maru",
+     "race": "T",
+     "minerals": {
+      "windows": 5,
+      "p50": 38.6,
+      "p75": 38.6,
+      "p90": 40.7,
+      "max": 40.7,
+      "mean": 32.1,
+      "theoretical": 45.0,
+      "efficiency_pct": 85.7
+     },
+     "vespene": {
+      "windows": 17,
+      "p50": 96.0,
+      "p75": 120.0,
+      "p90": 120.0,
+      "max": 120.0,
+      "mean": 103.1,
+      "theoretical": 120.0,
+      "efficiency_pct": 80.0
+     }
+    },
+    {
+     "player": "Classic",
+     "race": "P",
+     "minerals": {
+      "windows": 4,
+      "p50": 21.4,
+      "p75": 42.9,
+      "p90": 42.9,
+      "max": 42.9,
+      "mean": 25.2,
+      "theoretical": 45.0,
+      "efficiency_pct": 47.6
+     },
+     "vespene": {
+      "windows": 1,
+      "p50": 24.0,
+      "p75": 24.0,
+      "p90": 24.0,
+      "max": 24.0,
+      "mean": 24.0,
+      "theoretical": 120.0,
+      "efficiency_pct": 20.0
+     }
+    },
+    {
+     "player": "&lt;St0rmG&gt;<sp/>ShoWTimE",
+     "race": "P",
+     "minerals": {
+      "windows": 4,
+      "p50": 42.9,
+      "p75": 47.1,
+      "p90": 47.1,
+      "max": 47.1,
+      "mean": 43.4,
+      "theoretical": 45.0,
+      "efficiency_pct": 95.2
+     },
+     "vespene": {
+      "windows": 7,
+      "p50": 24.0,
+      "p75": 120.0,
+      "p90": 120.0,
+      "max": 120.0,
+      "mean": 51.4,
+      "theoretical": 120.0,
+      "efficiency_pct": 20.0
+     }
+    }
+   ]
+  },
+  "lead_reference": {
+   "mine": {
+    "p50": 25.7,
+    "p75": 42.9,
+    "p90": 45.0,
+    "max": 47.1,
+    "efficiency_pct": 57.1
+   },
+   "pro": {
+    "p50": 36.4,
+    "p75": 40.7,
+    "p90": 42.9,
+    "efficiency_pct": 80.9
+   },
+   "note": "lead 在 999 局我的录像 / 51 局职业录像上独立测量；本模块复测用180 局我的录像 + 51 局职业录像，p90/max/气体上限完全一致，p50 差 2~4 个点属于抽样与窗口实现差异。"
+  },
+  "fitted_model_coefficient_minerals_per_worker_min": 25.1014,
+  "usage": "仿真器求 BO 最优解用 theoretical（假设农民一直在采）；复盘预测/对账用有效值（收入模型系数，或按组 p50）。"
+ },
+ "income_model": {
+  "mineral": {
+   "chosen": "capped",
+   "params": {
+    "a": 25.1014
+   },
+   "train": {
+    "n": 7520,
+    "mae": 239.76,
+    "r2": 0.6171,
+    "rmse": 413.15
+   },
+   "test": {
+    "n": 2482,
+    "mae": 202.36,
+    "r2": 0.8027,
+    "rmse": 265.68
+   },
+   "candidates": [
+    {
+     "id": "capped",
+     "label": "rate = a · min(矿上农民, 16·基地)",
+     "params": {
+      "a": 25.1014
+     },
+     "train": {
+      "n": 7520,
+      "mae": 239.76,
+      "r2": 0.6171,
+      "rmse": 413.15
+     },
+     "test": {
+      "n": 2482,
+      "mae": 202.36,
+      "r2": 0.8027,
+      "rmse": 265.68
+     },
+     "cumulative_train": {
+      "n": 7520,
+      "mae": 1210.14,
+      "r2": 0.9644,
+      "rmse": 1938.91
+     },
+     "cumulative_test": {
+      "n": 2482,
+      "mae": 1106.75,
+      "r2": 0.9354,
+      "rmse": 1562.16
+     }
+    },
+    {
+     "id": "capped_mule",
+     "label": "rate = a · min(矿上农民, 16·基地) + c·矿骡",
+     "params": {
+      "a": 25.1014,
+      "c": 0.0
+     },
+     "train": {
+      "n": 7520,
+      "mae": 239.76,
+      "r2": 0.6171,
+      "rmse": 413.15
+     },
+     "test": {
+      "n": 2482,
+      "mae": 202.36,
+      "r2": 0.8027,
+      "rmse": 265.68
+     },
+     "cumulative_train": {
+      "n": 7520,
+      "mae": 1210.14,
+      "r2": 0.9644,
+      "rmse": 1938.91
+     },
+     "cumulative_test": {
+      "n": 2482,
+      "mae": 1106.75,
+      "r2": 0.9354,
+      "rmse": 1562.16
+     }
+    },
+    {
+     "id": "capped_base",
+     "label": "rate = a · min(矿上农民, 16·基地) + b·基地",
+     "params": {
+      "a": 22.0506,
+      "b": 36.2405
+     },
+     "train": {
+      "n": 7520,
+      "mae": 240.79,
+      "r2": 0.6133,
+      "rmse": 415.19
+     },
+     "test": {
+      "n": 2482,
+      "mae": 203.74,
+      "r2": 0.7985,
+      "rmse": 268.5
+     },
+     "cumulative_train": {
+      "n": 7520,
+      "mae": 1209.34,
+      "r2": 0.967,
+      "rmse": 1868.23
+     },
+     "cumulative_test": {
+      "n": 2482,
+      "mae": 1101.54,
+      "r2": 0.9329,
+      "rmse": 1593.05
+     }
+    },
+    {
+     "id": "capped_base_mule",
+     "label": "rate = a · min(矿上农民, 16·基地) + b·基地 + c·矿骡",
+     "params": {
+      "a": 22.0506,
+      "b": 36.2405,
+      "c": 0.0
+     },
+     "train": {
+      "n": 7520,
+      "mae": 240.79,
+      "r2": 0.6133,
+      "rmse": 415.19
+     },
+     "test": {
+      "n": 2482,
+      "mae": 203.74,
+      "r2": 0.7985,
+      "rmse": 268.5
+     },
+     "cumulative_train": {
+      "n": 7520,
+      "mae": 1209.34,
+      "r2": 0.967,
+      "rmse": 1868.23
+     },
+     "cumulative_test": {
+      "n": 2482,
+      "mae": 1101.54,
+      "r2": 0.9329,
+      "rmse": 1593.05
+     }
+    },
+    {
+     "id": "all_workers",
+     "label": "rate = a · 总农民（不扣气矿、不封顶）",
+     "params": {
+      "a": 25.1014
+     },
+     "train": {
+      "n": 7520,
+      "mae": 225.81,
+      "r2": 0.6323,
+      "rmse": 404.89
+     },
+     "test": {
+      "n": 2482,
+      "mae": 180.9,
+      "r2": 0.8349,
+      "rmse": 243.03
+     },
+     "cumulative_train": {
+      "n": 7520,
+      "mae": 1210.14,
+      "r2": 0.9644,
+      "rmse": 1938.91
+     },
+     "cumulative_test": {
+      "n": 2482,
+      "mae": 1106.75,
+      "r2": 0.9354,
+      "rmse": 1562.16
+     }
+    }
+   ],
+   "units": "矿/分钟",
+   "target": "账本实测收入（collected 的中心差分）"
+  },
+  "vespene": {
+   "chosen": "gas",
+   "params": {
+    "a": 67.4264
+   },
+   "train": {
+    "n": 7520,
+    "mae": 163.7,
+    "r2": 0.0912,
+    "rmse": 394.86
+   },
+   "test": {
+    "n": 2482,
+    "mae": 70.35,
+    "r2": 0.688,
+    "rmse": 97.34
+   },
+   "candidates": [
+    {
+     "id": "gas",
+     "label": "rate = a · 气矿数",
+     "params": {
+      "a": 67.4264
+     },
+     "train": {
+      "n": 7520,
+      "mae": 163.7,
+      "r2": 0.0912,
+      "rmse": 394.86
+     },
+     "test": {
+      "n": 2482,
+      "mae": 70.35,
+      "r2": 0.688,
+      "rmse": 97.34
+     },
+     "cumulative_train": {
+      "n": 7520,
+      "mae": 823.01,
+      "r2": 0.6098,
+      "rmse": 2340.42
+     },
+     "cumulative_test": {
+      "n": 2482,
+      "mae": 219.14,
+      "r2": 0.933,
+      "rmse": 356.97
+     }
+    },
+    {
+     "id": "gas_miner",
+     "label": "rate = a · 气矿数 + b·气上农民（封顶 3/气矿）",
+     "params": {
+      "a": 67.4264
+     },
+     "train": {
+      "n": 7520,
+      "mae": 163.7,
+      "r2": 0.0912,
+      "rmse": 394.86
+     },
+     "test": {
+      "n": 2482,
+      "mae": 70.35,
+      "r2": 0.688,
+      "rmse": 97.34
+     },
+     "cumulative_train": {
+      "n": 7520,
+      "mae": 823.01,
+      "r2": 0.6098,
+      "rmse": 2340.42
+     },
+     "cumulative_test": {
+      "n": 2482,
+      "mae": 219.14,
+      "r2": 0.933,
+      "rmse": 356.97
+     }
+    }
+   ],
+   "units": "气/分钟"
+  }
+ },
+ "closure": {
+  "metric": "单位造价 + 升级造价 + 在建单位 vs 账本累计收入（矿物）",
+  "validation_games": [
+   {
+    "file": "Rorschach LE (55).SC2Replay",
+    "race": "T",
+    "duration": 1090.8,
+    "player_id": 1,
+    "bank_minerals": 1215,
+    "bank_ratio": 0.0684,
+    "collected_minerals": 17765,
+    "collected_vespene": 3654,
+    "unit_minerals": 17800,
+    "unit_vespene": 3800,
+    "strict_minerals": 17800,
+    "error_pct": 0.2,
+    "strict_error_pct": 0.2,
+    "gas_error_pct": 4.0,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "10000 Feet LE (70).SC2Replay",
+    "race": "T",
+    "duration": 1020.5,
+    "player_id": 1,
+    "bank_minerals": 2035,
+    "bank_ratio": 0.0935,
+    "collected_minerals": 21760,
+    "collected_vespene": 5091,
+    "unit_minerals": 20775,
+    "unit_vespene": 4150,
+    "strict_minerals": 19025,
+    "error_pct": -4.53,
+    "strict_error_pct": -12.57,
+    "gas_error_pct": -18.48,
+    "unknown_units": {
+     "GhostAlternate": 4
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (109).SC2Replay",
+    "race": "T",
+    "duration": 1370.6,
+    "player_id": 1,
+    "bank_minerals": 1345,
+    "bank_ratio": 0.0493,
+    "collected_minerals": 27295,
+    "collected_vespene": 7309,
+    "unit_minerals": 28050,
+    "unit_vespene": 6900,
+    "strict_minerals": 27800,
+    "error_pct": 2.77,
+    "strict_error_pct": 1.85,
+    "gas_error_pct": -5.6,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "InterferenceMatrix": 1,
+     "TerranVehicleAndShipArmorsLevel1": 1
+    },
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (119).SC2Replay",
+    "race": "T",
+    "duration": 1036.1,
+    "player_id": 1,
+    "bank_minerals": 625,
+    "bank_ratio": 0.0282,
+    "collected_minerals": 22125,
+    "collected_vespene": 4881,
+    "unit_minerals": 22550,
+    "unit_vespene": 4450,
+    "strict_minerals": 21450,
+    "error_pct": 1.92,
+    "strict_error_pct": -3.05,
+    "gas_error_pct": -8.83,
+    "unknown_units": {
+     "GhostAlternate": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   }
+  ],
+  "distribution_local_players": {
+   "n": 33,
+   "median": -2.33,
+   "mean": -3.68,
+   "p25": -5.82,
+   "p75": 0.51,
+   "min": -26.71,
+   "max": 7.78,
+   "within_2pct": 8
+  },
+  "strict_distribution": {
+   "n": 33,
+   "median": -7.29,
+   "mean": -8.19,
+   "p25": -12.02,
+   "p75": -3.05,
+   "min": -26.71,
+   "max": 1.85,
+   "within_2pct": 8
+  },
+  "games": [
+   {
+    "file": "10000 Feet LE (60).SC2Replay",
+    "race": "T",
+    "duration": 1161.2,
+    "player_id": 1,
+    "bank_minerals": 6345,
+    "bank_ratio": 0.2342,
+    "collected_minerals": 27095,
+    "collected_vespene": 5927,
+    "unit_minerals": 21700,
+    "unit_vespene": 4200,
+    "strict_minerals": 20350,
+    "error_pct": -19.91,
+    "strict_error_pct": -24.89,
+    "gas_error_pct": -29.14,
+    "unknown_units": {
+     "GhostAlternate": 3
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "10000 Feet LE (60).SC2Replay",
+    "race": "P",
+    "duration": 1161.2,
+    "player_id": 2,
+    "bank_minerals": 5360,
+    "bank_ratio": 0.3733,
+    "collected_minerals": 14360,
+    "collected_vespene": 5034,
+    "unit_minerals": 9325,
+    "unit_vespene": 950,
+    "strict_minerals": 9275,
+    "error_pct": -35.06,
+    "strict_error_pct": -35.41,
+    "gas_error_pct": -81.13,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "10000 Feet LE (70).SC2Replay",
+    "race": "T",
+    "duration": 1020.5,
+    "player_id": 1,
+    "bank_minerals": 2035,
+    "bank_ratio": 0.0935,
+    "collected_minerals": 21760,
+    "collected_vespene": 5091,
+    "unit_minerals": 20775,
+    "unit_vespene": 4150,
+    "strict_minerals": 19025,
+    "error_pct": -4.53,
+    "strict_error_pct": -12.57,
+    "gas_error_pct": -18.48,
+    "unknown_units": {
+     "GhostAlternate": 4
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "10000 Feet LE (70).SC2Replay",
+    "race": "P",
+    "duration": 1020.5,
+    "player_id": 2,
+    "bank_minerals": 1100,
+    "bank_ratio": 0.0516,
+    "collected_minerals": 21325,
+    "collected_vespene": 5298,
+    "unit_minerals": 21025,
+    "unit_vespene": 4850,
+    "strict_minerals": 20175,
+    "error_pct": -1.41,
+    "strict_error_pct": -5.39,
+    "gas_error_pct": -8.46,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (109).SC2Replay",
+    "race": "T",
+    "duration": 1370.6,
+    "player_id": 1,
+    "bank_minerals": 1345,
+    "bank_ratio": 0.0493,
+    "collected_minerals": 27295,
+    "collected_vespene": 7309,
+    "unit_minerals": 28050,
+    "unit_vespene": 6900,
+    "strict_minerals": 27800,
+    "error_pct": 2.77,
+    "strict_error_pct": 1.85,
+    "gas_error_pct": -5.6,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "InterferenceMatrix": 1,
+     "TerranVehicleAndShipArmorsLevel1": 1
+    },
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (109).SC2Replay",
+    "race": "T",
+    "duration": 1370.6,
+    "player_id": 2,
+    "bank_minerals": 715,
+    "bank_ratio": 0.0258,
+    "collected_minerals": 27715,
+    "collected_vespene": 6874,
+    "unit_minerals": 28300,
+    "unit_vespene": 6025,
+    "strict_minerals": 27125,
+    "error_pct": 2.11,
+    "strict_error_pct": -2.13,
+    "gas_error_pct": -12.35,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "InterferenceMatrix": 1
+    },
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (119).SC2Replay",
+    "race": "T",
+    "duration": 1036.1,
+    "player_id": 1,
+    "bank_minerals": 625,
+    "bank_ratio": 0.0282,
+    "collected_minerals": 22125,
+    "collected_vespene": 4881,
+    "unit_minerals": 22550,
+    "unit_vespene": 4450,
+    "strict_minerals": 21450,
+    "error_pct": 1.92,
+    "strict_error_pct": -3.05,
+    "gas_error_pct": -8.83,
+    "unknown_units": {
+     "GhostAlternate": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (119).SC2Replay",
+    "race": "P",
+    "duration": 1036.1,
+    "player_id": 2,
+    "bank_minerals": 220,
+    "bank_ratio": 0.0158,
+    "collected_minerals": 13895,
+    "collected_vespene": 3069,
+    "unit_minerals": 14075,
+    "unit_vespene": 3250,
+    "strict_minerals": 14075,
+    "error_pct": 1.3,
+    "strict_error_pct": 1.3,
+    "gas_error_pct": 5.9,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (129).SC2Replay",
+    "race": "P",
+    "duration": 2740.6,
+    "player_id": 1,
+    "bank_minerals": 8882,
+    "bank_ratio": 0.1184,
+    "collected_minerals": 75044,
+    "collected_vespene": 25340,
+    "unit_minerals": 71275,
+    "unit_vespene": 21025,
+    "strict_minerals": 70525,
+    "error_pct": -5.02,
+    "strict_error_pct": -6.02,
+    "gas_error_pct": -17.03,
+    "unknown_units": {
+     "AssimilatorRich": 1,
+     "DisruptorPhased": 42
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (129).SC2Replay",
+    "race": "T",
+    "duration": 2740.6,
+    "player_id": 2,
+    "bank_minerals": 1649,
+    "bank_ratio": 0.027,
+    "collected_minerals": 61185,
+    "collected_vespene": 16837,
+    "unit_minerals": 65650,
+    "unit_vespene": 17250,
+    "strict_minerals": 64650,
+    "error_pct": 7.3,
+    "strict_error_pct": 5.66,
+    "gas_error_pct": 2.45,
+    "unknown_units": {
+     "RefineryRich": 1
+    },
+    "unknown_upgrades": {
+     "TerranVehicleAndShipArmorsLevel1": 1
+    },
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (22).SC2Replay",
+    "race": "T",
+    "duration": 542.2,
+    "player_id": 1,
+    "bank_minerals": 80,
+    "bank_ratio": 0.0113,
+    "collected_minerals": 7105,
+    "collected_vespene": 651,
+    "unit_minerals": 7375,
+    "unit_vespene": 700,
+    "strict_minerals": 6525,
+    "error_pct": 3.8,
+    "strict_error_pct": -8.16,
+    "gas_error_pct": 7.53,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (22).SC2Replay",
+    "race": "Z",
+    "duration": 542.2,
+    "player_id": 2,
+    "bank_minerals": 209,
+    "bank_ratio": 0.0367,
+    "collected_minerals": 5690,
+    "collected_vespene": 844,
+    "unit_minerals": 5575,
+    "unit_vespene": 500,
+    "strict_minerals": 5275,
+    "error_pct": -2.02,
+    "strict_error_pct": -7.29,
+    "gas_error_pct": -40.76,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (42).SC2Replay",
+    "race": "Z",
+    "duration": 968.1,
+    "player_id": 1,
+    "bank_minerals": 905,
+    "bank_ratio": 0.0525,
+    "collected_minerals": 17230,
+    "collected_vespene": 3803,
+    "unit_minerals": 17750,
+    "unit_vespene": 3250,
+    "strict_minerals": 17250,
+    "error_pct": 3.02,
+    "strict_error_pct": 0.12,
+    "gas_error_pct": -14.54,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (42).SC2Replay",
+    "race": "T",
+    "duration": 968.1,
+    "player_id": 2,
+    "bank_minerals": 2645,
+    "bank_ratio": 0.1178,
+    "collected_minerals": 22445,
+    "collected_vespene": 4286,
+    "unit_minerals": 21350,
+    "unit_vespene": 3025,
+    "strict_minerals": 20450,
+    "error_pct": -4.88,
+    "strict_error_pct": -8.89,
+    "gas_error_pct": -29.42,
+    "unknown_units": {
+     "RefineryRich": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (62).SC2Replay",
+    "race": "T",
+    "duration": 873.6,
+    "player_id": 1,
+    "bank_minerals": 760,
+    "bank_ratio": 0.0411,
+    "collected_minerals": 18510,
+    "collected_vespene": 3428,
+    "unit_minerals": 19950,
+    "unit_vespene": 3600,
+    "strict_minerals": 18250,
+    "error_pct": 7.78,
+    "strict_error_pct": -1.4,
+    "gas_error_pct": 5.02,
+    "unknown_units": {
+     "ChangelingMarineShield": 2
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (62).SC2Replay",
+    "race": "Z",
+    "duration": 873.6,
+    "player_id": 2,
+    "bank_minerals": 1065,
+    "bank_ratio": 0.0956,
+    "collected_minerals": 11140,
+    "collected_vespene": 2582,
+    "unit_minerals": 10050,
+    "unit_vespene": 1200,
+    "strict_minerals": 9250,
+    "error_pct": -9.78,
+    "strict_error_pct": -16.97,
+    "gas_error_pct": -53.52,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (92).SC2Replay",
+    "race": "T",
+    "duration": 773.5,
+    "player_id": 1,
+    "bank_minerals": 475,
+    "bank_ratio": 0.032,
+    "collected_minerals": 14825,
+    "collected_vespene": 3276,
+    "unit_minerals": 15600,
+    "unit_vespene": 3025,
+    "strict_minerals": 14300,
+    "error_pct": 5.23,
+    "strict_error_pct": -3.54,
+    "gas_error_pct": -7.66,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "InterferenceMatrix": 1
+    },
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "At Eternity's Edge LE (92).SC2Replay",
+    "race": "T",
+    "duration": 773.5,
+    "player_id": 2,
+    "bank_minerals": 3850,
+    "bank_ratio": 0.414,
+    "collected_minerals": 9300,
+    "collected_vespene": 2616,
+    "unit_minerals": 5600,
+    "unit_vespene": 925,
+    "strict_minerals": 5350,
+    "error_pct": -39.78,
+    "strict_error_pct": -42.47,
+    "gas_error_pct": -64.64,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Blackrock LE (32).SC2Replay",
+    "race": "T",
+    "duration": 863.8,
+    "player_id": 1,
+    "bank_minerals": 545,
+    "bank_ratio": 0.0397,
+    "collected_minerals": 13745,
+    "collected_vespene": 2701,
+    "unit_minerals": 14225,
+    "unit_vespene": 2650,
+    "strict_minerals": 13375,
+    "error_pct": 3.49,
+    "strict_error_pct": -2.69,
+    "gas_error_pct": -1.89,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Blackrock LE (32).SC2Replay",
+    "race": "T",
+    "duration": 863.8,
+    "player_id": 2,
+    "bank_minerals": 1066,
+    "bank_ratio": 0.0833,
+    "collected_minerals": 12791,
+    "collected_vespene": 3116,
+    "unit_minerals": 12325,
+    "unit_vespene": 2650,
+    "strict_minerals": 11500,
+    "error_pct": -3.64,
+    "strict_error_pct": -10.09,
+    "gas_error_pct": -14.96,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "InterferenceMatrix": 1
+    },
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Blackrock LE (52).SC2Replay",
+    "race": "T",
+    "duration": 960.1,
+    "player_id": 1,
+    "bank_minerals": 321,
+    "bank_ratio": 0.0204,
+    "collected_minerals": 15760,
+    "collected_vespene": 4090,
+    "unit_minerals": 16400,
+    "unit_vespene": 3150,
+    "strict_minerals": 15200,
+    "error_pct": 4.06,
+    "strict_error_pct": -3.55,
+    "gas_error_pct": -22.98,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "InterferenceMatrix": 1
+    },
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Blackrock LE (52).SC2Replay",
+    "race": "T",
+    "duration": 960.1,
+    "player_id": 2,
+    "bank_minerals": 1410,
+    "bank_ratio": 0.0693,
+    "collected_minerals": 20335,
+    "collected_vespene": 5202,
+    "unit_minerals": 19050,
+    "unit_vespene": 4375,
+    "strict_minerals": 18350,
+    "error_pct": -6.32,
+    "strict_error_pct": -9.76,
+    "gas_error_pct": -15.9,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "InterferenceMatrix": 1
+    },
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Celestial Enclave LE (10).SC2Replay",
+    "race": "T",
+    "duration": 797.6,
+    "player_id": 1,
+    "bank_minerals": 285,
+    "bank_ratio": 0.0181,
+    "collected_minerals": 15710,
+    "collected_vespene": 2978,
+    "unit_minerals": 16750,
+    "unit_vespene": 2625,
+    "strict_minerals": 15050,
+    "error_pct": 6.62,
+    "strict_error_pct": -4.2,
+    "gas_error_pct": -11.85,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Celestial Enclave LE (10).SC2Replay",
+    "race": "Z",
+    "duration": 797.6,
+    "player_id": 2,
+    "bank_minerals": 90,
+    "bank_ratio": 0.0118,
+    "collected_minerals": 7615,
+    "collected_vespene": 1644,
+    "unit_minerals": 7525,
+    "unit_vespene": 525,
+    "strict_minerals": 7175,
+    "error_pct": -1.18,
+    "strict_error_pct": -5.78,
+    "gas_error_pct": -68.07,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Celestial Enclave LE (4).SC2Replay",
+    "race": "T",
+    "duration": 323.9,
+    "player_id": 1,
+    "bank_minerals": 215,
+    "bank_ratio": 0.0451,
+    "collected_minerals": 4765,
+    "collected_vespene": 464,
+    "unit_minerals": 4650,
+    "unit_vespene": 325,
+    "strict_minerals": 3800,
+    "error_pct": -2.41,
+    "strict_error_pct": -20.25,
+    "gas_error_pct": -29.96,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Celestial Enclave LE (4).SC2Replay",
+    "race": "Z",
+    "duration": 323.9,
+    "player_id": 2,
+    "bank_minerals": 115,
+    "bank_ratio": 0.0267,
+    "collected_minerals": 4315,
+    "collected_vespene": 680,
+    "unit_minerals": 4250,
+    "unit_vespene": 100,
+    "strict_minerals": 3850,
+    "error_pct": -1.51,
+    "strict_error_pct": -10.78,
+    "gas_error_pct": -85.29,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Emerald City CE (2).SC2Replay",
+    "race": "T",
+    "duration": 521.4,
+    "player_id": 1,
+    "bank_minerals": 1000,
+    "bank_ratio": 0.1471,
+    "collected_minerals": 6800,
+    "collected_vespene": 1032,
+    "unit_minerals": 5825,
+    "unit_vespene": 550,
+    "strict_minerals": 5125,
+    "error_pct": -14.34,
+    "strict_error_pct": -24.63,
+    "gas_error_pct": -46.71,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Emerald City CE (2).SC2Replay",
+    "race": "Z",
+    "duration": 521.4,
+    "player_id": 2,
+    "bank_minerals": 664,
+    "bank_ratio": 0.0977,
+    "collected_minerals": 6795,
+    "collected_vespene": 824,
+    "unit_minerals": 6725,
+    "unit_vespene": 500,
+    "strict_minerals": 6250,
+    "error_pct": -1.03,
+    "strict_error_pct": -8.02,
+    "gas_error_pct": -39.32,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Emerald City CE (2).SC2Replay",
+    "race": "T",
+    "duration": 521.4,
+    "player_id": 3,
+    "bank_minerals": 1715,
+    "bank_ratio": 0.2793,
+    "collected_minerals": 6140,
+    "collected_vespene": 1432,
+    "unit_minerals": 4500,
+    "unit_vespene": 775,
+    "strict_minerals": 4500,
+    "error_pct": -26.71,
+    "strict_error_pct": -26.71,
+    "gas_error_pct": -45.88,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Emerald City CE (2).SC2Replay",
+    "race": "P",
+    "duration": 521.4,
+    "player_id": 4,
+    "bank_minerals": 0,
+    "bank_ratio": 0.0,
+    "collected_minerals": 4250,
+    "collected_vespene": 1100,
+    "unit_minerals": 4425,
+    "unit_vespene": 1100,
+    "strict_minerals": 4425,
+    "error_pct": 4.12,
+    "strict_error_pct": 4.12,
+    "gas_error_pct": 0.0,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Lockdown LE (20).SC2Replay",
+    "race": "T",
+    "duration": 568.9,
+    "player_id": 1,
+    "bank_minerals": 488,
+    "bank_ratio": 0.0758,
+    "collected_minerals": 6438,
+    "collected_vespene": 1436,
+    "unit_minerals": 5975,
+    "unit_vespene": 1225,
+    "strict_minerals": 5775,
+    "error_pct": -7.19,
+    "strict_error_pct": -10.3,
+    "gas_error_pct": -14.69,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "HighCapacityBarrels": 1
+    },
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Lockdown LE (20).SC2Replay",
+    "race": "Z",
+    "duration": 568.9,
+    "player_id": 2,
+    "bank_minerals": 465,
+    "bank_ratio": 0.0571,
+    "collected_minerals": 8140,
+    "collected_vespene": 1144,
+    "unit_minerals": 7950,
+    "unit_vespene": 300,
+    "strict_minerals": 7475,
+    "error_pct": -2.33,
+    "strict_error_pct": -8.17,
+    "gas_error_pct": -73.78,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Lockdown LE (60).SC2Replay",
+    "race": "P",
+    "duration": 519.9,
+    "player_id": 1,
+    "bank_minerals": 225,
+    "bank_ratio": 0.0288,
+    "collected_minerals": 7800,
+    "collected_vespene": 554,
+    "unit_minerals": 8175,
+    "unit_vespene": 625,
+    "strict_minerals": 7675,
+    "error_pct": 4.81,
+    "strict_error_pct": -1.6,
+    "gas_error_pct": 12.82,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Lockdown LE (60).SC2Replay",
+    "race": "T",
+    "duration": 519.9,
+    "player_id": 2,
+    "bank_minerals": 759,
+    "bank_ratio": 0.1074,
+    "collected_minerals": 7070,
+    "collected_vespene": 1056,
+    "unit_minerals": 6350,
+    "unit_vespene": 1000,
+    "strict_minerals": 6100,
+    "error_pct": -10.18,
+    "strict_error_pct": -13.72,
+    "gas_error_pct": -5.3,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "T",
+    "duration": 893.0,
+    "player_id": 1,
+    "bank_minerals": 526,
+    "bank_ratio": 0.2214,
+    "collected_minerals": 2376,
+    "collected_vespene": 924,
+    "unit_minerals": 450,
+    "unit_vespene": 450,
+    "strict_minerals": 450,
+    "error_pct": -81.06,
+    "strict_error_pct": -81.06,
+    "gas_error_pct": -51.3,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "SmartServos": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "P",
+    "duration": 893.0,
+    "player_id": 2,
+    "bank_minerals": 955,
+    "bank_ratio": 0.2244,
+    "collected_minerals": 4255,
+    "collected_vespene": 1866,
+    "unit_minerals": 625,
+    "unit_vespene": 625,
+    "strict_minerals": 625,
+    "error_pct": -85.31,
+    "strict_error_pct": -85.31,
+    "gas_error_pct": -66.51,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "P",
+    "duration": 893.0,
+    "player_id": 4,
+    "bank_minerals": 1510,
+    "bank_ratio": 1.0,
+    "collected_minerals": 1510,
+    "collected_vespene": 691,
+    "unit_minerals": 300,
+    "unit_vespene": 300,
+    "strict_minerals": 300,
+    "error_pct": -80.13,
+    "strict_error_pct": -80.13,
+    "gas_error_pct": -56.58,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "GhostAlternate": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "T",
+    "duration": 893.0,
+    "player_id": 5,
+    "bank_minerals": 526,
+    "bank_ratio": 0.2842,
+    "collected_minerals": 1851,
+    "collected_vespene": 649,
+    "unit_minerals": 450,
+    "unit_vespene": 450,
+    "strict_minerals": 450,
+    "error_pct": -75.69,
+    "strict_error_pct": -75.69,
+    "gas_error_pct": -30.66,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "SmartServos": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "P",
+    "duration": 893.0,
+    "player_id": 6,
+    "bank_minerals": 955,
+    "bank_ratio": 0.0752,
+    "collected_minerals": 12705,
+    "collected_vespene": 741,
+    "unit_minerals": 19200,
+    "unit_vespene": 4500,
+    "strict_minerals": 18725,
+    "error_pct": 51.12,
+    "strict_error_pct": 47.38,
+    "gas_error_pct": 507.29,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "T",
+    "duration": 893.0,
+    "player_id": 7,
+    "bank_minerals": 526,
+    "bank_ratio": 0.0583,
+    "collected_minerals": 9015,
+    "collected_vespene": 854,
+    "unit_minerals": 15624,
+    "unit_vespene": 3475,
+    "strict_minerals": 15375,
+    "error_pct": 73.31,
+    "strict_error_pct": 70.55,
+    "gas_error_pct": 306.91,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "SmartServos": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "P",
+    "duration": 893.0,
+    "player_id": 8,
+    "bank_minerals": 955,
+    "bank_ratio": 0.4704,
+    "collected_minerals": 2030,
+    "collected_vespene": 966,
+    "unit_minerals": 625,
+    "unit_vespene": 625,
+    "strict_minerals": 625,
+    "error_pct": -69.21,
+    "strict_error_pct": -69.21,
+    "gas_error_pct": -35.3,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "T",
+    "duration": 893.0,
+    "player_id": 9,
+    "bank_minerals": 526,
+    "bank_ratio": 0.1683,
+    "collected_minerals": 3126,
+    "collected_vespene": 1149,
+    "unit_minerals": 450,
+    "unit_vespene": 450,
+    "strict_minerals": 450,
+    "error_pct": -85.6,
+    "strict_error_pct": -85.6,
+    "gas_error_pct": -60.84,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "SmartServos": 1
+    },
+    "is_local": true,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "P",
+    "duration": 893.0,
+    "player_id": 10,
+    "bank_minerals": 955,
+    "bank_ratio": 0.9052,
+    "collected_minerals": 1055,
+    "collected_vespene": 216,
+    "unit_minerals": 625,
+    "unit_vespene": 625,
+    "strict_minerals": 625,
+    "error_pct": -40.76,
+    "strict_error_pct": -40.76,
+    "gas_error_pct": 189.35,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (19).SC2Replay",
+    "race": "P",
+    "duration": 893.0,
+    "player_id": 12,
+    "bank_minerals": 955,
+    "bank_ratio": 0.761,
+    "collected_minerals": 1255,
+    "collected_vespene": 391,
+    "unit_minerals": 625,
+    "unit_vespene": 625,
+    "strict_minerals": 625,
+    "error_pct": -50.2,
+    "strict_error_pct": -50.2,
+    "gas_error_pct": 59.85,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (29).SC2Replay",
+    "race": "P",
+    "duration": 944.5,
+    "player_id": 1,
+    "bank_minerals": 115,
+    "bank_ratio": 0.0103,
+    "collected_minerals": 11152,
+    "collected_vespene": 702,
+    "unit_minerals": 21687,
+    "unit_vespene": 5500,
+    "strict_minerals": 20950,
+    "error_pct": 94.47,
+    "strict_error_pct": 87.86,
+    "gas_error_pct": 683.48,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (29).SC2Replay",
+    "race": "Z",
+    "duration": 944.5,
+    "player_id": 4,
+    "bank_minerals": 613,
+    "bank_ratio": 0.164,
+    "collected_minerals": 3738,
+    "collected_vespene": 327,
+    "unit_minerals": 200,
+    "unit_vespene": 200,
+    "strict_minerals": 200,
+    "error_pct": -94.65,
+    "strict_error_pct": -94.65,
+    "gas_error_pct": -38.84,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (29).SC2Replay",
+    "race": "Z",
+    "duration": 944.5,
+    "player_id": 5,
+    "bank_minerals": 613,
+    "bank_ratio": 0.1097,
+    "collected_minerals": 5590,
+    "collected_vespene": 287,
+    "unit_minerals": 17785,
+    "unit_vespene": 2550,
+    "strict_minerals": 17600,
+    "error_pct": 218.16,
+    "strict_error_pct": 214.85,
+    "gas_error_pct": 788.5,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (29).SC2Replay",
+    "race": "Z",
+    "duration": 944.5,
+    "player_id": 6,
+    "bank_minerals": 613,
+    "bank_ratio": 0.1597,
+    "collected_minerals": 3838,
+    "collected_vespene": 1302,
+    "unit_minerals": 200,
+    "unit_vespene": 200,
+    "strict_minerals": 200,
+    "error_pct": -94.79,
+    "strict_error_pct": -94.79,
+    "gas_error_pct": -84.64,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (29).SC2Replay",
+    "race": "P",
+    "duration": 944.5,
+    "player_id": 7,
+    "bank_minerals": 115,
+    "bank_ratio": 0.021,
+    "collected_minerals": 5465,
+    "collected_vespene": 2265,
+    "unit_minerals": 1050,
+    "unit_vespene": 1050,
+    "strict_minerals": 1050,
+    "error_pct": -80.79,
+    "strict_error_pct": -80.79,
+    "gas_error_pct": -53.64,
+    "unknown_units": {
+     "Caster": 1,
+     "OracleStasisTrap": 4
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (29).SC2Replay",
+    "race": "Z",
+    "duration": 944.5,
+    "player_id": 8,
+    "bank_minerals": 613,
+    "bank_ratio": 0.2179,
+    "collected_minerals": 2813,
+    "collected_vespene": 952,
+    "unit_minerals": 200,
+    "unit_vespene": 200,
+    "strict_minerals": 200,
+    "error_pct": -92.89,
+    "strict_error_pct": -92.89,
+    "gas_error_pct": -78.99,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (29).SC2Replay",
+    "race": "P",
+    "duration": 944.5,
+    "player_id": 9,
+    "bank_minerals": 115,
+    "bank_ratio": 0.0608,
+    "collected_minerals": 1890,
+    "collected_vespene": 965,
+    "unit_minerals": 1050,
+    "unit_vespene": 1050,
+    "strict_minerals": 1050,
+    "error_pct": -44.44,
+    "strict_error_pct": -44.44,
+    "gas_error_pct": 8.81,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (29).SC2Replay",
+    "race": "Z",
+    "duration": 944.5,
+    "player_id": 10,
+    "bank_minerals": 613,
+    "bank_ratio": 0.2739,
+    "collected_minerals": 2238,
+    "collected_vespene": 552,
+    "unit_minerals": 200,
+    "unit_vespene": 200,
+    "strict_minerals": 200,
+    "error_pct": -91.06,
+    "strict_error_pct": -91.06,
+    "gas_error_pct": -63.77,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (29).SC2Replay",
+    "race": "Z",
+    "duration": 944.5,
+    "player_id": 12,
+    "bank_minerals": 613,
+    "bank_ratio": 0.4952,
+    "collected_minerals": 1238,
+    "collected_vespene": 127,
+    "unit_minerals": 200,
+    "unit_vespene": 200,
+    "strict_minerals": 200,
+    "error_pct": -83.84,
+    "strict_error_pct": -83.84,
+    "gas_error_pct": 57.48,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "GhostAlternate": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "T",
+    "duration": 672.3,
+    "player_id": 1,
+    "bank_minerals": 2057,
+    "bank_ratio": 0.6727,
+    "collected_minerals": 3058,
+    "collected_vespene": 1266,
+    "unit_minerals": 250,
+    "unit_vespene": 250,
+    "strict_minerals": 250,
+    "error_pct": -91.82,
+    "strict_error_pct": -91.82,
+    "gas_error_pct": -80.25,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "CycloneLockOnDamageUpgrade": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "P",
+    "duration": 672.3,
+    "player_id": 2,
+    "bank_minerals": 615,
+    "bank_ratio": 0.0712,
+    "collected_minerals": 8640,
+    "collected_vespene": 707,
+    "unit_minerals": 11300,
+    "unit_vespene": 1875,
+    "strict_minerals": 10650,
+    "error_pct": 30.79,
+    "strict_error_pct": 23.26,
+    "gas_error_pct": 165.21,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "T",
+    "duration": 672.3,
+    "player_id": 4,
+    "bank_minerals": 2057,
+    "bank_ratio": 1.0,
+    "collected_minerals": 2057,
+    "collected_vespene": 646,
+    "unit_minerals": 250,
+    "unit_vespene": 250,
+    "strict_minerals": 250,
+    "error_pct": -87.85,
+    "strict_error_pct": -87.85,
+    "gas_error_pct": -61.3,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "CycloneLockOnDamageUpgrade": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "P",
+    "duration": 672.3,
+    "player_id": 5,
+    "bank_minerals": 615,
+    "bank_ratio": 0.4424,
+    "collected_minerals": 1390,
+    "collected_vespene": 632,
+    "unit_minerals": 200,
+    "unit_vespene": 200,
+    "strict_minerals": 200,
+    "error_pct": -85.61,
+    "strict_error_pct": -85.61,
+    "gas_error_pct": -68.35,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "T",
+    "duration": 672.3,
+    "player_id": 7,
+    "bank_minerals": 2057,
+    "bank_ratio": 0.922,
+    "collected_minerals": 2231,
+    "collected_vespene": 763,
+    "unit_minerals": 250,
+    "unit_vespene": 250,
+    "strict_minerals": 250,
+    "error_pct": -88.79,
+    "strict_error_pct": -88.79,
+    "gas_error_pct": -67.23,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "CycloneLockOnDamageUpgrade": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "P",
+    "duration": 672.3,
+    "player_id": 8,
+    "bank_minerals": 615,
+    "bank_ratio": 0.496,
+    "collected_minerals": 1240,
+    "collected_vespene": 507,
+    "unit_minerals": 200,
+    "unit_vespene": 200,
+    "strict_minerals": 200,
+    "error_pct": -83.87,
+    "strict_error_pct": -83.87,
+    "gas_error_pct": -60.55,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "P",
+    "duration": 672.3,
+    "player_id": 9,
+    "bank_minerals": 615,
+    "bank_ratio": 0.5279,
+    "collected_minerals": 1165,
+    "collected_vespene": 607,
+    "unit_minerals": 200,
+    "unit_vespene": 200,
+    "strict_minerals": 200,
+    "error_pct": -82.83,
+    "strict_error_pct": -82.83,
+    "gas_error_pct": -67.05,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "T",
+    "duration": 672.3,
+    "player_id": 10,
+    "bank_minerals": 2057,
+    "bank_ratio": 0.2758,
+    "collected_minerals": 7457,
+    "collected_vespene": 1058,
+    "unit_minerals": 7550,
+    "unit_vespene": 1800,
+    "strict_minerals": 7325,
+    "error_pct": 1.25,
+    "strict_error_pct": -1.77,
+    "gas_error_pct": 70.13,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "CycloneLockOnDamageUpgrade": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "T",
+    "duration": 672.3,
+    "player_id": 11,
+    "bank_minerals": 2057,
+    "bank_ratio": 0.8791,
+    "collected_minerals": 2340,
+    "collected_vespene": 798,
+    "unit_minerals": 250,
+    "unit_vespene": 250,
+    "strict_minerals": 250,
+    "error_pct": -89.32,
+    "strict_error_pct": -89.32,
+    "gas_error_pct": -68.67,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "CycloneLockOnDamageUpgrade": 1
+    },
+    "is_local": true,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (39).SC2Replay",
+    "race": "T",
+    "duration": 672.3,
+    "player_id": 12,
+    "bank_minerals": 2057,
+    "bank_ratio": 0.8727,
+    "collected_minerals": 2357,
+    "collected_vespene": 896,
+    "unit_minerals": 250,
+    "unit_vespene": 250,
+    "strict_minerals": 250,
+    "error_pct": -89.39,
+    "strict_error_pct": -89.39,
+    "gas_error_pct": -72.1,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {
+     "CycloneLockOnDamageUpgrade": 1
+    },
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (49).SC2Replay",
+    "race": "P",
+    "duration": 542.8,
+    "player_id": 4,
+    "bank_minerals": 315,
+    "bank_ratio": 0.0675,
+    "collected_minerals": 4665,
+    "collected_vespene": 818,
+    "unit_minerals": 6025,
+    "unit_vespene": 500,
+    "strict_minerals": 5925,
+    "error_pct": 29.15,
+    "strict_error_pct": 27.01,
+    "gas_error_pct": -38.88,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (49).SC2Replay",
+    "race": "T",
+    "duration": 542.8,
+    "player_id": 8,
+    "bank_minerals": 275,
+    "bank_ratio": 0.0556,
+    "collected_minerals": 4950,
+    "collected_vespene": 647,
+    "unit_minerals": 6075,
+    "unit_vespene": 850,
+    "strict_minerals": 5825,
+    "error_pct": 22.73,
+    "strict_error_pct": 17.68,
+    "gas_error_pct": 31.38,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (49).SC2Replay",
+    "race": "P",
+    "duration": 542.8,
+    "player_id": 9,
+    "bank_minerals": 315,
+    "bank_ratio": 0.2079,
+    "collected_minerals": 1515,
+    "collected_vespene": 918,
+    "unit_minerals": 150,
+    "unit_vespene": 150,
+    "strict_minerals": 150,
+    "error_pct": -90.1,
+    "strict_error_pct": -90.1,
+    "gas_error_pct": -83.66,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": false
+   },
+   {
+    "file": "N打1造修复版（大气2000） (49).SC2Replay",
+    "race": "T",
+    "duration": 542.8,
+    "player_id": 11,
+    "bank_minerals": 275,
+    "bank_ratio": 0.2444,
+    "collected_minerals": 1125,
+    "collected_vespene": 285,
+    "unit_minerals": 100,
+    "unit_vespene": 100,
+    "strict_minerals": 100,
+    "error_pct": -91.11,
+    "strict_error_pct": -91.11,
+    "gas_error_pct": -64.91,
+    "unknown_units": {
+     "Caster": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": false
+   },
+   {
+    "file": "Old Republic LE (25).SC2Replay",
+    "race": "T",
+    "duration": 330.9,
+    "player_id": 1,
+    "bank_minerals": 503,
+    "bank_ratio": 0.1172,
+    "collected_minerals": 4290,
+    "collected_vespene": 636,
+    "unit_minerals": 3750,
+    "unit_vespene": 325,
+    "strict_minerals": 3300,
+    "error_pct": -12.59,
+    "strict_error_pct": -23.08,
+    "gas_error_pct": -48.9,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Old Republic LE (25).SC2Replay",
+    "race": "P",
+    "duration": 330.9,
+    "player_id": 2,
+    "bank_minerals": 475,
+    "bank_ratio": 0.1033,
+    "collected_minerals": 4600,
+    "collected_vespene": 496,
+    "unit_minerals": 4175,
+    "unit_vespene": 300,
+    "strict_minerals": 4075,
+    "error_pct": -9.24,
+    "strict_error_pct": -11.41,
+    "gas_error_pct": -39.52,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Old Republic LE (55).SC2Replay",
+    "race": "P",
+    "duration": 864.4,
+    "player_id": 1,
+    "bank_minerals": 1140,
+    "bank_ratio": 0.065,
+    "collected_minerals": 17530,
+    "collected_vespene": 4334,
+    "unit_minerals": 17200,
+    "unit_vespene": 3925,
+    "strict_minerals": 16250,
+    "error_pct": -1.88,
+    "strict_error_pct": -7.3,
+    "gas_error_pct": -9.44,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Old Republic LE (55).SC2Replay",
+    "race": "Z",
+    "duration": 864.4,
+    "player_id": 2,
+    "bank_minerals": 1499,
+    "bank_ratio": 0.0758,
+    "collected_minerals": 19780,
+    "collected_vespene": 4189,
+    "unit_minerals": 18975,
+    "unit_vespene": 2650,
+    "strict_minerals": 18450,
+    "error_pct": -4.07,
+    "strict_error_pct": -6.72,
+    "gas_error_pct": -36.74,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "EvolveMuscularAugments": 1,
+     "EvolveGroovedSpines": 1
+    },
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Old Republic LE (75).SC2Replay",
+    "race": "T",
+    "duration": 665.9,
+    "player_id": 1,
+    "bank_minerals": 1115,
+    "bank_ratio": 0.1078,
+    "collected_minerals": 10340,
+    "collected_vespene": 2733,
+    "unit_minerals": 9325,
+    "unit_vespene": 2225,
+    "strict_minerals": 8625,
+    "error_pct": -9.82,
+    "strict_error_pct": -16.59,
+    "gas_error_pct": -18.59,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "CycloneLockOnDamageUpgrade": 1
+    },
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Old Republic LE (75).SC2Replay",
+    "race": "P",
+    "duration": 665.9,
+    "player_id": 2,
+    "bank_minerals": 665,
+    "bank_ratio": 0.0529,
+    "collected_minerals": 12565,
+    "collected_vespene": 2084,
+    "unit_minerals": 12625,
+    "unit_vespene": 2200,
+    "strict_minerals": 12625,
+    "error_pct": 0.48,
+    "strict_error_pct": 0.48,
+    "gas_error_pct": 5.57,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Rainfall LE (10).SC2Replay",
+    "race": "Z",
+    "duration": 436.4,
+    "player_id": 1,
+    "bank_minerals": 529,
+    "bank_ratio": 0.0891,
+    "collected_minerals": 5935,
+    "collected_vespene": 368,
+    "unit_minerals": 5700,
+    "unit_vespene": 100,
+    "strict_minerals": 5225,
+    "error_pct": -3.96,
+    "strict_error_pct": -11.96,
+    "gas_error_pct": -72.83,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Rainfall LE (10).SC2Replay",
+    "race": "Z",
+    "duration": 436.4,
+    "player_id": 2,
+    "bank_minerals": 225,
+    "bank_ratio": 0.0427,
+    "collected_minerals": 5275,
+    "collected_vespene": 320,
+    "unit_minerals": 5100,
+    "unit_vespene": 100,
+    "strict_minerals": 4650,
+    "error_pct": -3.32,
+    "strict_error_pct": -11.85,
+    "gas_error_pct": -68.75,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Rainfall LE (20).SC2Replay",
+    "race": "T",
+    "duration": 423.3,
+    "player_id": 1,
+    "bank_minerals": 229,
+    "bank_ratio": 0.0489,
+    "collected_minerals": 4679,
+    "collected_vespene": 792,
+    "unit_minerals": 4400,
+    "unit_vespene": 400,
+    "strict_minerals": 4100,
+    "error_pct": -5.96,
+    "strict_error_pct": -12.37,
+    "gas_error_pct": -49.49,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Rainfall LE (20).SC2Replay",
+    "race": "Z",
+    "duration": 423.3,
+    "player_id": 2,
+    "bank_minerals": 395,
+    "bank_ratio": 0.0828,
+    "collected_minerals": 4770,
+    "collected_vespene": 290,
+    "unit_minerals": 4325,
+    "unit_vespene": 150,
+    "strict_minerals": 4325,
+    "error_pct": -9.33,
+    "strict_error_pct": -9.33,
+    "gas_error_pct": -48.28,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Rainfall LE (50).SC2Replay",
+    "race": "T",
+    "duration": 841.9,
+    "player_id": 1,
+    "bank_minerals": 992,
+    "bank_ratio": 0.0846,
+    "collected_minerals": 11724,
+    "collected_vespene": 3805,
+    "unit_minerals": 10725,
+    "unit_vespene": 2650,
+    "strict_minerals": 10225,
+    "error_pct": -8.52,
+    "strict_error_pct": -12.79,
+    "gas_error_pct": -30.35,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "CycloneLockOnDamageUpgrade": 1
+    },
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Rainfall LE (50).SC2Replay",
+    "race": "T",
+    "duration": 841.9,
+    "player_id": 2,
+    "bank_minerals": 1293,
+    "bank_ratio": 0.1149,
+    "collected_minerals": 11252,
+    "collected_vespene": 2671,
+    "unit_minerals": 9900,
+    "unit_vespene": 2275,
+    "strict_minerals": 9900,
+    "error_pct": -12.02,
+    "strict_error_pct": -12.02,
+    "gas_error_pct": -14.83,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "InterferenceMatrix": 1
+    },
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Rorschach LE (2).SC2Replay",
+    "race": "P",
+    "duration": 1281.1,
+    "player_id": 1,
+    "bank_minerals": 4476,
+    "bank_ratio": 0.1528,
+    "collected_minerals": 29301,
+    "collected_vespene": 8022,
+    "unit_minerals": 26150,
+    "unit_vespene": 7000,
+    "strict_minerals": 25450,
+    "error_pct": -10.75,
+    "strict_error_pct": -13.14,
+    "gas_error_pct": -12.74,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "TempestGroundAttackUpgrade": 1
+    },
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Rorschach LE (2).SC2Replay",
+    "race": "Z",
+    "duration": 1281.1,
+    "player_id": 2,
+    "bank_minerals": 4207,
+    "bank_ratio": 0.1528,
+    "collected_minerals": 27525,
+    "collected_vespene": 5793,
+    "unit_minerals": 23950,
+    "unit_vespene": 4625,
+    "strict_minerals": 23950,
+    "error_pct": -12.99,
+    "strict_error_pct": -12.99,
+    "gas_error_pct": -20.16,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "EvolveMuscularAugments": 1,
+     "EvolveGroovedSpines": 1
+    },
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Ruby Rock LE (21).SC2Replay",
+    "race": "T",
+    "duration": 1177.2,
+    "player_id": 1,
+    "bank_minerals": 1633,
+    "bank_ratio": 0.0652,
+    "collected_minerals": 25045,
+    "collected_vespene": 6329,
+    "unit_minerals": 24775,
+    "unit_vespene": 5325,
+    "strict_minerals": 23575,
+    "error_pct": -1.08,
+    "strict_error_pct": -5.87,
+    "gas_error_pct": -15.86,
+    "unknown_units": {
+     "GhostAlternate": 4
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Ruby Rock LE (21).SC2Replay",
+    "race": "P",
+    "duration": 1177.2,
+    "player_id": 2,
+    "bank_minerals": 55,
+    "bank_ratio": 0.0029,
+    "collected_minerals": 18955,
+    "collected_vespene": 6015,
+    "unit_minerals": 19875,
+    "unit_vespene": 5200,
+    "strict_minerals": 19875,
+    "error_pct": 4.85,
+    "strict_error_pct": 4.85,
+    "gas_error_pct": -13.55,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Ruby Rock LE (41).SC2Replay",
+    "race": "T",
+    "duration": 929.9,
+    "player_id": 1,
+    "bank_minerals": 2423,
+    "bank_ratio": 0.1093,
+    "collected_minerals": 22160,
+    "collected_vespene": 4618,
+    "unit_minerals": 21625,
+    "unit_vespene": 3300,
+    "strict_minerals": 20425,
+    "error_pct": -2.41,
+    "strict_error_pct": -7.83,
+    "gas_error_pct": -28.54,
+    "unknown_units": {
+     "ChangelingMarineShield": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Ruby Rock LE (41).SC2Replay",
+    "race": "Z",
+    "duration": 929.9,
+    "player_id": 2,
+    "bank_minerals": 4125,
+    "bank_ratio": 0.4297,
+    "collected_minerals": 9600,
+    "collected_vespene": 3536,
+    "unit_minerals": 5475,
+    "unit_vespene": 100,
+    "strict_minerals": 5075,
+    "error_pct": -42.97,
+    "strict_error_pct": -47.14,
+    "gas_error_pct": -97.17,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Ruby Rock LE (51).SC2Replay",
+    "race": "P",
+    "duration": 414.2,
+    "player_id": 1,
+    "bank_minerals": 60,
+    "bank_ratio": 0.0115,
+    "collected_minerals": 5210,
+    "collected_vespene": 1038,
+    "unit_minerals": 5975,
+    "unit_vespene": 1050,
+    "strict_minerals": 5225,
+    "error_pct": 14.68,
+    "strict_error_pct": 0.29,
+    "gas_error_pct": 1.16,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Ruby Rock LE (51).SC2Replay",
+    "race": "P",
+    "duration": 414.2,
+    "player_id": 2,
+    "bank_minerals": 240,
+    "bank_ratio": 0.0474,
+    "collected_minerals": 5065,
+    "collected_vespene": 814,
+    "unit_minerals": 5000,
+    "unit_vespene": 700,
+    "strict_minerals": 4900,
+    "error_pct": -1.28,
+    "strict_error_pct": -3.26,
+    "gas_error_pct": -14.0,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Ruby Rock LE (9).SC2Replay",
+    "race": "P",
+    "duration": 472.7,
+    "player_id": 1,
+    "bank_minerals": 1783,
+    "bank_ratio": 0.2624,
+    "collected_minerals": 6795,
+    "collected_vespene": 1098,
+    "unit_minerals": 5325,
+    "unit_vespene": 725,
+    "strict_minerals": 5175,
+    "error_pct": -21.63,
+    "strict_error_pct": -23.84,
+    "gas_error_pct": -33.97,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Ruby Rock LE (9).SC2Replay",
+    "race": "T",
+    "duration": 472.7,
+    "player_id": 2,
+    "bank_minerals": 563,
+    "bank_ratio": 0.0878,
+    "collected_minerals": 6413,
+    "collected_vespene": 1156,
+    "unit_minerals": 5575,
+    "unit_vespene": 625,
+    "strict_minerals": 5425,
+    "error_pct": -13.07,
+    "strict_error_pct": -15.41,
+    "gas_error_pct": -45.93,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Sanctuary III LE (29).SC2Replay",
+    "race": "P",
+    "duration": 690.9,
+    "player_id": 1,
+    "bank_minerals": 1065,
+    "bank_ratio": 0.0851,
+    "collected_minerals": 12515,
+    "collected_vespene": 662,
+    "unit_minerals": 11950,
+    "unit_vespene": 800,
+    "strict_minerals": 11400,
+    "error_pct": -4.51,
+    "strict_error_pct": -8.91,
+    "gas_error_pct": 20.85,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Sanctuary III LE (29).SC2Replay",
+    "race": "T",
+    "duration": 690.9,
+    "player_id": 2,
+    "bank_minerals": 480,
+    "bank_ratio": 0.0465,
+    "collected_minerals": 10330,
+    "collected_vespene": 2136,
+    "unit_minerals": 10550,
+    "unit_vespene": 1750,
+    "strict_minerals": 10200,
+    "error_pct": 2.13,
+    "strict_error_pct": -1.26,
+    "gas_error_pct": -18.07,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Washout LE (30).SC2Replay",
+    "race": "T",
+    "duration": 1466.6,
+    "player_id": 1,
+    "bank_minerals": 3902,
+    "bank_ratio": 0.114,
+    "collected_minerals": 34222,
+    "collected_vespene": 8834,
+    "unit_minerals": 33025,
+    "unit_vespene": 8375,
+    "strict_minerals": 31925,
+    "error_pct": -3.5,
+    "strict_error_pct": -6.71,
+    "gas_error_pct": -5.2,
+    "unknown_units": {
+     "ChangelingMarineShield": 4
+    },
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Washout LE (30).SC2Replay",
+    "race": "Z",
+    "duration": 1466.6,
+    "player_id": 2,
+    "bank_minerals": 2795,
+    "bank_ratio": 0.0869,
+    "collected_minerals": 32145,
+    "collected_vespene": 7232,
+    "unit_minerals": 30275,
+    "unit_vespene": 5050,
+    "strict_minerals": 30075,
+    "error_pct": -5.82,
+    "strict_error_pct": -6.44,
+    "gas_error_pct": -30.17,
+    "unknown_units": {},
+    "unknown_upgrades": {
+     "EvolveMuscularAugments": 1
+    },
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Washout LE (63).SC2Replay",
+    "race": "T",
+    "duration": 1106.2,
+    "player_id": 1,
+    "bank_minerals": 0,
+    "bank_ratio": 0.0,
+    "collected_minerals": 9505,
+    "collected_vespene": 1552,
+    "unit_minerals": 9375,
+    "unit_vespene": 1550,
+    "strict_minerals": 9375,
+    "error_pct": -1.37,
+    "strict_error_pct": -1.37,
+    "gas_error_pct": -0.13,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Washout LE (63).SC2Replay",
+    "race": "P",
+    "duration": 1106.2,
+    "player_id": 2,
+    "bank_minerals": 308,
+    "bank_ratio": 0.0328,
+    "collected_minerals": 9383,
+    "collected_vespene": 1876,
+    "unit_minerals": 10550,
+    "unit_vespene": 1650,
+    "strict_minerals": 10475,
+    "error_pct": 12.44,
+    "strict_error_pct": 11.64,
+    "gas_error_pct": -12.05,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "Winter Madness LE (49).SC2Replay",
+    "race": "P",
+    "duration": 747.1,
+    "player_id": 1,
+    "bank_minerals": 440,
+    "bank_ratio": 0.0376,
+    "collected_minerals": 11715,
+    "collected_vespene": 2119,
+    "unit_minerals": 11775,
+    "unit_vespene": 2150,
+    "strict_minerals": 11775,
+    "error_pct": 0.51,
+    "strict_error_pct": 0.51,
+    "gas_error_pct": 1.46,
+    "unknown_units": {
+     "OracleStasisTrap": 1
+    },
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Winter Madness LE (49).SC2Replay",
+    "race": "Z",
+    "duration": 747.1,
+    "player_id": 2,
+    "bank_minerals": 185,
+    "bank_ratio": 0.0128,
+    "collected_minerals": 14485,
+    "collected_vespene": 1604,
+    "unit_minerals": 14650,
+    "unit_vespene": 1275,
+    "strict_minerals": 13700,
+    "error_pct": 1.14,
+    "strict_error_pct": -5.42,
+    "gas_error_pct": -20.51,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "开荒拓土-天梯版 (2).SC2Replay",
+    "race": "T",
+    "duration": 703.9,
+    "player_id": 1,
+    "bank_minerals": 360,
+    "bank_ratio": 0.033,
+    "collected_minerals": 10910,
+    "collected_vespene": 2202,
+    "unit_minerals": 11600,
+    "unit_vespene": 2050,
+    "strict_minerals": 10800,
+    "error_pct": 6.32,
+    "strict_error_pct": -1.01,
+    "gas_error_pct": -6.9,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "开荒拓土-天梯版 (2).SC2Replay",
+    "race": "T",
+    "duration": 703.9,
+    "player_id": 2,
+    "bank_minerals": 1191,
+    "bank_ratio": 0.1159,
+    "collected_minerals": 10278,
+    "collected_vespene": 1689,
+    "unit_minerals": 9300,
+    "unit_vespene": 1225,
+    "strict_minerals": 8950,
+    "error_pct": -9.52,
+    "strict_error_pct": -12.92,
+    "gas_error_pct": -27.47,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "开荒拓土-天梯版 (2).SC2Replay",
+    "race": "P",
+    "duration": 703.9,
+    "player_id": 3,
+    "bank_minerals": 0,
+    "bank_ratio": 0.0,
+    "collected_minerals": 8000,
+    "collected_vespene": 925,
+    "unit_minerals": 8275,
+    "unit_vespene": 1075,
+    "strict_minerals": 8025,
+    "error_pct": 3.44,
+    "strict_error_pct": 0.31,
+    "gas_error_pct": 16.22,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "开荒拓土-天梯版 (2).SC2Replay",
+    "race": "P",
+    "duration": 703.9,
+    "player_id": 4,
+    "bank_minerals": 1070,
+    "bank_ratio": 0.1162,
+    "collected_minerals": 9205,
+    "collected_vespene": 3015,
+    "unit_minerals": 8315,
+    "unit_vespene": 1450,
+    "strict_minerals": 7200,
+    "error_pct": -9.67,
+    "strict_error_pct": -21.78,
+    "gas_error_pct": -51.91,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   },
+   {
+    "file": "缄默之陨.SC2Replay",
+    "race": "T",
+    "duration": 2932.1,
+    "player_id": 5,
+    "bank_minerals": 10115,
+    "bank_ratio": 1.0,
+    "collected_minerals": 10115,
+    "collected_vespene": 20000,
+    "unit_minerals": 800,
+    "unit_vespene": 0,
+    "strict_minerals": 800,
+    "error_pct": -92.09,
+    "strict_error_pct": -92.09,
+    "gas_error_pct": -100.0,
+    "unknown_units": {
+     "TargetingConsoleSec4": 15,
+     "TargetingConsoleSec3": 18,
+     "TargetingConsoleSec2": 11,
+     "TargetingConsoleSec1": 12,
+     "TestArmory": 4,
+     "WarPig": 1,
+     "Flashlight": 1,
+     "C14GaussRifle": 1,
+     "CaptainsCard": 1,
+     "MysteriousBottleofPills2": 1,
+     "MTR7RocketLauncher": 1,
+     "ToxicGasTurret": 1,
+     "ZeroPointRifle": 1
+    },
+    "unknown_upgrades": {
+     "Dummy": 1,
+     "EggMultiplier": 1,
+     "Playeringame12": 1,
+     "Playeringame13": 1,
+     "Playeringame18": 1,
+     "Playeringame110": 1,
+     "Playeringame111": 1,
+     "Playeringame112": 1,
+     "PowertoLights": 11,
+     "PlayerHuman10": 2,
+     "PlayerHuman3": 2,
+     "PlayerHuman8": 2,
+     "PlayerHuman2": 2,
+     "MaxGenemods": 1,
+     "PlayerHuman11": 2,
+     "PlayerHuman12": 2,
+     "1Captain": 1,
+     "SuitCombat": 2,
+     "SuitFreeCombat": 1,
+     "XenoBiology1": 1,
+     "XenoBiology1Biologist": 1,
+     "Weapons1": 1,
+     "Weapons1WeaponsOfficer": 1,
+     "Firmware1": 1,
+     "PowerUsedByEngines": 20,
+     "PowerUsedByFTL": 20,
+     "PowerUsedByLights": 20,
+     "PowerUsedBySecurity": 20,
+     "PowerUsedByShields": 20,
+     "PowerUsedByWeapons": 20,
+     "PowertoSecurity": 20,
+     "PowertoFTL": 21,
+     "PowertoShields": 12,
+     "PowertoEngines": 10,
+     "PowertoWeapons": 10,
+     "ShipPowerOffline": 15,
+     "InSpace": 2,
+     "Firmware1Uploaded": 1,
+     "Firmware1UploadedLieutenant": 1,
+     "Reactor1": 1,
+     "Reactor1Engi": 1,
+     "Weapons2": 1,
+     "Weapons2WeaponsOfficer": 1,
+     "MechanicsBay1": 1,
+     "MechanicsBay1Mec": 1,
+     "MSU1Assigned": 2,
+     "MSUPatrolAssignedBiosphereCorridor": 2,
+     "10MinutesPast": 4,
+     "ShipIntegrity1": 1,
+     "ShipIntegrity1Pilot": 1,
+     "ShipIntegrity2": 1,
+     "ShipIntegrity2Pilot": 1,
+     "Firmware2": 1,
+     "Firmware2Uploaded": 1,
+     "Firmware2UploadedLieutenant": 1,
+     "XenoBiology2": 1,
+     "XenoBiology2Biologist": 1,
+     "LifeUpgrades": 5,
+     "CrewArmor": 5,
+     "Weapons3": 1,
+     "Weapons3WeaponsOfficer": 1,
+     "Weapons4": 1,
+     "Weapons4WeaponsOfficer": 1,
+     "Scan1": 1,
+     "Firmware3": 1,
+     "Security1": 1,
+     "Security1SecurityChief": 1,
+     "SecurityGeneralUpgrade": 2,
+     "Firmware3Uploaded": 1,
+     "Firmware3UploadedLieutenant": 1,
+     "Weapons5": 1,
+     "WarpCoils": 1,
+     "WarpCoils2": 1,
+     "Jumping": 4,
+     "RadioInterference": 2,
+     "CameraMalfunctionSector": 2,
+     "SolarRadiation": 2,
+     "WarpCoils22": 1,
+     "WarpCoils3TechOfficer": 1,
+     "WarpCoils4": 1,
+     "WarpCoils4TechOfficer": 1,
+     "LastRemnantStrength": 2,
+     "LastRemnant": 1,
+     "SuitMaintenance": 2,
+     "SuitMedic": 1,
+     "SuitFreeMaintenance": 1,
+     "ExpandedConciousness": 1,
+     "ExpandedConciousnessGreater": 1,
+     "ExtraSurgeryAllowed": 1,
+     "Alien": 1,
+     "AlienHost": 1,
+     "Observer": 1
+    },
+    "is_local": true,
+    "is_ladder": false
+   },
+   {
+    "file": "Rorschach LE (55).SC2Replay",
+    "race": "T",
+    "duration": 1090.8,
+    "player_id": 1,
+    "bank_minerals": 1215,
+    "bank_ratio": 0.0684,
+    "collected_minerals": 17765,
+    "collected_vespene": 3654,
+    "unit_minerals": 17800,
+    "unit_vespene": 3800,
+    "strict_minerals": 17800,
+    "error_pct": 0.2,
+    "strict_error_pct": 0.2,
+    "gas_error_pct": 4.0,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": true,
+    "is_ladder": true
+   },
+   {
+    "file": "Rorschach LE (55).SC2Replay",
+    "race": "P",
+    "duration": 1090.8,
+    "player_id": 2,
+    "bank_minerals": 429,
+    "bank_ratio": 0.0141,
+    "collected_minerals": 30529,
+    "collected_vespene": 3166,
+    "unit_minerals": 30950,
+    "unit_vespene": 3600,
+    "strict_minerals": 30350,
+    "error_pct": 1.38,
+    "strict_error_pct": -0.59,
+    "gas_error_pct": 13.71,
+    "unknown_units": {},
+    "unknown_upgrades": {},
+    "is_local": false,
+    "is_ladder": true
+   }
+  ]
+ },
+ "reconcile": {
+  "game": "Rorschach LE (55).SC2Replay",
+  "result": {
+   "file": "Rorschach LE (55).SC2Replay",
+   "player": "IIIIIIIIIIII",
+   "race": "T",
+   "duration": 1090.8,
+   "series": [
+    [
+     0.1,
+     50,
+     50,
+     0,
+     0,
+     0,
+     0,
+     1050,
+     1050
+    ],
+    [
+     10.0,
+     30,
+     100,
+     70,
+     0,
+     0,
+     0,
+     1080,
+     1100
+    ],
+    [
+     20.0,
+     70,
+     104,
+     34,
+     0,
+     0,
+     0,
+     1170,
+     1154
+    ],
+    [
+     30.0,
+     50,
+     59,
+     9,
+     0,
+     0,
+     0,
+     1250,
+     1209
+    ],
+    [
+     40.0,
+     80,
+     67,
+     -13,
+     0,
+     0,
+     0,
+     1330,
+     1267
+    ],
+    [
+     50.0,
+     125,
+     126,
+     1,
+     0,
+     0,
+     0,
+     1375,
+     1326
+    ],
+    [
+     60.0,
+     65,
+     -11,
+     -76,
+     0,
+     0,
+     0,
+     1515,
+     1389
+    ],
+    [
+     70.0,
+     40,
+     -24,
+     -64,
+     0,
+     11,
+     11,
+     1565,
+     1451
+    ],
+    [
+     80.0,
+     130,
+     -7,
+     -137,
+     0,
+     22,
+     22,
+     1705,
+     1518
+    ],
+    [
+     90.0,
+     180,
+     10,
+     -170,
+     0,
+     34,
+     34,
+     1805,
+     1585
+    ],
+    [
+     100.0,
+     285,
+     77,
+     -208,
+     4,
+     45,
+     41,
+     1910,
+     1652
+    ],
+    [
+     110.0,
+     325,
+     94,
+     -231,
+     24,
+     56,
+     32,
+     2000,
+     1719
+    ],
+    [
+     120.0,
+     430,
+     161,
+     -269,
+     44,
+     67,
+     23,
+     2105,
+     1786
+    ],
+    [
+     130.0,
+     455,
+     178,
+     -277,
+     64,
+     79,
+     15,
+     2180,
+     1853
+    ],
+    [
+     140.0,
+     415,
+     245,
+     -170,
+     34,
+     90,
+     56,
+     2290,
+     1920
+    ],
+    [
+     150.0,
+     110,
+     -76,
+     -186,
+     54,
+     101,
+     47,
+     2385,
+     1999
+    ],
+    [
+     160.0,
+     100,
+     -96,
+     -196,
+     70,
+     112,
+     42,
+     2475,
+     2079
+    ],
+    [
+     170.0,
+     145,
+     -167,
+     -312,
+     90,
+     124,
+     34,
+     2570,
+     2158
+    ],
+    [
+     180.0,
+     185,
+     -137,
+     -322,
+     110,
+     85,
+     -25,
+     2660,
+     2238
+    ],
+    [
+     190.0,
+     150,
+     -254,
+     -404,
+     30,
+     -4,
+     -34,
+     2775,
+     2321
+    ],
+    [
+     200.0,
+     140,
+     -245,
+     -385,
+     50,
+     19,
+     -31,
+     2890,
+     2405
+    ],
+    [
+     210.0,
+     155,
+     -307,
+     -462,
+     20,
+     -9,
+     -29,
+     3005,
+     2493
+    ],
+    [
+     220.0,
+     280,
+     -219,
+     -499,
+     40,
+     14,
+     -26,
+     3130,
+     2581
+    ],
+    [
+     230.0,
+     250,
+     -277,
+     -527,
+     56,
+     36,
+     -20,
+     3250,
+     2673
+    ],
+    [
+     240.0,
+     320,
+     -185,
+     -505,
+     92,
+     58,
+     -34,
+     3320,
+     2765
+    ],
+    [
+     250.0,
+     280,
+     -143,
+     -423,
+     128,
+     81,
+     -47,
+     3480,
+     2857
+    ],
+    [
+     260.0,
+     150,
+     -205,
+     -355,
+     64,
+     3,
+     -61,
+     3600,
+     2945
+    ],
+    [
+     270.0,
+     150,
+     -167,
+     -317,
+     80,
+     26,
+     -54,
+     3700,
+     3033
+    ],
+    [
+     280.0,
+     135,
+     -229,
+     -364,
+     100,
+     48,
+     -52,
+     3785,
+     3121
+    ],
+    [
+     290.0,
+     110,
+     -242,
+     -352,
+     95,
+     71,
+     -24,
+     3835,
+     3208
+    ],
+    [
+     300.0,
+     165,
+     -345,
+     -510,
+     123,
+     93,
+     -30,
+     3990,
+     3305
+    ],
+    [
+     310.0,
+     65,
+     -295,
+     -360,
+     63,
+     116,
+     53,
+     4140,
+     3405
+    ],
+    [
+     320.0,
+     105,
+     -315,
+     -420,
+     103,
+     113,
+     10,
+     4230,
+     3510
+    ],
+    [
+     330.0,
+     100,
+     -582,
+     -682,
+     139,
+     136,
+     -3,
+     4500,
+     3618
+    ],
+    [
+     340.0,
+     55,
+     -594,
+     -649,
+     175,
+     169,
+     -6,
+     4680,
+     3731
+    ],
+    [
+     350.0,
+     180,
+     -627,
+     -807,
+     215,
+     103,
+     -112,
+     4855,
+     3848
+    ],
+    [
+     360.0,
+     205,
+     -705,
+     -910,
+     255,
+     137,
+     -118,
+     5030,
+     3970
+    ],
+    [
+     370.0,
+     185,
+     -930,
+     -1115,
+     245,
+     121,
+     -124,
+     5260,
+     4095
+    ],
+    [
+     380.0,
+     190,
+     -850,
+     -1040,
+     197,
+     154,
+     -43,
+     5365,
+     4225
+    ],
+    [
+     390.0,
+     280,
+     -720,
+     -1000,
+     253,
+     188,
+     -65,
+     5555,
+     4355
+    ],
+    [
+     400.0,
+     205,
+     -591,
+     -796,
+     313,
+     222,
+     -91,
+     5480,
+     4484
+    ],
+    [
+     410.0,
+     45,
+     -907,
+     -952,
+     90,
+     255,
+     165,
+     5920,
+     4618
+    ],
+    [
+     420.0,
+     230,
+     -873,
+     -1103,
+     150,
+     289,
+     139,
+     6105,
+     4752
+    ],
+    [
+     430.0,
+     435,
+     -739,
+     -1174,
+     210,
+     323,
+     113,
+     6310,
+     4886
+    ],
+    [
+     440.0,
+     445,
+     -605,
+     -1050,
+     266,
+     357,
+     91,
+     6420,
+     5020
+    ],
+    [
+     450.0,
+     190,
+     -646,
+     -836,
+     201,
+     402,
+     201,
+     6440,
+     5154
+    ],
+    [
+     460.0,
+     380,
+     -887,
+     -1267,
+     261,
+     121,
+     -140,
+     6880,
+     5288
+    ],
+    [
+     470.0,
+     60,
+     -1233,
+     -1293,
+     317,
+     166,
+     -151,
+     7060,
+     5442
+    ],
+    [
+     480.0,
+     120,
+     -1319,
+     -1439,
+     223,
+     161,
+     -62,
+     7220,
+     5606
+    ],
+    [
+     490.0,
+     215,
+     -1352,
+     -1567,
+     287,
+     206,
+     -81,
+     7465,
+     5773
+    ],
+    [
+     500.0,
+     330,
+     -1360,
+     -1690,
+     359,
+     126,
+     -233,
+     7680,
+     5940
+    ],
+    [
+     510.0,
+     310,
+     -1342,
+     -1652,
+     439,
+     171,
+     -268,
+     7910,
+     6108
+    ],
+    [
+     520.0,
+     425,
+     -1421,
+     -1846,
+     519,
+     216,
+     -303,
+     8125,
+     6279
+    ],
+    [
+     530.0,
+     205,
+     -1295,
+     -1500,
+     549,
+     261,
+     -288,
+     8305,
+     6455
+    ],
+    [
+     540.0,
+     385,
+     -1311,
+     -1696,
+     617,
+     206,
+     -411,
+     8585,
+     6639
+    ],
+    [
+     550.0,
+     585,
+     -1127,
+     -1712,
+     697,
+     251,
+     -446,
+     8785,
+     6823
+    ],
+    [
+     560.0,
+     810,
+     -1335,
+     -2145,
+     773,
+     246,
+     -527,
+     9010,
+     7015
+    ],
+    [
+     570.0,
+     405,
+     -1142,
+     -1547,
+     803,
+     291,
+     -512,
+     9155,
+     7208
+    ],
+    [
+     580.0,
+     215,
+     -1100,
+     -1315,
+     458,
+     211,
+     -247,
+     9265,
+     7400
+    ],
+    [
+     590.0,
+     225,
+     -1053,
+     -1278,
+     434,
+     256,
+     -178,
+     9325,
+     7597
+    ],
+    [
+     600.0,
+     130,
+     -1256,
+     -1386,
+     464,
+     251,
+     -213,
+     9630,
+     7794
+    ],
+    [
+     610.0,
+     140,
+     -1210,
+     -1350,
+     536,
+     296,
+     -240,
+     9690,
+     7990
+    ],
+    [
+     620.0,
+     70,
+     -1563,
+     -1633,
+     541,
+     41,
+     -500,
+     10070,
+     8187
+    ],
+    [
+     630.0,
+     180,
+     -1612,
+     -1792,
+     592,
+     36,
+     -556,
+     10330,
+     8388
+    ],
+    [
+     640.0,
+     425,
+     -1462,
+     -1887,
+     668,
+     81,
+     -587,
+     10575,
+     8588
+    ],
+    [
+     650.0,
+     715,
+     -1461,
+     -2176,
+     748,
+     101,
+     -647,
+     10915,
+     8789
+    ],
+    [
+     660.0,
+     965,
+     -1360,
+     -2325,
+     828,
+     121,
+     -707,
+     11015,
+     8990
+    ],
+    [
+     670.0,
+     565,
+     -1259,
+     -1824,
+     625,
+     115,
+     -510,
+     11265,
+     9191
+    ],
+    [
+     680.0,
+     465,
+     -1158,
+     -1623,
+     655,
+     160,
+     -495,
+     11265,
+     9392
+    ],
+    [
+     690.0,
+     270,
+     -1582,
+     -1852,
+     677,
+     -45,
+     -722,
+     11595,
+     9593
+    ],
+    [
+     700.0,
+     165,
+     -2282,
+     -2447,
+     757,
+     -75,
+     -832,
+     11940,
+     9793
+    ],
+    [
+     710.0,
+     430,
+     -2185,
+     -2615,
+     837,
+     -130,
+     -967,
+     12205,
+     9990
+    ],
+    [
+     720.0,
+     710,
+     -2088,
+     -2798,
+     917,
+     -185,
+     -1102,
+     12335,
+     10187
+    ],
+    [
+     730.0,
+     965,
+     -1904,
+     -2869,
+     997,
+     -140,
+     -1137,
+     12390,
+     10371
+    ],
+    [
+     740.0,
+     580,
+     -1920,
+     -2500,
+     815,
+     -95,
+     -910,
+     12555,
+     10555
+    ],
+    [
+     750.0,
+     125,
+     -2036,
+     -2161,
+     845,
+     -150,
+     -995,
+     12750,
+     10739
+    ],
+    [
+     760.0,
+     310,
+     -1852,
+     -2162,
+     896,
+     -105,
+     -1001,
+     12935,
+     10923
+    ],
+    [
+     770.0,
+     525,
+     -2068,
+     -2593,
+     926,
+     -110,
+     -1036,
+     13400,
+     11107
+    ],
+    [
+     780.0,
+     215,
+     -2284,
+     -2499,
+     606,
+     -315,
+     -921,
+     13240,
+     11291
+    ],
+    [
+     790.0,
+     460,
+     -2100,
+     -2560,
+     682,
+     -270,
+     -952,
+     13485,
+     11475
+    ],
+    [
+     800.0,
+     630,
+     -2303,
+     -2933,
+     762,
+     -250,
+     -1012,
+     13705,
+     11672
+    ],
+    [
+     810.0,
+     90,
+     -2302,
+     -2392,
+     634,
+     -305,
+     -939,
+     13915,
+     11873
+    ],
+    [
+     820.0,
+     120,
+     -2102,
+     -2222,
+     685,
+     -260,
+     -945,
+     13945,
+     12073
+    ],
+    [
+     830.0,
+     170,
+     -2201,
+     -2371,
+     765,
+     -265,
+     -1030,
+     14295,
+     12274
+    ],
+    [
+     840.0,
+     30,
+     -2600,
+     -2630,
+     791,
+     -298,
+     -1089,
+     14655,
+     12475
+    ],
+    [
+     850.0,
+     100,
+     -2549,
+     -2649,
+     871,
+     -230,
+     -1101,
+     14875,
+     12676
+    ],
+    [
+     860.0,
+     95,
+     -2548,
+     -2643,
+     776,
+     -188,
+     -964,
+     14995,
+     12877
+    ],
+    [
+     870.0,
+     340,
+     -2831,
+     -3171,
+     848,
+     -271,
+     -1119,
+     15340,
+     13044
+    ],
+    [
+     880.0,
+     545,
+     -2722,
+     -3267,
+     936,
+     -203,
+     -1139,
+     15445,
+     13203
+    ],
+    [
+     890.0,
+     700,
+     -2592,
+     -3292,
+     1004,
+     -136,
+     -1140,
+     15500,
+     13333
+    ],
+    [
+     900.0,
+     780,
+     -2667,
+     -3447,
+     1032,
+     -143,
+     -1175,
+     15580,
+     13408
+    ],
+    [
+     910.0,
+     0,
+     -2617,
+     -2617,
+     907,
+     -87,
+     -994,
+     15550,
+     13458
+    ],
+    [
+     920.0,
+     0,
+     -2571,
+     -2571,
+     907,
+     -31,
+     -938,
+     15550,
+     13504
+    ],
+    [
+     930.0,
+     0,
+     -2775,
+     -2775,
+     911,
+     14,
+     -897,
+     15550,
+     13550
+    ],
+    [
+     940.0,
+     0,
+     -3329,
+     -3329,
+     915,
+     -177,
+     -1092,
+     15550,
+     13596
+    ],
+    [
+     950.0,
+     0,
+     -3283,
+     -3283,
+     919,
+     -144,
+     -1063,
+     15550,
+     13642
+    ],
+    [
+     960.0,
+     20,
+     -3237,
+     -3257,
+     919,
+     -110,
+     -1029,
+     15570,
+     13688
+    ],
+    [
+     970.0,
+     135,
+     -3366,
+     -3501,
+     1069,
+     -251,
+     -1320,
+     15785,
+     13734
+    ],
+    [
+     980.0,
+     130,
+     -3395,
+     -3525,
+     1069,
+     -206,
+     -1275,
+     15855,
+     13780
+    ],
+    [
+     990.0,
+     350,
+     -3440,
+     -3790,
+     1069,
+     -161,
+     -1230,
+     16075,
+     13835
+    ],
+    [
+     1000.0,
+     570,
+     -3386,
+     -3956,
+     1069,
+     -116,
+     -1185,
+     16145,
+     13889
+    ],
+    [
+     1010.0,
+     705,
+     -3332,
+     -4037,
+     1044,
+     -71,
+     -1115,
+     16380,
+     13943
+    ],
+    [
+     1020.0,
+     205,
+     -3277,
+     -3482,
+     877,
+     -26,
+     -903,
+     16330,
+     13998
+    ],
+    [
+     1030.0,
+     155,
+     -3223,
+     -3378,
+     685,
+     19,
+     -666,
+     16280,
+     14052
+    ],
+    [
+     1040.0,
+     385,
+     -3443,
+     -3828,
+     689,
+     39,
+     -650,
+     16735,
+     14107
+    ],
+    [
+     1050.0,
+     615,
+     -3789,
+     -4404,
+     697,
+     -17,
+     -714,
+     17165,
+     14161
+    ],
+    [
+     1060.0,
+     860,
+     -3735,
+     -4595,
+     705,
+     28,
+     -677,
+     17410,
+     14215
+    ],
+    [
+     1070.0,
+     995,
+     -3980,
+     -4975,
+     713,
+     -2,
+     -715,
+     17545,
+     14270
+    ],
+    [
+     1080.0,
+     1095,
+     -3926,
+     -5021,
+     721,
+     43,
+     -678,
+     17645,
+     14324
+    ],
+    [
+     1090.0,
+     1205,
+     -3871,
+     -5076,
+     725,
+     88,
+     -637,
+     17755,
+     14379
+    ],
+    [
+     1090.8,
+     1215,
+     -3867,
+     -5082,
+     729,
+     92,
+     -637,
+     17765,
+     14383
+    ],
+    [
+     1090.8,
+     1215,
+     -3867,
+     -5082,
+     729,
+     92,
+     -637,
+     17765,
+     14383
+    ]
+   ],
+   "mineral": {
+    "mae": 1770.7,
+    "mae_pct": 9.97,
+    "final_error": -5082,
+    "final_error_pct": -28.61
+   },
+   "vespene": {
+    "mae": 462.0,
+    "mae_pct": 12.64,
+    "final_error": -637,
+    "final_error_pct": -17.43
+   },
+   "collected_minerals": 17765.0,
+   "collected_vespene": 3654.0,
+   "model_collected_minerals": 14382.6,
+   "model_collected_vespene": 3891.6
+  },
+  "games": [
+   {
+    "file": "Rorschach LE (55).SC2Replay",
+    "player": "IIIIIIIIIIII",
+    "race": "T",
+    "mineral": {
+     "mae": 1770.7,
+     "mae_pct": 9.97,
+     "final_error": -5082,
+     "final_error_pct": -28.61
+    },
+    "vespene": {
+     "mae": 462.0,
+     "mae_pct": 12.64,
+     "final_error": -637,
+     "final_error_pct": -17.43
+    },
+    "point_count": 112
+   },
+   {
+    "file": "10000 Feet LE (70).SC2Replay",
+    "player": "IIIIIIIIIIII",
+    "race": "T",
+    "mineral": {
+     "mae": 1710.6,
+     "mae_pct": 7.86,
+     "final_error": -3078,
+     "final_error_pct": -14.15
+    },
+    "vespene": {
+     "mae": 430.9,
+     "mae_pct": 8.46,
+     "final_error": -1194,
+     "final_error_pct": -23.45
+    },
+    "point_count": 105
+   },
+   {
+    "file": "At Eternity's Edge LE (109).SC2Replay",
+    "player": "IIIIIIIIIIII",
+    "race": "T",
+    "mineral": {
+     "mae": 2185.6,
+     "mae_pct": 8.01,
+     "final_error": -6177,
+     "final_error_pct": -22.63
+    },
+    "vespene": {
+     "mae": 624.5,
+     "mae_pct": 8.54,
+     "final_error": -2159,
+     "final_error_pct": -29.54
+    },
+    "point_count": 140
+   },
+   {
+    "file": "At Eternity's Edge LE (119).SC2Replay",
+    "player": "IIIIIIIIIIII",
+    "race": "T",
+    "mineral": {
+     "mae": 1999.2,
+     "mae_pct": 9.04,
+     "final_error": -4558,
+     "final_error_pct": -20.6
+    },
+    "vespene": {
+     "mae": 444.1,
+     "mae_pct": 9.1,
+     "final_error": -1176,
+     "final_error_pct": -24.09
+    },
+    "point_count": 106
+   }
+  ]
+ },
+ "upgrade_cost": {
+  "cost": {
+   "Stimpack": [
+    100,
+    100
+   ],
+   "ShieldWall": [
+    100,
+    100
+   ],
+   "PunisherGrenades": [
+    50,
+    50
+   ],
+   "HiSecAutoTracking": [
+    100,
+    100
+   ],
+   "TerranBuildingArmor": [
+    150,
+    150
+   ],
+   "PersonalCloaking": [
+    100,
+    100
+   ],
+   "BansheeCloak": [
+    100,
+    100
+   ],
+   "MedivacCaduceusReactor": [
+    100,
+    100
+   ],
+   "LiberatorAGRangeUpgrade": [
+    150,
+    150
+   ],
+   "Charge": [
+    100,
+    100
+   ],
+   "BlinkTech": [
+    150,
+    150
+   ],
+   "WarpGateResearch": [
+    50,
+    50
+   ],
+   "AdeptPiercingAttack": [
+    100,
+    100
+   ],
+   "ResonatingGlaives": [
+    100,
+    100
+   ],
+   "PsiStormTech": [
+    200,
+    200
+   ],
+   "ExtendedThermalLance": [
+    150,
+    150
+   ],
+   "GraviticBoosters": [
+    100,
+    100
+   ],
+   "GraviticDrive": [
+    100,
+    100
+   ],
+   "GravitonCatapult": [
+    150,
+    150
+   ],
+   "FluxVanes": [
+    100,
+    100
+   ],
+   "AnionPulseCrystals": [
+    100,
+    100
+   ],
+   "DarkTemplarBlinkUpgrade": [
+    100,
+    100
+   ],
+   "MetabolicBoost": [
+    100,
+    100
+   ],
+   "zerglingmovementspeed": [
+    100,
+    100
+   ],
+   "AdrenalGlands": [
+    200,
+    200
+   ],
+   "zerglingattackspeed": [
+    200,
+    200
+   ],
+   "CentrifugalHooks": [
+    150,
+    150
+   ],
+   "CentrificalHooks": [
+    150,
+    150
+   ],
+   "GlialReconstitution": [
+    100,
+    100
+   ],
+   "TunnelingClaws": [
+    150,
+    150
+   ],
+   "ChitinousPlating": [
+    150,
+    150
+   ],
+   "AnabolicSynthesis": [
+    150,
+    150
+   ],
+   "Frenzy": [
+    100,
+    100
+   ],
+   "Burrow": [
+    100,
+    100
+   ],
+   "LurkerRange": [
+    150,
+    150
+   ],
+   "SeismicSpines": [
+    150,
+    150
+   ],
+   "DiggingClaws": [
+    150,
+    150
+   ],
+   "NeuralParasite": [
+    150,
+    150
+   ],
+   "PathogenGlands": [
+    150,
+    150
+   ],
+   "overlordspeed": [
+    100,
+    100
+   ],
+   "TerranVehicleAndShipArmorsLevel1": null,
+   "TerranVehicleAndShipArmorsLevel2": null,
+   "TerranVehicleAndShipArmorsLevel3": null,
+   "InterferenceMatrix": null,
+   "HighCapacityBarrels": null,
+   "BattlecruiserEnableSpecializations": null,
+   "CycloneLockOnDamageUpgrade": null,
+   "SmartServos": null,
+   "NeoSteelFrame": null,
+   "DrillingClaws": null,
+   "CycloneRapidFireLaunchers": null,
+   "VoidRaySpeedUpgrade": null,
+   "MuscularAugments": null,
+   "EvolveMuscularAugments": null,
+   "GroovedSpines": null,
+   "EvolveGroovedSpines": null,
+   "TerranInfantryWeaponsLevel1": [
+    100,
+    100
+   ],
+   "TerranInfantryWeaponsLevel2": [
+    175,
+    175
+   ],
+   "TerranInfantryWeaponsLevel3": [
+    250,
+    250
+   ],
+   "TerranInfantryArmorsLevel1": [
+    100,
+    100
+   ],
+   "TerranInfantryArmorsLevel2": [
+    175,
+    175
+   ],
+   "TerranInfantryArmorsLevel3": [
+    250,
+    250
+   ],
+   "TerranVehicleWeaponsLevel1": [
+    100,
+    100
+   ],
+   "TerranVehicleWeaponsLevel2": [
+    175,
+    175
+   ],
+   "TerranVehicleWeaponsLevel3": [
+    250,
+    250
+   ],
+   "TerranShipWeaponsLevel1": [
+    100,
+    100
+   ],
+   "TerranShipWeaponsLevel2": [
+    175,
+    175
+   ],
+   "TerranShipWeaponsLevel3": [
+    250,
+    250
+   ],
+   "ProtossGroundWeaponsLevel1": [
+    100,
+    100
+   ],
+   "ProtossGroundWeaponsLevel2": [
+    175,
+    175
+   ],
+   "ProtossGroundWeaponsLevel3": [
+    250,
+    250
+   ],
+   "ProtossGroundArmorsLevel1": [
+    100,
+    100
+   ],
+   "ProtossGroundArmorsLevel2": [
+    175,
+    175
+   ],
+   "ProtossGroundArmorsLevel3": [
+    250,
+    250
+   ],
+   "ProtossAirWeaponsLevel1": [
+    100,
+    100
+   ],
+   "ProtossAirWeaponsLevel2": [
+    175,
+    175
+   ],
+   "ProtossAirWeaponsLevel3": [
+    250,
+    250
+   ],
+   "ZergMeleeWeaponsLevel1": [
+    100,
+    100
+   ],
+   "ZergMeleeWeaponsLevel2": [
+    175,
+    175
+   ],
+   "ZergMeleeWeaponsLevel3": [
+    250,
+    250
+   ],
+   "ZergMissileWeaponsLevel1": [
+    100,
+    100
+   ],
+   "ZergMissileWeaponsLevel2": [
+    175,
+    175
+   ],
+   "ZergMissileWeaponsLevel3": [
+    250,
+    250
+   ],
+   "ZergGroundArmorsLevel1": [
+    100,
+    100
+   ],
+   "ZergGroundArmorsLevel2": [
+    175,
+    175
+   ],
+   "ZergGroundArmorsLevel3": [
+    250,
+    250
+   ],
+   "ZergFlyerWeaponsLevel1": [
+    100,
+    100
+   ],
+   "ZergFlyerWeaponsLevel2": [
+    175,
+    175
+   ],
+   "ZergFlyerWeaponsLevel3": [
+    250,
+    250
+   ],
+   "ProtossAirArmorsLevel1": [
+    150,
+    150
+   ],
+   "ProtossAirArmorsLevel2": [
+    225,
+    225
+   ],
+   "ProtossAirArmorsLevel3": [
+    300,
+    300
+   ],
+   "ProtossShieldsLevel1": [
+    150,
+    150
+   ],
+   "ProtossShieldsLevel2": [
+    225,
+    225
+   ],
+   "ProtossShieldsLevel3": [
+    300,
+    300
+   ],
+   "ZergFlyerArmorsLevel1": [
+    150,
+    150
+   ],
+   "ZergFlyerArmorsLevel2": [
+    225,
+    225
+   ],
+   "ZergFlyerArmorsLevel3": [
+    300,
+    300
+   ]
+  },
+  "uncosted": [
+   "TerranVehicleAndShipArmorsLevel1",
+   "TerranVehicleAndShipArmorsLevel2",
+   "TerranVehicleAndShipArmorsLevel3",
+   "InterferenceMatrix",
+   "HighCapacityBarrels",
+   "BattlecruiserEnableSpecializations",
+   "CycloneLockOnDamageUpgrade",
+   "SmartServos",
+   "NeoSteelFrame",
+   "DrillingClaws",
+   "CycloneRapidFireLaunchers",
+   "VoidRaySpeedUpgrade",
+   "MuscularAugments",
+   "EvolveMuscularAugments",
+   "GroovedSpines",
+   "EvolveGroovedSpines"
+  ]
+ }
+}
