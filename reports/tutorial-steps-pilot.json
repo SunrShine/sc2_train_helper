@@ -1,99 +1,391 @@
 {
-  "meta": {
-    "source": "bilibili 合集【星际一招鲜】(season 179867, UP 主 MakChao)",
-    "generated": "2026-11-09",
-    "method": "ffmpeg 抽帧（每 8 秒一帧，3x3 宫格）+ 右上角放大时钟内嵌；画面标注为准，ASR 只做交叉核对",
-    "schema": {
-      "steps[i].n": "作者标注的步骤号，null = 画面没有编号",
-      "steps[i].action": "动作原文的归一化描述",
-      "steps[i].tags": "结构化标签：build:<建筑> / unit:<单位>xN / gas:<第几气> / tech:<科技> / expand",
-      "steps[i].clock": "游戏内时钟 mm:ss（从画面计时器读）",
-      "steps[i].video_t": "视频时间（秒），用于回看原片",
-      "steps[i].source": "frame / asr / both",
-      "steps[i].confidence": "high / med / low"
-    },
-    "caveats": [
-      "屏上标注位置不固定（作者跟着画面打），不能按固定字幕带裁剪，必须整帧看",
-      "ASR 质量差（背景音乐大、语速快），「第N步」大量丢失，只用于交叉核对",
-      "部分视频是职业对局复盘（如 28 是 Maru vs INnoVation），没有编号步骤，只有解说标注",
-      "游戏内时钟：每期版式不同，需逐条校准裁剪位置；28 已校准（左下角 4:13 起）"
-    ]
+ "meta": {
+  "source": "bilibili 合集【星际一招鲜】(season 179867, UP 主 MakChao)",
+  "generated": "2026-11-09",
+  "method": "ffmpeg 抽帧（每 8 秒一帧，3x3 宫格）+ 右上角放大时钟内嵌；画面标注为准，ASR 只做交叉核对",
+  "schema": {
+   "steps[i].n": "作者标注的步骤号，null = 画面没有编号",
+   "steps[i].action": "动作原文的归一化描述",
+   "steps[i].tags": "结构化标签：build:<建筑> / unit:<单位>xN / gas:<第几气> / tech:<科技> / expand",
+   "steps[i].clock": "游戏内时钟 mm:ss（从画面计时器读）",
+   "steps[i].video_t": "视频时间（秒），用于回看原片",
+   "steps[i].source": "frame / asr / both",
+   "steps[i].confidence": "high / med / low"
   },
-  "videos": [
-    {
-      "number": 25,
-      "bvid": "BV1Fi4y1171Y",
-      "title": "【星际一招鲜 25】TVT双气2死1火1雷   TVT职业选手常用运营开局是什么？",
-      "matchup": "TvT",
-      "duration": 411.5,
-      "status": "partial",
-      "build": "双气 2 死神 1 火车 1 寡妇雷",
-      "steps": [
-        {"n": 5, "action": "调气矿农民（4 个农民下气矿）", "tags": ["gas:1", "unit:SCV"], "clock": null, "video_t": 65, "source": "frame", "confidence": "high"},
-        {"n": 7, "action": "拖两个气矿农民采晶体矿，下 VF（重工）", "tags": ["build:factory", "gas:1"], "clock": null, "video_t": 100, "source": "frame", "confidence": "high"},
-        {"n": null, "action": "下一个补给站", "tags": ["build:supply_depot"], "clock": null, "video_t": 175, "source": "frame", "confidence": "high"},
-        {"n": null, "action": "兵营挂双倍挂件", "tags": ["build:barracks_reactor"], "clock": null, "video_t": 220, "source": "frame", "confidence": "med"},
-        {"n": null, "action": "出一颗寡妇雷", "tags": ["unit:widow_mine"], "clock": null, "video_t": 250, "source": "asr+frame", "confidence": "med"},
-        {"n": 3, "action": "下三气（第三个气矿）", "tags": ["gas:3"], "clock": null, "video_t": 300, "source": "asr", "confidence": "low"},
-        {"n": 4, "action": "出枪兵，挂科技挂件", "tags": ["unit:marine", "build:barracks_techlab"], "clock": null, "video_t": 310, "source": "asr", "confidence": "low"}
-      ],
-      "note": "步骤号在画面上只标关键节点，中间靠 ASR 补；时钟位置待校准（本期版式与 28 不同）"
-    },
-    {
-      "number": 28,
-      "bvid": "BV1n34y1k7b5",
-      "title": "【星际一招鲜 28】TVT双气5死4火1运死吗流   Maru:没有人可以挡住我的死吗流！",
-      "matchup": "TvT",
-      "duration": 355.6,
-      "status": "partial",
-      "build": "双气 5 死神 4 火车 1 运输机（Maru 的死神流；本集用 Maru vs INnoVation 的对局讲解）",
-      "clock_crop": "0,480,80,44",
-      "steps": [
-        {"n": null, "action": "本期战术名：双气 5 死神 4 火车 1 运输机", "tags": ["gas:2", "unit:reaper×5", "unit:hellion×4", "unit:medivac×1"], "clock": "4:04", "video_t": 41, "source": "frame", "confidence": "high"},
-        {"n": null, "action": "上一次对阵是在 2020 年 3 月份", "tags": [], "clock": "4:08", "video_t": 49, "source": "frame", "confidence": "high"},
-        {"n": null, "action": "通过极限的拉扯上下船", "tags": [], "clock": "4:13", "video_t": 57, "source": "frame", "confidence": "high"},
-        {"n": null, "action": "他的农民死了很多", "tags": [], "clock": "4:21", "video_t": 65, "source": "frame", "confidence": "high"},
-        {"n": null, "action": "INnoVation 死了 13 个农民", "tags": [], "clock": "4:38", "video_t": 81, "source": "frame", "confidence": "high"}
-      ],
-      "note": "这是职业对局复盘，没有编号步骤；标注是解说性质的。游戏内时钟从画面左下角读出（视频起始就在 4:0x）"
-    },
-    {
-      "number": 36,
-      "bvid": "BV1yL411A7N1",
-      "title": "【星际一招鲜 36】TVT3兵营7死神2运输   Cure：TVT的3兵营7死神开局!",
-      "matchup": "TvT",
-      "duration": 331.0,
-      "status": "pending",
-      "build": "3 兵营 7 死神 2 运输机",
-      "steps": [],
-      "note": "待抽取"
-    },
-    {
-      "number": 39,
-      "bvid": "BV1CF41147gq",
-      "title": "【星际一招鲜 39】TVT双气2死1火1雷1运输   ByuN：TVT2-1-1套的迭代变化",
-      "matchup": "TvT",
-      "duration": 289.2,
-      "status": "partial",
-      "build": "双气 2 死神 1 火车 1 寡妇雷 1 运输机（2-1-1 变体）",
-      "steps": [
-        {"n": null, "action": "本期战术：TVT 双气 2 死神 1 火车 1 寡妇雷", "tags": ["gas:2", "unit:reaper×2", "unit:hellion×1", "unit:widow_mine×1"], "clock": null, "video_t": 45, "source": "frame", "confidence": "high"},
-        {"n": 5, "action": "100 气下 VF，让 3 个气矿农民去采晶体矿", "tags": ["build:factory", "gas:1"], "clock": null, "video_t": 75, "source": "frame", "confidence": "high"},
-        {"n": null, "action": "兵营挂双倍挂件", "tags": ["build:barracks_reactor"], "clock": null, "video_t": 120, "source": "frame", "confidence": "med"},
-        {"n": null, "action": "下补给站", "tags": ["build:supply_depot"], "clock": null, "video_t": 155, "source": "frame", "confidence": "med"}
-      ],
-      "note": "短平快的一集，标注密度低；时钟位置待校准"
-    },
-    {
-      "number": 43,
-      "bvid": "BV13Z4y167Fk",
-      "title": "【星际一招鲜 43】TVT双气2死1枪2火隐形女妖   ByuN：隐形女妖的打法，我比较爱用",
-      "matchup": "TvT",
-      "duration": 271.6,
-      "status": "pending",
-      "build": "双气 2 死神 1 枪兵 2 火车 → 隐形女妖",
-      "steps": [],
-      "note": "待抽取"
-    }
+  "caveats": [
+   "屏上标注位置不固定（作者跟着画面打），不能按固定字幕带裁剪，必须整帧看",
+   "ASR 质量差（背景音乐大、语速快），「第N步」大量丢失，只用于交叉核对",
+   "部分视频是职业对局复盘（如 28 是 Maru vs INnoVation），没有编号步骤，只有解说标注",
+   "游戏内时钟：每期版式不同，需逐条校准裁剪位置；28 已校准（左下角 4:13 起）"
   ]
+ },
+ "videos": [
+  {
+   "number": 25,
+   "bvid": "BV1Fi4y1171Y",
+   "title": "【星际一招鲜 25】TVT双气2死1火1雷   TVT职业选手常用运营开局是什么？",
+   "matchup": "TvT",
+   "duration": 411.5,
+   "status": "partial",
+   "build": "双气 2 死神 1 火车 1 寡妇雷",
+   "steps": [
+    {
+     "n": 5,
+     "action": "调气矿农民（4 个农民下气矿）",
+     "tags": [
+      "gas:1",
+      "unit:SCV"
+     ],
+     "clock": null,
+     "video_t": 65,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 7,
+     "action": "拖两个气矿农民采晶体矿，下 VF（重工）",
+     "tags": [
+      "build:factory",
+      "gas:1"
+     ],
+     "clock": null,
+     "video_t": 100,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "下一个补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "video_t": 175,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "兵营挂双倍挂件",
+     "tags": [
+      "build:barracks_reactor"
+     ],
+     "clock": null,
+     "video_t": 220,
+     "source": "frame",
+     "confidence": "med"
+    },
+    {
+     "n": null,
+     "action": "出一颗寡妇雷",
+     "tags": [
+      "unit:widow_mine"
+     ],
+     "clock": null,
+     "video_t": 250,
+     "source": "asr+frame",
+     "confidence": "med"
+    },
+    {
+     "n": 3,
+     "action": "下三气（第三个气矿）",
+     "tags": [
+      "gas:3"
+     ],
+     "clock": null,
+     "video_t": 300,
+     "source": "asr",
+     "confidence": "low"
+    },
+    {
+     "n": 4,
+     "action": "出枪兵，挂科技挂件",
+     "tags": [
+      "unit:marine",
+      "build:barracks_techlab"
+     ],
+     "clock": null,
+     "video_t": 310,
+     "source": "asr",
+     "confidence": "low"
+    }
+   ],
+   "note": "步骤号在画面上只标关键节点，中间靠 ASR 补；时钟位置待校准（本期版式与 28 不同）"
+  },
+  {
+   "number": 28,
+   "bvid": "BV1n34y1k7b5",
+   "title": "【星际一招鲜 28】TVT双气5死4火1运死吗流   Maru:没有人可以挡住我的死吗流！",
+   "matchup": "TvT",
+   "duration": 355.6,
+   "status": "partial",
+   "build": "双气 5 死神 4 火车 1 运输机（Maru 的死神流；本集用 Maru vs INnoVation 的对局讲解）",
+   "clock_crop": "0,480,80,44",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：双气 5 死神 4 火车 1 运输机",
+     "tags": [
+      "gas:2",
+      "unit:reaper×5",
+      "unit:hellion×4",
+      "unit:medivac×1"
+     ],
+     "clock": "4:04",
+     "video_t": 41,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "上一次对阵是在 2020 年 3 月份",
+     "tags": [],
+     "clock": "4:08",
+     "video_t": 49,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "通过极限的拉扯上下船",
+     "tags": [],
+     "clock": "4:13",
+     "video_t": 57,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "他的农民死了很多",
+     "tags": [],
+     "clock": "4:21",
+     "video_t": 65,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "INnoVation 死了 13 个农民",
+     "tags": [],
+     "clock": "4:38",
+     "video_t": 81,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "这是职业对局复盘，没有编号步骤；标注是解说性质的。游戏内时钟从画面左下角读出（视频起始就在 4:0x）"
+  },
+  {
+   "number": 36,
+   "bvid": "BV1yL411A7N1",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "3 兵营 7 死神 2 运输机",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：双气开三兵营七死神两船兵",
+     "tags": [
+      "gas:2",
+      "unit:reaper×7",
+      "unit:medivac×2"
+     ],
+     "clock": "3:05",
+     "video_t": 40,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 3,
+     "action": "150 气再下一个兵营",
+     "tags": [
+      "build:barracks×3"
+     ],
+     "clock": "3:19",
+     "video_t": 48,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 4,
+     "action": "第一时间调气矿农民",
+     "tags": [
+      "gas:2",
+      "unit:SCV"
+     ],
+     "clock": "3:23",
+     "video_t": 56,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "一共出到 7 个（死神）",
+     "tags": [
+      "unit:reaper×7"
+     ],
+     "clock": "3:33",
+     "video_t": 80,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "第一时间砸矿骡",
+     "tags": [
+      "tech:mule"
+     ],
+     "clock": "3:47",
+     "video_t": 104,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "三个死神后出门",
+     "tags": [
+      "unit:reaper×3"
+     ],
+     "clock": "4:05",
+     "video_t": 128,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "死神只出到 7 个（提示：上限）",
+     "tags": [
+      "unit:reaper×7"
+     ],
+     "clock": "4:12",
+     "video_t": 136,
+     "source": "frame",
+     "confidence": "med"
+    },
+    {
+     "n": null,
+     "action": "可以凭借操作打赢他们",
+     "tags": [],
+     "clock": "4:30",
+     "video_t": 160,
+     "source": "frame",
+     "confidence": "med"
+    },
+    {
+     "n": null,
+     "action": "这里先下基地（开二矿）",
+     "tags": [
+      "expand"
+     ],
+     "clock": "4:38",
+     "video_t": 168,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "奠定优势",
+     "tags": [],
+     "clock": "4:48",
+     "video_t": 176,
+     "source": "frame",
+     "confidence": "med"
+    },
+    {
+     "n": null,
+     "action": "死了三个农民",
+     "tags": [
+      "unit:SCV"
+     ],
+     "clock": "5:05",
+     "video_t": 200,
+     "source": "frame",
+     "confidence": "med"
+    }
+   ],
+   "note": "8 秒采样漏掉了步骤 一/二/五…；画面右上有 SC2 计时器，可读（3:19 → 5:05）。补齐需要把采样降到 4 秒再跑一遍"
+  },
+  {
+   "number": 39,
+   "bvid": "BV1CF41147gq",
+   "title": "【星际一招鲜 39】TVT双气2死1火1雷1运输   ByuN：TVT2-1-1套的迭代变化",
+   "matchup": "TvT",
+   "duration": 289.2,
+   "status": "partial",
+   "build": "双气 2 死神 1 火车 1 寡妇雷 1 运输机（2-1-1 变体）",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术：TVT 双气 2 死神 1 火车 1 寡妇雷",
+     "tags": [
+      "gas:2",
+      "unit:reaper×2",
+      "unit:hellion×1",
+      "unit:widow_mine×1"
+     ],
+     "clock": null,
+     "video_t": 45,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "100 气下 VF，让 3 个气矿农民去采晶体矿",
+     "tags": [
+      "build:factory",
+      "gas:1"
+     ],
+     "clock": null,
+     "video_t": 75,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "兵营挂双倍挂件",
+     "tags": [
+      "build:barracks_reactor"
+     ],
+     "clock": null,
+     "video_t": 120,
+     "source": "frame",
+     "confidence": "med"
+    },
+    {
+     "n": null,
+     "action": "下补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "video_t": 155,
+     "source": "frame",
+     "confidence": "med"
+    }
+   ],
+   "note": "短平快的一集，标注密度低；时钟位置待校准"
+  },
+  {
+   "number": 43,
+   "bvid": "BV13Z4y167Fk",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "双气 2 死神 1 枪兵 2 火车 → 隐形女妖",
+   "steps": [
+    {
+     "n": null,
+     "action": "带一个农民和死神过来和你拼操作",
+     "tags": [
+      "unit:reaper",
+      "unit:SCV"
+     ],
+     "clock": null,
+     "video_t": 64,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "目前只读到 1 条标注；其余标注在后半段，需要读 grid-002~004"
+  }
+ ]
 }
