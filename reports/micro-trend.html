@@ -1,0 +1,227 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>操作指标趋势</title><style>
+:root{--bg:#0e1116;--bg2:#151a22;--card:#1a2029;--card2:#202836;--line:#2a3340;
+--text:#e6ecf5;--muted:#93a1b5;--good:#46d17e;--warn:#f2c45a;--bad:#ff6b6b;--info:#62b0ff;--accent:#7c9cff}
+*{box-sizing:border-box}
+body{margin:0;padding:0 0 60px;color:var(--text);
+background:radial-gradient(1200px 600px at 50% -200px,#1b2436 0%,var(--bg) 60%);
+font:15px/1.6 "Segoe UI","Microsoft YaHei",-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1150px;margin:0 auto;padding:0 20px}
+header.top{padding:32px 0 16px}
+h1{font-size:28px;margin:0 0 6px}
+.sub{color:var(--muted);font-size:13.5px}
+h2{font-size:18px;margin:32px 0 12px;display:flex;align-items:center;gap:8px}
+h2::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--accent)}
+.card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+border-radius:14px;padding:16px 18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric{background:var(--card2);border-radius:10px;padding:10px 12px}
+.metric .k{color:var(--muted);font-size:12px}
+.metric .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.metric .n{color:var(--muted);font-size:11.5px}
+.pcard{position:relative;overflow:hidden}
+.pcard::after{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--pcolor)}
+.pcard .who{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
+.pcard .name{font-size:18px;font-weight:700}
+.pcard .tag{color:var(--muted);font-size:12.5px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px;font-size:12px;color:var(--muted)}
+.legend .lg{display:inline-flex;align-items:center;gap:5px}
+.legend i{display:inline-block;width:12px;height:3px;border-radius:2px}
+.chart{display:block;width:100%;height:auto;aspect-ratio:560/230}
+.chart .grid{stroke:#263041;stroke-width:1}
+.chart .axis{stroke:#3a4658}
+.chart .axis-label{fill:#7d8ca3;font-size:10px;font-family:inherit}
+.chart-card h3{font-size:14.5px;margin:0 0 2px}
+.chart-card .desc{color:var(--muted);font-size:12.5px;margin-bottom:6px}
+.bar-row{display:grid;grid-template-columns:140px 1fr 64px;gap:10px;align-items:center;padding:3px 0;font-size:13px}
+.bar-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{height:8px;background:#202836;border-radius:999px;overflow:hidden}
+.bar-fill{display:block;height:100%;border-radius:999px}
+.bar-value{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+table.data{width:100%;border-collapse:collapse;font-size:13.5px}
+table.data th{text-align:right;color:var(--muted);font-weight:600;font-size:12.5px;padding:8px 10px;
+border-bottom:1px solid var(--line);white-space:nowrap}
+table.data th:first-child,table.data td:first-child{text-align:left}
+table.data td{padding:8px 10px;border-bottom:1px solid #222b38;text-align:right;font-variant-numeric:tabular-nums}
+table.data td.l{text-align:left}
+table.data tr:last-child td{border-bottom:none}
+.insight{border-left:3px solid var(--line);padding:10px 14px;margin-bottom:10px}
+.insight.good{border-left-color:var(--good)}
+.insight.warn{border-left-color:var(--warn)}
+.insight.bad{border-left-color:var(--bad)}
+.insight.info{border-left-color:var(--info)}
+.insight .t{font-weight:700;font-size:14.5px;margin-bottom:2px}
+.insight .d{color:var(--muted);font-size:13.5px}
+.insight .x{font-size:13px;margin-top:6px;padding-top:6px;border-top:1px dashed #2a3340}
+.insight .x b{color:var(--accent)}
+details{margin:0}
+details summary{cursor:pointer;color:var(--accent);font-size:12.5px;outline:none}
+.seq{font-size:12.5px;color:#c2cfe0;background:#141a23;border:1px solid #222b38;border-radius:10px;
+padding:8px 10px;margin-top:6px;max-height:260px;overflow:auto;font-variant-numeric:tabular-nums}
+.seq div{padding:1px 0;white-space:nowrap}
+.seq .t{color:#7d8ca3;display:inline-block;width:76px}
+.hint{color:var(--muted);font-size:12.5px;line-height:1.75}
+.hint b{color:var(--text)}
+.pill{display:inline-block;padding:1px 9px;border-radius:999px;background:var(--card2);
+border:1px solid var(--line);font-size:12px;color:var(--muted);margin:0 6px 6px 0}
+.region-chip{display:inline-block;padding:1px 8px;border-radius:6px;background:#1d2740;
+border:1px solid #2c3c60;font-size:12px;margin-right:4px}
+footer{margin-top:40px;color:#66748a;font-size:12.5px;border-top:1px solid var(--line);padding-top:14px}
+@media (max-width:860px){.grid2,.grid4{grid-template-columns:1fr}}
+</style></head><body><div class="wrap"><header class="top"><h1>操作指标趋势</h1><div class="sub">40 局 · 2026-10-18 07:17 → 2026-10-31 20:00</div></header><h2>趋势</h2><div class="grid2"><div class="card chart-card"><h3>视角切换（次/分）</h3><div class="desc">目标区间 12–20：太低=视野黏住，太高=切得太碎</div><svg viewBox="0 0 560 230" class="chart" xmlns="http://www.w3.org/2000/svg"><line x1="52" y1="200.0" x2="548" y2="200.0" class="grid"/><text x="46" y="203.5" class="axis-label" text-anchor="end">0.00</text><line x1="52" y1="153.5" x2="548" y2="153.5" class="grid"/><text x="46" y="157.0" class="axis-label" text-anchor="end">3.8</text><line x1="52" y1="107.0" x2="548" y2="107.0" class="grid"/><text x="46" y="110.5" class="axis-label" text-anchor="end">7.5</text><line x1="52" y1="60.5" x2="548" y2="60.5" class="grid"/><text x="46" y="64.0" class="axis-label" text-anchor="end">11</text><line x1="52" y1="14.0" x2="548" y2="14.0" class="grid"/><text x="46" y="17.5" class="axis-label" text-anchor="end">15</text><line x1="52.0" y1="14" x2="52.0" y2="200" class="grid"/><text x="52.0" y="220" class="axis-label" text-anchor="middle">0</text><line x1="114.0" y1="14" x2="114.0" y2="200" class="grid"/><text x="114.0" y="220" class="axis-label" text-anchor="middle">5</text><line x1="176.0" y1="14" x2="176.0" y2="200" class="grid"/><text x="176.0" y="220" class="axis-label" text-anchor="middle">10</text><line x1="238.0" y1="14" x2="238.0" y2="200" class="grid"/><text x="238.0" y="220" class="axis-label" text-anchor="middle">15</text><line x1="300.0" y1="14" x2="300.0" y2="200" class="grid"/><text x="300.0" y="220" class="axis-label" text-anchor="middle">20</text><line x1="362.0" y1="14" x2="362.0" y2="200" class="grid"/><text x="362.0" y="220" class="axis-label" text-anchor="middle">25</text><line x1="424.0" y1="14" x2="424.0" y2="200" class="grid"/><text x="424.0" y="220" class="axis-label" text-anchor="middle">30</text><line x1="486.0" y1="14" x2="486.0" y2="200" class="grid"/><text x="486.0" y="220" class="axis-label" text-anchor="middle">35</text><line x1="548.0" y1="14" x2="548.0" y2="200" class="grid"/><text x="548.0" y="220" class="axis-label" text-anchor="middle">40</text><polyline points="64.4,104.5 76.8,103.3 89.2,136.8 101.6,68.6 114.0,174.0 126.4,38.8 138.8,93.4 151.2,94.6 163.6,200.0 176.0,72.3 188.4,102.0 200.8,56.2 213.2,88.4 225.6,84.7 238.0,71.0 250.4,85.9 262.8,78.5 275.2,56.2 287.6,67.3 300.0,67.3 312.4,90.9 324.8,98.3 337.2,61.1 349.6,100.8 362.0,90.9 374.4,114.4 386.8,79.7 399.2,69.8 411.6,109.5 424.0,87.2 436.4,100.8 448.8,92.1 461.2,76.0 473.6,71.0 486.0,64.8 498.4,93.4 510.8,47.5 523.2,42.5 535.6,62.4 548.0,82.2" fill="none" stroke="#7c9cff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><rect x="52.0" y="14" width="12.4" height="186" fill="transparent"><title>0.0-1.0 分钟</title></rect><rect x="64.4" y="14" width="12.4" height="186" fill="transparent"><title>1.0-2.0 分钟
+切视角: 7.7</title></rect><rect x="76.8" y="14" width="12.4" height="186" fill="transparent"><title>2.0-3.0 分钟
+切视角: 7.8</title></rect><rect x="89.2" y="14" width="12.4" height="186" fill="transparent"><title>3.0-4.0 分钟
+切视角: 5.1</title></rect><rect x="101.6" y="14" width="12.4" height="186" fill="transparent"><title>4.0-5.0 分钟
+切视角: 11</title></rect><rect x="114.0" y="14" width="12.4" height="186" fill="transparent"><title>5.0-6.0 分钟
+切视角: 2.1</title></rect><rect x="126.4" y="14" width="12.4" height="186" fill="transparent"><title>6.0-7.0 分钟
+切视角: 13</title></rect><rect x="138.8" y="14" width="12.4" height="186" fill="transparent"><title>7.0-8.0 分钟
+切视角: 8.6</title></rect><rect x="151.2" y="14" width="12.4" height="186" fill="transparent"><title>8.0-9.0 分钟
+切视角: 8.5</title></rect><rect x="163.6" y="14" width="12.4" height="186" fill="transparent"><title>9.0-10 分钟
+切视角: 0.00</title></rect><rect x="176.0" y="14" width="12.4" height="186" fill="transparent"><title>10.0-11 分钟
+切视角: 10</title></rect><rect x="188.4" y="14" width="12.4" height="186" fill="transparent"><title>11.0-12 分钟
+切视角: 7.9</title></rect><rect x="200.8" y="14" width="12.4" height="186" fill="transparent"><title>12.0-13 分钟
+切视角: 12</title></rect><rect x="213.2" y="14" width="12.4" height="186" fill="transparent"><title>13.0-14 分钟
+切视角: 9.0</title></rect><rect x="225.6" y="14" width="12.4" height="186" fill="transparent"><title>14.0-15 分钟
+切视角: 9.3</title></rect><rect x="238.0" y="14" width="12.4" height="186" fill="transparent"><title>15.0-16 分钟
+切视角: 10</title></rect><rect x="250.4" y="14" width="12.4" height="186" fill="transparent"><title>16.0-17 分钟
+切视角: 9.2</title></rect><rect x="262.8" y="14" width="12.4" height="186" fill="transparent"><title>17.0-18 分钟
+切视角: 9.8</title></rect><rect x="275.2" y="14" width="12.4" height="186" fill="transparent"><title>18.0-19 分钟
+切视角: 12</title></rect><rect x="287.6" y="14" width="12.4" height="186" fill="transparent"><title>19.0-20 分钟
+切视角: 11</title></rect><rect x="300.0" y="14" width="12.4" height="186" fill="transparent"><title>20.0-21 分钟
+切视角: 11</title></rect><rect x="312.4" y="14" width="12.4" height="186" fill="transparent"><title>21.0-22 分钟
+切视角: 8.8</title></rect><rect x="324.8" y="14" width="12.4" height="186" fill="transparent"><title>22.0-23 分钟
+切视角: 8.2</title></rect><rect x="337.2" y="14" width="12.4" height="186" fill="transparent"><title>23.0-24 分钟
+切视角: 11</title></rect><rect x="349.6" y="14" width="12.4" height="186" fill="transparent"><title>24.0-25 分钟
+切视角: 8.0</title></rect><rect x="362.0" y="14" width="12.4" height="186" fill="transparent"><title>25.0-26 分钟
+切视角: 8.8</title></rect><rect x="374.4" y="14" width="12.4" height="186" fill="transparent"><title>26.0-27 分钟
+切视角: 6.9</title></rect><rect x="386.8" y="14" width="12.4" height="186" fill="transparent"><title>27.0-28 分钟
+切视角: 9.7</title></rect><rect x="399.2" y="14" width="12.4" height="186" fill="transparent"><title>28.0-29 分钟
+切视角: 10</title></rect><rect x="411.6" y="14" width="12.4" height="186" fill="transparent"><title>29.0-30 分钟
+切视角: 7.3</title></rect><rect x="424.0" y="14" width="12.4" height="186" fill="transparent"><title>30.0-31 分钟
+切视角: 9.1</title></rect><rect x="436.4" y="14" width="12.4" height="186" fill="transparent"><title>31.0-32 分钟
+切视角: 8.0</title></rect><rect x="448.8" y="14" width="12.4" height="186" fill="transparent"><title>32.0-33 分钟
+切视角: 8.7</title></rect><rect x="461.2" y="14" width="12.4" height="186" fill="transparent"><title>33.0-34 分钟
+切视角: 10</title></rect><rect x="473.6" y="14" width="12.4" height="186" fill="transparent"><title>34.0-35 分钟
+切视角: 10</title></rect><rect x="486.0" y="14" width="12.4" height="186" fill="transparent"><title>35.0-36 分钟
+切视角: 11</title></rect><rect x="498.4" y="14" width="12.4" height="186" fill="transparent"><title>36.0-37 分钟
+切视角: 8.6</title></rect><rect x="510.8" y="14" width="12.4" height="186" fill="transparent"><title>37.0-38 分钟
+切视角: 12</title></rect><rect x="523.2" y="14" width="12.4" height="186" fill="transparent"><title>38.0-39 分钟
+切视角: 13</title></rect><rect x="535.6" y="14" width="12.4" height="186" fill="transparent"><title>39.0-40 分钟
+切视角: 11</title></rect><line x1="52" y1="200" x2="548" y2="200" class="axis"/></svg><div class="legend"><span class="lg"><i style="background:#7c9cff"></i>切视角</span></div></div><div class="card chart-card"><h3>多线窗口（个/分）</h3><div class="desc">目标 ≥0.8：同一时间在两条线上下指令的密度</div><svg viewBox="0 0 560 230" class="chart" xmlns="http://www.w3.org/2000/svg"><line x1="52" y1="200.0" x2="548" y2="200.0" class="grid"/><text x="46" y="203.5" class="axis-label" text-anchor="end">0.00</text><line x1="52" y1="153.5" x2="548" y2="153.5" class="grid"/><text x="46" y="157.0" class="axis-label" text-anchor="end">0.50</text><line x1="52" y1="107.0" x2="548" y2="107.0" class="grid"/><text x="46" y="110.5" class="axis-label" text-anchor="end">1.0</text><line x1="52" y1="60.5" x2="548" y2="60.5" class="grid"/><text x="46" y="64.0" class="axis-label" text-anchor="end">1.5</text><line x1="52" y1="14.0" x2="548" y2="14.0" class="grid"/><text x="46" y="17.5" class="axis-label" text-anchor="end">2.0</text><line x1="52.0" y1="14" x2="52.0" y2="200" class="grid"/><text x="52.0" y="220" class="axis-label" text-anchor="middle">0</text><line x1="114.0" y1="14" x2="114.0" y2="200" class="grid"/><text x="114.0" y="220" class="axis-label" text-anchor="middle">5</text><line x1="176.0" y1="14" x2="176.0" y2="200" class="grid"/><text x="176.0" y="220" class="axis-label" text-anchor="middle">10</text><line x1="238.0" y1="14" x2="238.0" y2="200" class="grid"/><text x="238.0" y="220" class="axis-label" text-anchor="middle">15</text><line x1="300.0" y1="14" x2="300.0" y2="200" class="grid"/><text x="300.0" y="220" class="axis-label" text-anchor="middle">20</text><line x1="362.0" y1="14" x2="362.0" y2="200" class="grid"/><text x="362.0" y="220" class="axis-label" text-anchor="middle">25</text><line x1="424.0" y1="14" x2="424.0" y2="200" class="grid"/><text x="424.0" y="220" class="axis-label" text-anchor="middle">30</text><line x1="486.0" y1="14" x2="486.0" y2="200" class="grid"/><text x="486.0" y="220" class="axis-label" text-anchor="middle">35</text><line x1="548.0" y1="14" x2="548.0" y2="200" class="grid"/><text x="548.0" y="220" class="axis-label" text-anchor="middle">40</text><polyline points="64.4,140.5 76.8,72.6 89.2,66.1 101.6,56.8 114.0,200.0 126.4,116.3 138.8,110.7 151.2,106.1 163.6,200.0 176.0,136.8 188.4,59.6 200.8,83.8 213.2,120.0 225.6,63.3 238.0,83.8 250.4,70.7 262.8,142.3 275.2,86.5 287.6,61.4 300.0,138.6 312.4,31.7 324.8,139.6 337.2,107.9 349.6,144.2 362.0,68.9 374.4,107.0 386.8,112.6 399.2,80.0 411.6,164.7 424.0,101.4 436.4,137.7 448.8,153.5 461.2,70.7 473.6,114.4 486.0,107.9 498.4,78.2 510.8,156.3 523.2,37.2 535.6,116.3 548.0,87.5" fill="none" stroke="#46d17e" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><rect x="52.0" y="14" width="12.4" height="186" fill="transparent"><title>0.0-1.0 分钟</title></rect><rect x="64.4" y="14" width="12.4" height="186" fill="transparent"><title>1.0-2.0 分钟
+多线窗口: 0.64</title></rect><rect x="76.8" y="14" width="12.4" height="186" fill="transparent"><title>2.0-3.0 分钟
+多线窗口: 1.4</title></rect><rect x="89.2" y="14" width="12.4" height="186" fill="transparent"><title>3.0-4.0 分钟
+多线窗口: 1.4</title></rect><rect x="101.6" y="14" width="12.4" height="186" fill="transparent"><title>4.0-5.0 分钟
+多线窗口: 1.5</title></rect><rect x="114.0" y="14" width="12.4" height="186" fill="transparent"><title>5.0-6.0 分钟
+多线窗口: 0.00</title></rect><rect x="126.4" y="14" width="12.4" height="186" fill="transparent"><title>6.0-7.0 分钟
+多线窗口: 0.90</title></rect><rect x="138.8" y="14" width="12.4" height="186" fill="transparent"><title>7.0-8.0 分钟
+多线窗口: 0.96</title></rect><rect x="151.2" y="14" width="12.4" height="186" fill="transparent"><title>8.0-9.0 分钟
+多线窗口: 1.0</title></rect><rect x="163.6" y="14" width="12.4" height="186" fill="transparent"><title>9.0-10 分钟
+多线窗口: 0.00</title></rect><rect x="176.0" y="14" width="12.4" height="186" fill="transparent"><title>10.0-11 分钟
+多线窗口: 0.68</title></rect><rect x="188.4" y="14" width="12.4" height="186" fill="transparent"><title>11.0-12 分钟
+多线窗口: 1.5</title></rect><rect x="200.8" y="14" width="12.4" height="186" fill="transparent"><title>12.0-13 分钟
+多线窗口: 1.2</title></rect><rect x="213.2" y="14" width="12.4" height="186" fill="transparent"><title>13.0-14 分钟
+多线窗口: 0.86</title></rect><rect x="225.6" y="14" width="12.4" height="186" fill="transparent"><title>14.0-15 分钟
+多线窗口: 1.5</title></rect><rect x="238.0" y="14" width="12.4" height="186" fill="transparent"><title>15.0-16 分钟
+多线窗口: 1.2</title></rect><rect x="250.4" y="14" width="12.4" height="186" fill="transparent"><title>16.0-17 分钟
+多线窗口: 1.4</title></rect><rect x="262.8" y="14" width="12.4" height="186" fill="transparent"><title>17.0-18 分钟
+多线窗口: 0.62</title></rect><rect x="275.2" y="14" width="12.4" height="186" fill="transparent"><title>18.0-19 分钟
+多线窗口: 1.2</title></rect><rect x="287.6" y="14" width="12.4" height="186" fill="transparent"><title>19.0-20 分钟
+多线窗口: 1.5</title></rect><rect x="300.0" y="14" width="12.4" height="186" fill="transparent"><title>20.0-21 分钟
+多线窗口: 0.66</title></rect><rect x="312.4" y="14" width="12.4" height="186" fill="transparent"><title>21.0-22 分钟
+多线窗口: 1.8</title></rect><rect x="324.8" y="14" width="12.4" height="186" fill="transparent"><title>22.0-23 分钟
+多线窗口: 0.65</title></rect><rect x="337.2" y="14" width="12.4" height="186" fill="transparent"><title>23.0-24 分钟
+多线窗口: 0.99</title></rect><rect x="349.6" y="14" width="12.4" height="186" fill="transparent"><title>24.0-25 分钟
+多线窗口: 0.60</title></rect><rect x="362.0" y="14" width="12.4" height="186" fill="transparent"><title>25.0-26 分钟
+多线窗口: 1.4</title></rect><rect x="374.4" y="14" width="12.4" height="186" fill="transparent"><title>26.0-27 分钟
+多线窗口: 1.0</title></rect><rect x="386.8" y="14" width="12.4" height="186" fill="transparent"><title>27.0-28 分钟
+多线窗口: 0.94</title></rect><rect x="399.2" y="14" width="12.4" height="186" fill="transparent"><title>28.0-29 分钟
+多线窗口: 1.3</title></rect><rect x="411.6" y="14" width="12.4" height="186" fill="transparent"><title>29.0-30 分钟
+多线窗口: 0.38</title></rect><rect x="424.0" y="14" width="12.4" height="186" fill="transparent"><title>30.0-31 分钟
+多线窗口: 1.1</title></rect><rect x="436.4" y="14" width="12.4" height="186" fill="transparent"><title>31.0-32 分钟
+多线窗口: 0.67</title></rect><rect x="448.8" y="14" width="12.4" height="186" fill="transparent"><title>32.0-33 分钟
+多线窗口: 0.50</title></rect><rect x="461.2" y="14" width="12.4" height="186" fill="transparent"><title>33.0-34 分钟
+多线窗口: 1.4</title></rect><rect x="473.6" y="14" width="12.4" height="186" fill="transparent"><title>34.0-35 分钟
+多线窗口: 0.92</title></rect><rect x="486.0" y="14" width="12.4" height="186" fill="transparent"><title>35.0-36 分钟
+多线窗口: 0.99</title></rect><rect x="498.4" y="14" width="12.4" height="186" fill="transparent"><title>36.0-37 分钟
+多线窗口: 1.3</title></rect><rect x="510.8" y="14" width="12.4" height="186" fill="transparent"><title>37.0-38 分钟
+多线窗口: 0.47</title></rect><rect x="523.2" y="14" width="12.4" height="186" fill="transparent"><title>38.0-39 分钟
+多线窗口: 1.8</title></rect><rect x="535.6" y="14" width="12.4" height="186" fill="transparent"><title>39.0-40 分钟
+多线窗口: 0.90</title></rect><line x1="52" y1="200" x2="548" y2="200" class="axis"/></svg><div class="legend"><span class="lg"><i style="background:#46d17e"></i>多线窗口</span></div></div><div class="card chart-card"><h3>多线覆盖（%）</h3><div class="desc">多线窗口占对局时长的比例，目标 ≥10%</div><svg viewBox="0 0 560 230" class="chart" xmlns="http://www.w3.org/2000/svg"><line x1="52" y1="200.0" x2="548" y2="200.0" class="grid"/><text x="46" y="203.5" class="axis-label" text-anchor="end">0.00</text><line x1="52" y1="153.5" x2="548" y2="153.5" class="grid"/><text x="46" y="157.0" class="axis-label" text-anchor="end">6.2</text><line x1="52" y1="107.0" x2="548" y2="107.0" class="grid"/><text x="46" y="110.5" class="axis-label" text-anchor="end">12</text><line x1="52" y1="60.5" x2="548" y2="60.5" class="grid"/><text x="46" y="64.0" class="axis-label" text-anchor="end">19</text><line x1="52" y1="14.0" x2="548" y2="14.0" class="grid"/><text x="46" y="17.5" class="axis-label" text-anchor="end">25</text><line x1="52.0" y1="14" x2="52.0" y2="200" class="grid"/><text x="52.0" y="220" class="axis-label" text-anchor="middle">0</text><line x1="114.0" y1="14" x2="114.0" y2="200" class="grid"/><text x="114.0" y="220" class="axis-label" text-anchor="middle">5</text><line x1="176.0" y1="14" x2="176.0" y2="200" class="grid"/><text x="176.0" y="220" class="axis-label" text-anchor="middle">10</text><line x1="238.0" y1="14" x2="238.0" y2="200" class="grid"/><text x="238.0" y="220" class="axis-label" text-anchor="middle">15</text><line x1="300.0" y1="14" x2="300.0" y2="200" class="grid"/><text x="300.0" y="220" class="axis-label" text-anchor="middle">20</text><line x1="362.0" y1="14" x2="362.0" y2="200" class="grid"/><text x="362.0" y="220" class="axis-label" text-anchor="middle">25</text><line x1="424.0" y1="14" x2="424.0" y2="200" class="grid"/><text x="424.0" y="220" class="axis-label" text-anchor="middle">30</text><line x1="486.0" y1="14" x2="486.0" y2="200" class="grid"/><text x="486.0" y="220" class="axis-label" text-anchor="middle">35</text><line x1="548.0" y1="14" x2="548.0" y2="200" class="grid"/><text x="548.0" y="220" class="axis-label" text-anchor="middle">40</text><polyline points="64.4,161.3 76.8,99.6 89.2,101.8 101.6,73.5 114.0,200.0 126.4,127.8 138.8,133.8 151.2,126.3 163.6,200.0 176.0,139.7 188.4,100.3 200.8,109.2 213.2,136.0 225.6,101.8 238.0,107.7 250.4,106.3 262.8,159.1 275.2,110.0 287.6,89.1 300.0,152.4 312.4,49.0 324.8,129.3 337.2,124.9 349.6,156.1 362.0,101.0 374.4,127.8 386.8,130.8 399.2,102.5 411.6,160.6 424.0,123.4 436.4,157.6 448.8,162.8 461.2,104.0 473.6,131.6 486.0,122.6 498.4,110.0 510.8,162.8 523.2,58.6 535.6,128.6 548.0,109.2" fill="none" stroke="#f2c45a" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><rect x="52.0" y="14" width="12.4" height="186" fill="transparent"><title>0.0-1.0 分钟</title></rect><rect x="64.4" y="14" width="12.4" height="186" fill="transparent"><title>1.0-2.0 分钟
+覆盖: 5.2</title></rect><rect x="76.8" y="14" width="12.4" height="186" fill="transparent"><title>2.0-3.0 分钟
+覆盖: 14</title></rect><rect x="89.2" y="14" width="12.4" height="186" fill="transparent"><title>3.0-4.0 分钟
+覆盖: 13</title></rect><rect x="101.6" y="14" width="12.4" height="186" fill="transparent"><title>4.0-5.0 分钟
+覆盖: 17</title></rect><rect x="114.0" y="14" width="12.4" height="186" fill="transparent"><title>5.0-6.0 分钟
+覆盖: 0.00</title></rect><rect x="126.4" y="14" width="12.4" height="186" fill="transparent"><title>6.0-7.0 分钟
+覆盖: 9.7</title></rect><rect x="138.8" y="14" width="12.4" height="186" fill="transparent"><title>7.0-8.0 分钟
+覆盖: 8.9</title></rect><rect x="151.2" y="14" width="12.4" height="186" fill="transparent"><title>8.0-9.0 分钟
+覆盖: 9.9</title></rect><rect x="163.6" y="14" width="12.4" height="186" fill="transparent"><title>9.0-10 分钟
+覆盖: 0.00</title></rect><rect x="176.0" y="14" width="12.4" height="186" fill="transparent"><title>10.0-11 分钟
+覆盖: 8.1</title></rect><rect x="188.4" y="14" width="12.4" height="186" fill="transparent"><title>11.0-12 分钟
+覆盖: 13</title></rect><rect x="200.8" y="14" width="12.4" height="186" fill="transparent"><title>12.0-13 分钟
+覆盖: 12</title></rect><rect x="213.2" y="14" width="12.4" height="186" fill="transparent"><title>13.0-14 分钟
+覆盖: 8.6</title></rect><rect x="225.6" y="14" width="12.4" height="186" fill="transparent"><title>14.0-15 分钟
+覆盖: 13</title></rect><rect x="238.0" y="14" width="12.4" height="186" fill="transparent"><title>15.0-16 分钟
+覆盖: 12</title></rect><rect x="250.4" y="14" width="12.4" height="186" fill="transparent"><title>16.0-17 分钟
+覆盖: 13</title></rect><rect x="262.8" y="14" width="12.4" height="186" fill="transparent"><title>17.0-18 分钟
+覆盖: 5.5</title></rect><rect x="275.2" y="14" width="12.4" height="186" fill="transparent"><title>18.0-19 分钟
+覆盖: 12</title></rect><rect x="287.6" y="14" width="12.4" height="186" fill="transparent"><title>19.0-20 分钟
+覆盖: 15</title></rect><rect x="300.0" y="14" width="12.4" height="186" fill="transparent"><title>20.0-21 分钟
+覆盖: 6.4</title></rect><rect x="312.4" y="14" width="12.4" height="186" fill="transparent"><title>21.0-22 分钟
+覆盖: 20</title></rect><rect x="324.8" y="14" width="12.4" height="186" fill="transparent"><title>22.0-23 分钟
+覆盖: 9.5</title></rect><rect x="337.2" y="14" width="12.4" height="186" fill="transparent"><title>23.0-24 分钟
+覆盖: 10</title></rect><rect x="349.6" y="14" width="12.4" height="186" fill="transparent"><title>24.0-25 分钟
+覆盖: 5.9</title></rect><rect x="362.0" y="14" width="12.4" height="186" fill="transparent"><title>25.0-26 分钟
+覆盖: 13</title></rect><rect x="374.4" y="14" width="12.4" height="186" fill="transparent"><title>26.0-27 分钟
+覆盖: 9.7</title></rect><rect x="386.8" y="14" width="12.4" height="186" fill="transparent"><title>27.0-28 分钟
+覆盖: 9.3</title></rect><rect x="399.2" y="14" width="12.4" height="186" fill="transparent"><title>28.0-29 分钟
+覆盖: 13</title></rect><rect x="411.6" y="14" width="12.4" height="186" fill="transparent"><title>29.0-30 分钟
+覆盖: 5.3</title></rect><rect x="424.0" y="14" width="12.4" height="186" fill="transparent"><title>30.0-31 分钟
+覆盖: 10</title></rect><rect x="436.4" y="14" width="12.4" height="186" fill="transparent"><title>31.0-32 分钟
+覆盖: 5.7</title></rect><rect x="448.8" y="14" width="12.4" height="186" fill="transparent"><title>32.0-33 分钟
+覆盖: 5.0</title></rect><rect x="461.2" y="14" width="12.4" height="186" fill="transparent"><title>33.0-34 分钟
+覆盖: 13</title></rect><rect x="473.6" y="14" width="12.4" height="186" fill="transparent"><title>34.0-35 分钟
+覆盖: 9.2</title></rect><rect x="486.0" y="14" width="12.4" height="186" fill="transparent"><title>35.0-36 分钟
+覆盖: 10</title></rect><rect x="498.4" y="14" width="12.4" height="186" fill="transparent"><title>36.0-37 分钟
+覆盖: 12</title></rect><rect x="510.8" y="14" width="12.4" height="186" fill="transparent"><title>37.0-38 分钟
+覆盖: 5.0</title></rect><rect x="523.2" y="14" width="12.4" height="186" fill="transparent"><title>38.0-39 分钟
+覆盖: 19</title></rect><rect x="535.6" y="14" width="12.4" height="186" fill="transparent"><title>39.0-40 分钟
+覆盖: 9.6</title></rect><line x1="52" y1="200" x2="548" y2="200" class="axis"/></svg><div class="legend"><span class="lg"><i style="background:#f2c45a"></i>覆盖</span></div></div><div class="card chart-card"><h3>不下指令空档（秒）</h3><div class="desc">越少越好，目标 &lt;60 秒</div><svg viewBox="0 0 560 230" class="chart" xmlns="http://www.w3.org/2000/svg"><line x1="52" y1="200.0" x2="548" y2="200.0" class="grid"/><text x="46" y="203.5" class="axis-label" text-anchor="end">0.00</text><line x1="52" y1="153.5" x2="548" y2="153.5" class="grid"/><text x="46" y="157.0" class="axis-label" text-anchor="end">100</text><line x1="52" y1="107.0" x2="548" y2="107.0" class="grid"/><text x="46" y="110.5" class="axis-label" text-anchor="end">200</text><line x1="52" y1="60.5" x2="548" y2="60.5" class="grid"/><text x="46" y="64.0" class="axis-label" text-anchor="end">300</text><line x1="52" y1="14.0" x2="548" y2="14.0" class="grid"/><text x="46" y="17.5" class="axis-label" text-anchor="end">400</text><line x1="52.0" y1="14" x2="52.0" y2="200" class="grid"/><text x="52.0" y="220" class="axis-label" text-anchor="middle">0</text><line x1="114.0" y1="14" x2="114.0" y2="200" class="grid"/><text x="114.0" y="220" class="axis-label" text-anchor="middle">5</text><line x1="176.0" y1="14" x2="176.0" y2="200" class="grid"/><text x="176.0" y="220" class="axis-label" text-anchor="middle">10</text><line x1="238.0" y1="14" x2="238.0" y2="200" class="grid"/><text x="238.0" y="220" class="axis-label" text-anchor="middle">15</text><line x1="300.0" y1="14" x2="300.0" y2="200" class="grid"/><text x="300.0" y="220" class="axis-label" text-anchor="middle">20</text><line x1="362.0" y1="14" x2="362.0" y2="200" class="grid"/><text x="362.0" y="220" class="axis-label" text-anchor="middle">25</text><line x1="424.0" y1="14" x2="424.0" y2="200" class="grid"/><text x="424.0" y="220" class="axis-label" text-anchor="middle">30</text><line x1="486.0" y1="14" x2="486.0" y2="200" class="grid"/><text x="486.0" y="220" class="axis-label" text-anchor="middle">35</text><line x1="548.0" y1="14" x2="548.0" y2="200" class="grid"/><text x="548.0" y="220" class="axis-label" text-anchor="middle">40</text><polyline points="64.4,174.8 76.8,162.9 89.2,184.7 101.6,136.3 114.0,200.0 126.4,82.6 138.8,184.3 151.2,109.0 163.6,200.0 176.0,167.4 188.4,179.0 200.8,78.7 213.2,168.2 225.6,200.0 238.0,156.4 250.4,155.0 262.8,139.7 275.2,120.5 287.6,83.3 300.0,96.6 312.4,158.3 324.8,110.9 337.2,24.9 349.6,132.1 362.0,172.9 374.4,163.2 386.8,142.9 399.2,76.1 411.6,193.1 424.0,127.7 436.4,159.3 448.8,146.2 461.2,153.8 473.6,170.8 486.0,156.0 498.4,200.0 510.8,101.2 523.2,102.1 535.6,43.6 548.0,154.5" fill="none" stroke="#ff6b6b" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><rect x="52.0" y="14" width="12.4" height="186" fill="transparent"><title>0.0-1.0 分钟</title></rect><rect x="64.4" y="14" width="12.4" height="186" fill="transparent"><title>1.0-2.0 分钟
+空档: 54</title></rect><rect x="76.8" y="14" width="12.4" height="186" fill="transparent"><title>2.0-3.0 分钟
+空档: 80</title></rect><rect x="89.2" y="14" width="12.4" height="186" fill="transparent"><title>3.0-4.0 分钟
+空档: 33</title></rect><rect x="101.6" y="14" width="12.4" height="186" fill="transparent"><title>4.0-5.0 分钟
+空档: 137</title></rect><rect x="114.0" y="14" width="12.4" height="186" fill="transparent"><title>5.0-6.0 分钟
+空档: 0.00</title></rect><rect x="126.4" y="14" width="12.4" height="186" fill="transparent"><title>6.0-7.0 分钟
+空档: 252</title></rect><rect x="138.8" y="14" width="12.4" height="186" fill="transparent"><title>7.0-8.0 分钟
+空档: 34</title></rect><rect x="151.2" y="14" width="12.4" height="186" fill="transparent"><title>8.0-9.0 分钟
+空档: 196</title></rect><rect x="163.6" y="14" width="12.4" height="186" fill="transparent"><title>9.0-10 分钟
+空档: 0.00</title></rect><rect x="176.0" y="14" width="12.4" height="186" fill="transparent"><title>10.0-11 分钟
+空档: 70</title></rect><rect x="188.4" y="14" width="12.4" height="186" fill="transparent"><title>11.0-12 分钟
+空档: 45</title></rect><rect x="200.8" y="14" width="12.4" height="186" fill="transparent"><title>12.0-13 分钟
+空档: 261</title></rect><rect x="213.2" y="14" width="12.4" height="186" fill="transparent"><title>13.0-14 分钟
+空档: 68</title></rect><rect x="225.6" y="14" width="12.4" height="186" fill="transparent"><title>14.0-15 分钟
+空档: 0.00</title></rect><rect x="238.0" y="14" width="12.4" height="186" fill="transparent"><title>15.0-16 分钟
+空档: 94</title></rect><rect x="250.4" y="14" width="12.4" height="186" fill="transparent"><title>16.0-17 分钟
+空档: 97</title></rect><rect x="262.8" y="14" width="12.4" height="186" fill="transparent"><title>17.0-18 分钟
+空档: 130</title></rect><rect x="275.2" y="14" width="12.4" height="186" fill="transparent"><title>18.0-19 分钟
+空档: 171</title></rect><rect x="287.6" y="14" width="12.4" height="186" fill="transparent"><title>19.0-20 分钟
+空档: 251</title></rect><rect x="300.0" y="14" width="12.4" height="186" fill="transparent"><title>20.0-21 分钟
+空档: 222</title></rect><rect x="312.4" y="14" width="12.4" height="186" fill="transparent"><title>21.0-22 分钟
+空档: 90</title></rect><rect x="324.8" y="14" width="12.4" height="186" fill="transparent"><title>22.0-23 分钟
+空档: 192</title></rect><rect x="337.2" y="14" width="12.4" height="186" fill="transparent"><title>23.0-24 分钟
+空档: 377</title></rect><rect x="349.6" y="14" width="12.4" height="186" fill="transparent"><title>24.0-25 分钟
+空档: 146</title></rect><rect x="362.0" y="14" width="12.4" height="186" fill="transparent"><title>25.0-26 分钟
+空档: 58</title></rect><rect x="374.4" y="14" width="12.4" height="186" fill="transparent"><title>26.0-27 分钟
+空档: 79</title></rect><rect x="386.8" y="14" width="12.4" height="186" fill="transparent"><title>27.0-28 分钟
+空档: 123</title></rect><rect x="399.2" y="14" width="12.4" height="186" fill="transparent"><title>28.0-29 分钟
+空档: 266</title></rect><rect x="411.6" y="14" width="12.4" height="186" fill="transparent"><title>29.0-30 分钟
+空档: 15</title></rect><rect x="424.0" y="14" width="12.4" height="186" fill="transparent"><title>30.0-31 分钟
+空档: 155</title></rect><rect x="436.4" y="14" width="12.4" height="186" fill="transparent"><title>31.0-32 分钟
+空档: 88</title></rect><rect x="448.8" y="14" width="12.4" height="186" fill="transparent"><title>32.0-33 分钟
+空档: 116</title></rect><rect x="461.2" y="14" width="12.4" height="186" fill="transparent"><title>33.0-34 分钟
+空档: 99</title></rect><rect x="473.6" y="14" width="12.4" height="186" fill="transparent"><title>34.0-35 分钟
+空档: 63</title></rect><rect x="486.0" y="14" width="12.4" height="186" fill="transparent"><title>35.0-36 分钟
+空档: 95</title></rect><rect x="498.4" y="14" width="12.4" height="186" fill="transparent"><title>36.0-37 分钟
+空档: 0.00</title></rect><rect x="510.8" y="14" width="12.4" height="186" fill="transparent"><title>37.0-38 分钟
+空档: 212</title></rect><rect x="523.2" y="14" width="12.4" height="186" fill="transparent"><title>38.0-39 分钟
+空档: 211</title></rect><rect x="535.6" y="14" width="12.4" height="186" fill="transparent"><title>39.0-40 分钟
+空档: 336</title></rect><line x1="52" y1="200" x2="548" y2="200" class="axis"/></svg><div class="legend"><span class="lg"><i style="background:#ff6b6b"></i>空档</span></div></div></div><h2>逐局明细</h2><div class="card"><table class="data"><thead><tr><th>#</th><th>日期</th><th>地图</th><th>对位</th><th>结果</th><th>时长</th><th>视角/分</th><th>停留</th><th>多线/分</th><th>覆盖</th><th>指令/分</th><th>空档</th><th>反应</th><th>编队</th></tr></thead><tbody><tr><td>1</td><td>2026-10-18 07:17</td><td class="l">Lockdown LE</td><td>人族人族</td><td>胜</td><td>7:49</td><td>7.7</td><td>1.7s</td><td>0.64</td><td>5.2%</td><td>32</td><td>54s</td><td>0.90s</td><td>8</td></tr><tr><td>2</td><td>2026-10-18 07:30</td><td class="l">At Eternity&#x27;s Edge LE</td><td>星灵异虫</td><td>负</td><td>15:22</td><td>7.8</td><td>1.6s</td><td>1.4</td><td>14%</td><td>46</td><td>80s</td><td>0.60s</td><td>7</td></tr><tr><td>3</td><td>2026-10-18 07:35</td><td class="l">Rorschach LE</td><td>星灵人族</td><td>负</td><td>6:16</td><td>5.1</td><td>1.8s</td><td>1.4</td><td>13%</td><td>45</td><td>33s</td><td>0.00s</td><td>5</td></tr><tr><td>4</td><td>2026-10-18 07:57</td><td class="l">At Eternity&#x27;s Edge LE</td><td>星灵人族</td><td>负</td><td>29:54</td><td>11</td><td>1.9s</td><td>1.5</td><td>17%</td><td>52</td><td>137s</td><td>0.90s</td><td>8</td></tr><tr><td>5</td><td>2026-10-18 08:53</td><td class="l">星际酒馆正式版</td><td>人族星灵</td><td>胜</td><td>3:22</td><td>2.1</td><td>12s</td><td>0.00</td><td>0.00%</td><td>0.00</td><td>0.00s</td><td>-</td><td>0</td></tr><tr><td>6</td><td>2026-10-19 06:31</td><td class="l">At Eternity&#x27;s Edge LE</td><td>人族人族</td><td>胜</td><td>41:07</td><td>13</td><td>1.5s</td><td>0.90</td><td>9.7%</td><td>46</td><td>252s</td><td>0.60s</td><td>9</td></tr><tr><td>7</td><td>2026-10-19 06:40</td><td class="l">At Eternity&#x27;s Edge LE</td><td>人族人族</td><td>胜</td><td>8:21</td><td>8.6</td><td>2.4s</td><td>0.96</td><td>8.9%</td><td>41</td><td>34s</td><td>1.3s</td><td>6</td></tr><tr><td>8</td><td>2026-10-19 07:01</td><td class="l">At Eternity&#x27;s Edge LE</td><td>人族?</td><td>负</td><td>20:47</td><td>8.5</td><td>1.8s</td><td>1.0</td><td>9.9%</td><td>36</td><td>196s</td><td>2.2s</td><td>9</td></tr><tr><td>9</td><td>2026-10-19 07:05</td><td class="l">N打1造修复版（大气2000）</td><td>人族人族</td><td>负</td><td>3:28</td><td>0.00</td><td>0.00s</td><td>0.00</td><td>0.00%</td><td>0.00</td><td>0.00s</td><td>-</td><td>0</td></tr><tr><td>10</td><td>2026-10-19 07:14</td><td class="l">Rorschach LE</td><td>人族星灵</td><td>负</td><td>11:45</td><td>10</td><td>1.7s</td><td>0.68</td><td>8.1%</td><td>42</td><td>70s</td><td>0.80s</td><td>8</td></tr><tr><td>11</td><td>2026-10-19 07:25</td><td class="l">Blackrock LE</td><td>人族?</td><td>负</td><td>8:38</td><td>7.9</td><td>1.4s</td><td>1.5</td><td>13%</td><td>35</td><td>45s</td><td>3.7s</td><td>8</td></tr><tr><td>12</td><td>2026-10-22 07:10</td><td class="l">Washout LE</td><td>人族星灵</td><td>负</td><td>28:51</td><td>12</td><td>1.5s</td><td>1.2</td><td>12%</td><td>39</td><td>261s</td><td>0.70s</td><td>7</td></tr><tr><td>13</td><td>2026-10-22 07:17</td><td class="l">Washout LE</td><td>人族星灵</td><td>胜</td><td>10:29</td><td>9.0</td><td>2.2s</td><td>0.86</td><td>8.6%</td><td>29</td><td>68s</td><td>1.4s</td><td>7</td></tr><tr><td>14</td><td>2026-10-22 07:22</td><td class="l">Rorschach LE</td><td>人族人族</td><td>胜</td><td>4:45</td><td>9.3</td><td>1.5s</td><td>1.5</td><td>13%</td><td>53</td><td>0.00s</td><td>0.30s</td><td>6</td></tr><tr><td>15</td><td>2026-10-22 07:37</td><td class="l">Rainfall LE</td><td>人族星灵</td><td>胜</td><td>19:16</td><td>10</td><td>2.1s</td><td>1.2</td><td>12%</td><td>50</td><td>94s</td><td>0.80s</td><td>7</td></tr><tr><td>16</td><td>2026-10-22 07:57</td><td class="l">At Eternity&#x27;s Edge LE</td><td>人族?</td><td>胜</td><td>17:58</td><td>9.2</td><td>1.6s</td><td>1.4</td><td>13%</td><td>44</td><td>97s</td><td>0.40s</td><td>8</td></tr><tr><td>17</td><td>2026-10-25 05:29</td><td class="l">Blackrock LE</td><td>人族人族</td><td>胜</td><td>14:24</td><td>9.8</td><td>2.1s</td><td>0.62</td><td>5.5%</td><td>40</td><td>130s</td><td>1.2s</td><td>7</td></tr><tr><td>18</td><td>2026-10-25 05:44</td><td class="l">Old Sun Temple LE</td><td>星灵人族</td><td>胜</td><td>18:49</td><td>12</td><td>1.4s</td><td>1.2</td><td>12%</td><td>40</td><td>171s</td><td>0.40s</td><td>8</td></tr><tr><td>19</td><td>2026-10-25 06:05</td><td class="l">Old Sun Temple LE</td><td>星灵人族</td><td>胜</td><td>26:51</td><td>11</td><td>1.8s</td><td>1.5</td><td>15%</td><td>50</td><td>251s</td><td>0.40s</td><td>7</td></tr><tr><td>20</td><td>2026-10-25 06:30</td><td class="l">At Eternity&#x27;s Edge LE</td><td>星灵人族</td><td>胜</td><td>30:21</td><td>11</td><td>1.8s</td><td>0.66</td><td>6.4%</td><td>42</td><td>222s</td><td>0.80s</td><td>5</td></tr><tr><td>21</td><td>2026-10-25 06:42</td><td class="l">At Eternity&#x27;s Edge LE</td><td>人族星灵</td><td>胜</td><td>15:27</td><td>8.8</td><td>1.7s</td><td>1.8</td><td>20%</td><td>45</td><td>90s</td><td>0.40s</td><td>8</td></tr><tr><td>22</td><td>2026-10-25 07:22</td><td class="l">N打1造修复版（大气2000）</td><td>人族人族</td><td>胜</td><td>12:23</td><td>8.2</td><td>2.1s</td><td>0.65</td><td>9.5%</td><td>29</td><td>192s</td><td>0.80s</td><td>6</td></tr><tr><td>23</td><td>2026-10-25 07:48</td><td class="l">Rorschach LE</td><td>人族星灵</td><td>负</td><td>32:14</td><td>11</td><td>1.6s</td><td>0.99</td><td>10%</td><td>47</td><td>377s</td><td>1.5s</td><td>7</td></tr><tr><td>24</td><td>2026-10-25 08:11</td><td class="l">Blackrock LE</td><td>人族星灵</td><td>胜</td><td>13:15</td><td>8.0</td><td>1.8s</td><td>0.60</td><td>5.9%</td><td>46</td><td>146s</td><td>0.60s</td><td>7</td></tr><tr><td>25</td><td>2026-10-26 05:09</td><td class="l">Blackrock LE</td><td>人族?</td><td>胜</td><td>12:02</td><td>8.8</td><td>1.7s</td><td>1.4</td><td>13%</td><td>34</td><td>58s</td><td>1.4s</td><td>8</td></tr><tr><td>26</td><td>2026-10-26 05:22</td><td class="l">At Eternity&#x27;s Edge LE</td><td>星灵人族</td><td>胜</td><td>12:01</td><td>6.9</td><td>2.2s</td><td>1.0</td><td>9.7%</td><td>38</td><td>79s</td><td>1.4s</td><td>6</td></tr><tr><td>27</td><td>2026-10-26 05:37</td><td class="l">At Eternity&#x27;s Edge LE</td><td>星灵人族</td><td>胜</td><td>18:10</td><td>9.7</td><td>1.9s</td><td>0.94</td><td>9.3%</td><td>43</td><td>123s</td><td>0.40s</td><td>8</td></tr><tr><td>28</td><td>2026-10-26 06:11</td><td class="l">At Eternity&#x27;s Edge LE</td><td>星灵人族</td><td>胜</td><td>45:41</td><td>10</td><td>1.8s</td><td>1.3</td><td>13%</td><td>53</td><td>266s</td><td>0.70s</td><td>8</td></tr><tr><td>29</td><td>2026-10-26 06:37</td><td class="l">At Eternity&#x27;s Edge LE</td><td>人族?</td><td>负</td><td>7:55</td><td>7.3</td><td>1.9s</td><td>0.38</td><td>5.3%</td><td>30</td><td>15s</td><td>1.7s</td><td>8</td></tr><tr><td>30</td><td>2026-10-26 06:50</td><td class="l">At Eternity&#x27;s Edge LE</td><td>人族?</td><td>胜</td><td>20:40</td><td>9.1</td><td>1.8s</td><td>1.1</td><td>10%</td><td>40</td><td>155s</td><td>1.2s</td><td>8</td></tr><tr><td>31</td><td>2026-10-28 07:53</td><td class="l">Rorschach LE</td><td>人族人族</td><td>胜</td><td>11:56</td><td>8.0</td><td>2.2s</td><td>0.67</td><td>5.7%</td><td>34</td><td>88s</td><td>0.80s</td><td>7</td></tr><tr><td>32</td><td>2026-10-28 08:04</td><td class="l">Rainfall LE</td><td>人族人族</td><td>负</td><td>14:02</td><td>8.7</td><td>2.4s</td><td>0.50</td><td>5.0%</td><td>50</td><td>116s</td><td>0.20s</td><td>6</td></tr><tr><td>33</td><td>2026-10-28 08:17</td><td class="l">Lockdown LE</td><td>人族异虫</td><td>负</td><td>17:17</td><td>10</td><td>1.6s</td><td>1.4</td><td>13%</td><td>41</td><td>99s</td><td>0.30s</td><td>8</td></tr><tr><td>34</td><td>2026-10-31 08:07</td><td class="l">Lockdown LE</td><td>人族异虫</td><td>负</td><td>14:05</td><td>10</td><td>1.8s</td><td>0.92</td><td>9.2%</td><td>38</td><td>63s</td><td>1.0s</td><td>7</td></tr><tr><td>35</td><td>2026-10-31 08:18</td><td class="l">At Eternity&#x27;s Edge LE</td><td>人族星灵</td><td>胜</td><td>15:05</td><td>11</td><td>1.8s</td><td>0.99</td><td>10%</td><td>40</td><td>95s</td><td>0.80s</td><td>8</td></tr><tr><td>36</td><td>2026-10-31 08:30</td><td class="l">Rorschach LE</td><td>人族异虫</td><td>负</td><td>8:23</td><td>8.6</td><td>1.6s</td><td>1.3</td><td>12%</td><td>36</td><td>0.00s</td><td>0.60s</td><td>7</td></tr><tr><td>37</td><td>2026-10-31 08:51</td><td class="l">At Eternity&#x27;s Edge LE</td><td>人族人族</td><td>负</td><td>27:48</td><td>12</td><td>1.8s</td><td>0.47</td><td>5.0%</td><td>44</td><td>212s</td><td>0.50s</td><td>8</td></tr><tr><td>38</td><td>2026-10-31 09:16</td><td class="l">Blackrock LE</td><td>人族异虫</td><td>胜</td><td>34:13</td><td>13</td><td>1.4s</td><td>1.8</td><td>19%</td><td>57</td><td>211s</td><td>0.60s</td><td>8</td></tr><tr><td>39</td><td>2026-10-31 19:42</td><td class="l">Sanctuary III LE</td><td>人族人族</td><td>胜</td><td>25:41</td><td>11</td><td>2.1s</td><td>0.90</td><td>9.6%</td><td>39</td><td>336s</td><td>0.80s</td><td>7</td></tr><tr><td>40</td><td>2026-10-31 20:00</td><td class="l">Rorschach LE</td><td>人族星灵</td><td>负</td><td>18:11</td><td>9.5</td><td>1.7s</td><td>1.2</td><td>12%</td><td>46</td><td>98s</td><td>0.80s</td><td>8</td></tr></tbody></table></div><footer>逐局指标来自每局的 replay 操作事件流；趋势看的是习惯，不是单局表现。</footer></div></body></html>

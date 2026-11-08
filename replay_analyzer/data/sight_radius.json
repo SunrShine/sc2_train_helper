@@ -1,0 +1,8 @@
+{
+  "_note": "覆盖 replay_analyzer/sight.py 里的视野半径。键 = 单位内部名（小写，和 tracker 里一致），值 = 格数。改完重跑 `fog` 就生效；以 _ 开头的键会被忽略。",
+  "_examples": {
+    "marine": 9,
+    "siegetanksieged": 12,
+    "observer": 11
+  }
+}

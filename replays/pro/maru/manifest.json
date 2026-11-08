@@ -1,0 +1,470 @@
+[
+  {
+    "file": "maru_vs_Reynor_Tourmaline LE_22-01-2026_29001.SC2Replay",
+    "id": "29001",
+    "map": "Tourmaline LE",
+    "build": 96163,
+    "protocol_build": 95299,
+    "duration": 2101.6875,
+    "players": [
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "loss"
+      },
+      {
+        "name": "Maru",
+        "race": "T",
+        "toon": "5-S2-1-12361562",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=29001",
+    "contest_date": "22.01.2026",
+    "map_listed": "Tourmaline LE",
+    "bytes": 394776
+  },
+  {
+    "file": "maru_vs_Reynor_Ruby Rock LE_22-01-2026_29000.SC2Replay",
+    "id": "29000",
+    "map": "Ruby Rock LE",
+    "build": 96163,
+    "protocol_build": 95299,
+    "duration": 2737.4375,
+    "players": [
+      {
+        "name": "Maru",
+        "race": "T",
+        "toon": "5-S2-1-12361562",
+        "result": "win"
+      },
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=29000",
+    "contest_date": "22.01.2026",
+    "map_listed": "Ruby Rock LE",
+    "bytes": 493529
+  },
+  {
+    "file": "maru_vs_Reynor_Taito Citadel LE_22-01-2026_28996.SC2Replay",
+    "id": "28996",
+    "map": "Taito Citadel LE",
+    "build": 96163,
+    "protocol_build": 95299,
+    "duration": 1379.4375,
+    "players": [
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "win"
+      },
+      {
+        "name": "Maru",
+        "race": "T",
+        "toon": "5-S2-1-12361562",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28996",
+    "contest_date": "22.01.2026",
+    "map_listed": "Taito Citadel LE",
+    "bytes": 248640
+  },
+  {
+    "file": "maru_vs_Reynor_White Rabbit LE_22-01-2026_28995.SC2Replay",
+    "id": "28995",
+    "map": "White Rabbit LE",
+    "build": 96163,
+    "protocol_build": 95299,
+    "duration": 570.0625,
+    "players": [
+      {
+        "name": "Maru",
+        "race": "T",
+        "toon": "5-S2-1-12361562",
+        "result": "loss"
+      },
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28995",
+    "contest_date": "22.01.2026",
+    "map_listed": "White Rabbit LE",
+    "bytes": 90783
+  },
+  {
+    "file": "maru_vs_Reynor_Winter Madness LE_22-01-2026_28994.SC2Replay",
+    "id": "28994",
+    "map": "Winter Madness LE",
+    "build": 96163,
+    "protocol_build": 95299,
+    "duration": 1081.5625,
+    "players": [
+      {
+        "name": "Maru",
+        "race": "T",
+        "toon": "5-S2-1-12361562",
+        "result": "loss"
+      },
+      {
+        "name": "Reynor",
+        "race": "Z",
+        "toon": "5-S2-1-12362326",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28994",
+    "contest_date": "22.01.2026",
+    "map_listed": "Winter Madness LE",
+    "bytes": 199613
+  },
+  {
+    "file": "maru_vs_Serral__ESL_ Data-C_30-09-2022_28582.SC2Replay",
+    "id": "28582",
+    "map": "[ESL] Data-C",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 1769.6875,
+    "players": [
+      {
+        "name": "&lt;ENCE&gt;<sp/>Serral",
+        "race": "Z",
+        "toon": "2-S2-1-315071",
+        "result": "win"
+      },
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28582",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Data-C",
+    "bytes": 396219
+  },
+  {
+    "file": "maru_vs_Serral__ESL_ Waterfall_30-09-2022_28581.SC2Replay",
+    "id": "28581",
+    "map": "[ESL] Waterfall",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 1865.9375,
+    "players": [
+      {
+        "name": "&lt;ENCE&gt;<sp/>Serral",
+        "race": "Z",
+        "toon": "2-S2-1-315071",
+        "result": "win"
+      },
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28581",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Waterfall",
+    "bytes": 416974
+  },
+  {
+    "file": "maru_vs_Serral__ESL_ Cosmic Sapphire_30-09-2022_28580.SC2Replay",
+    "id": "28580",
+    "map": "[ESL] Cosmic Sapphire",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 904.8125,
+    "players": [
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "win"
+      },
+      {
+        "name": "&lt;ENCE&gt;<sp/>Serral",
+        "race": "Z",
+        "toon": "2-S2-1-315071",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28580",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Cosmic Sapphire",
+    "bytes": 204631
+  },
+  {
+    "file": "maru_vs_Serral__ESL_ Moondance_30-09-2022_28579.SC2Replay",
+    "id": "28579",
+    "map": "[ESL] Moondance",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 674.9375,
+    "players": [
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "loss"
+      },
+      {
+        "name": "&lt;ENCE&gt;<sp/>Serral",
+        "race": "Z",
+        "toon": "2-S2-1-315071",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28579",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Moondance",
+    "bytes": 151946
+  },
+  {
+    "file": "maru_vs_ShoWTimE__ESL_ Moondance_30-09-2022_28578.SC2Replay",
+    "id": "28578",
+    "map": "[ESL] Moondance",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 817.3125,
+    "players": [
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "win"
+      },
+      {
+        "name": "&lt;St0rmG&gt;<sp/>ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28578",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Moondance",
+    "bytes": 199453
+  },
+  {
+    "file": "maru_vs_ShoWTimE__ESL_ Data-C_30-09-2022_28577.SC2Replay",
+    "id": "28577",
+    "map": "[ESL] Data-C",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 2901.875,
+    "players": [
+      {
+        "name": "&lt;St0rmG&gt;<sp/>ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "win"
+      },
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28577",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Data-C",
+    "bytes": 771173
+  },
+  {
+    "file": "maru_vs_ShoWTimE__ESL_ Inside and Out_30-09-2022_28576.SC2Replay",
+    "id": "28576",
+    "map": "[ESL] Inside and Out",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 716.875,
+    "players": [
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "win"
+      },
+      {
+        "name": "&lt;St0rmG&gt;<sp/>ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28576",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Inside and Out",
+    "bytes": 173542
+  },
+  {
+    "file": "maru_vs_ShoWTimE__ESL_ Stargazers_30-09-2022_28575.SC2Replay",
+    "id": "28575",
+    "map": "[ESL] Stargazers",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 1280.125,
+    "players": [
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "win"
+      },
+      {
+        "name": "&lt;St0rmG&gt;<sp/>ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28575",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Stargazers",
+    "bytes": 290911
+  },
+  {
+    "file": "maru_vs_ShoWTimE__ESL_ Waterfall_30-09-2022_28574.SC2Replay",
+    "id": "28574",
+    "map": "[ESL] Waterfall",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 701.75,
+    "players": [
+      {
+        "name": "&lt;St0rmG&gt;<sp/>ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "loss"
+      },
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28574",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Waterfall",
+    "bytes": 184219
+  },
+  {
+    "file": "maru_vs_ShoWTimE__ESL_ Cosmic Sapphire_30-09-2022_28573.SC2Replay",
+    "id": "28573",
+    "map": "[ESL] Cosmic Sapphire",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 972.8125,
+    "players": [
+      {
+        "name": "&lt;St0rmG&gt;<sp/>ShoWTimE",
+        "race": "P",
+        "toon": "2-S2-1-1430346",
+        "result": "win"
+      },
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28573",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Cosmic Sapphire",
+    "bytes": 209439
+  },
+  {
+    "file": "maru_vs_Reynor__ESL_ Stargazers_30-09-2022_28568.SC2Replay",
+    "id": "28568",
+    "map": "[ESL] Stargazers",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 1794.375,
+    "players": [
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "win"
+      },
+      {
+        "name": "&lt;КаiZi&gt;<sp/>Reynor",
+        "race": "Z",
+        "toon": "2-S2-1-1781626",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28568",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Stargazers",
+    "bytes": 382022
+  },
+  {
+    "file": "maru_vs_Reynor__ESL_ Tropical Sacrifice_30-09-2022_28567.SC2Replay",
+    "id": "28567",
+    "map": "[ESL] Tropical Sacrifice",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 1176.75,
+    "players": [
+      {
+        "name": "&lt;КаiZi&gt;<sp/>Reynor",
+        "race": "Z",
+        "toon": "2-S2-1-1781626",
+        "result": "win"
+      },
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "loss"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28567",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Tropical Sacrifice",
+    "bytes": 267513
+  },
+  {
+    "file": "maru_vs_Reynor__ESL_ Inside and Out_30-09-2022_28566.SC2Replay",
+    "id": "28566",
+    "map": "[ESL] Inside and Out",
+    "build": 88500,
+    "protocol_build": 88500,
+    "duration": 1275.0,
+    "players": [
+      {
+        "name": "maru",
+        "race": "T",
+        "toon": "2-S2-1-4233778",
+        "result": "loss"
+      },
+      {
+        "name": "&lt;КаiZi&gt;<sp/>Reynor",
+        "race": "Z",
+        "toon": "2-S2-1-1781626",
+        "result": "win"
+      }
+    ],
+    "source": "http://sc2rep.ru/show.php?id=28566",
+    "contest_date": "30.09.2022",
+    "map_listed": "[ESL] Inside and Out",
+    "bytes": 321987
+  }
+]

@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.tmp/
+reports/cards/*_frames/
+*.gif
+*.mp4
