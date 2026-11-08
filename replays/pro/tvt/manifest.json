@@ -364,72 +364,6 @@
   },
   {
     "player": "TvT",
-    "file": "tvt_bluzilla_vs_Wwadisaa_Whispers_of_Gold_b93333_28966.SC2Replay",
-    "id": "28966",
-    "map": "Whispers of Gold",
-    "matchup": "TvT",
-    "duration": 1734.62,
-    "build": 93333,
-    "protocol_build": 93333,
-    "date": "2025-01-22",
-    "contest_date": "",
-    "map_listed": "",
-    "players": [
-      {
-        "name": "bluzilla",
-        "race": "T",
-        "toon": "1-S2-1-13240995",
-        "result": "loss"
-      },
-      {
-        "name": "Wwadisaa",
-        "race": "T",
-        "toon": "1-S2-1-20667219",
-        "result": "win"
-      }
-    ],
-    "source": "http://sc2rep.ru/show.php?id=28966",
-    "bytes": 107548,
-    "fetched_at": "2026-11-08T20:09:20",
-    "quality": "ladder",
-    "playable": "yes",
-    "version_data_files": 2
-  },
-  {
-    "player": "TvT",
-    "file": "tvt_BoranveArya_vs_TERRANblet_unknown_b93333_28968.SC2Replay",
-    "id": "28968",
-    "map": "Неоновая площадь РВ",
-    "matchup": "TvT",
-    "duration": 524.69,
-    "build": 93333,
-    "protocol_build": 93333,
-    "date": "2025-02-02",
-    "contest_date": "",
-    "map_listed": "",
-    "players": [
-      {
-        "name": "BoranveArya",
-        "race": "T",
-        "toon": "2-S2-1-3007734",
-        "result": "loss"
-      },
-      {
-        "name": "TERRANblet",
-        "race": "T",
-        "toon": "2-S2-1-10185642",
-        "result": "win"
-      }
-    ],
-    "source": "http://sc2rep.ru/show.php?id=28968",
-    "bytes": 46309,
-    "fetched_at": "2026-11-08T20:09:18",
-    "quality": "ladder",
-    "playable": "yes",
-    "version_data_files": 2
-  },
-  {
-    "player": "TvT",
     "file": "tvt_ByuN_vs_HeroMarine_Ley_Lines_b93333_85053.SC2Replay",
     "id": "85053",
     "map": "Ley Lines",
@@ -590,39 +524,6 @@
     "bytes": 67239,
     "fetched_at": "2026-11-08T20:09:19",
     "quality": "pro",
-    "playable": "yes",
-    "version_data_files": 2
-  },
-  {
-    "player": "TvT",
-    "file": "tvt_Reckoner_vs_Deathdnb_Tokamak_LE_b93333_28977.SC2Replay",
-    "id": "28977",
-    "map": "Tokamak LE",
-    "matchup": "TvT",
-    "duration": 1830.19,
-    "build": 93333,
-    "protocol_build": 93333,
-    "date": "2025-05-18",
-    "contest_date": "",
-    "map_listed": "",
-    "players": [
-      {
-        "name": "Reckoner",
-        "race": "T",
-        "toon": "2-S2-1-9513860",
-        "result": "loss"
-      },
-      {
-        "name": "Deathdnb",
-        "race": "T",
-        "toon": "2-S2-1-11043216",
-        "result": "win"
-      }
-    ],
-    "source": "http://sc2rep.ru/show.php?id=28977",
-    "bytes": 125416,
-    "fetched_at": "2026-11-08T20:09:20",
-    "quality": "ladder",
     "playable": "yes",
     "version_data_files": 2
   },

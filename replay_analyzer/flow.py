@@ -46,6 +46,16 @@ Base98370** 真的有文件，其余（95405…97579、96163）都是 0 文件�
 * ``replays/pro/tvt/``：批量下载的 TvT 对位合集，**双方都标 role="pro"**；
   里面对应 build 93333 的那几局能本机播放，用来核对命名。这个目录**不是选手目录**，
   bo 按选手抽样时会跳过（``bo.PRO_NON_PLAYER_DIRS``），避免把 "tvt" 当选手名。
+
+## 职业身份门槛（比 playable 重要）
+
+**能播放 ≠ 是职业**。职业样本只收：
+
+* ``replays/pro/tvt/`` 里 manifest ``quality == "pro"`` 的局（ladder/路人局即使能播也不收）；
+* ``replays/pro/<选手>/`` 里**目录名能匹配到对局中选手名**的局。
+
+不合格的局直接丢，并逐条记进 ``meta.excluded_non_pro``（file/path/reason/detail），
+不让它们进聚类、统计和示例。
 """
 
 import glob
@@ -75,6 +85,22 @@ SC2_VERSION_ROOTS = (
 #: 职业语料里"批量下载的对位合集"目录（不是选手目录）：flow 把它当职业来源，
 #: 但 bo 按选手抽样要跳过它（bo.PRO_NON_PLAYER_DIRS）。
 PRO_TVT_DIR = os.path.join(bo.PRO_DIR, "tvt")
+
+#: 职业身份门槛：**能播放 ≠ 是职业**。职业样本只收两种情况（见 ``analyze_game``）：
+#:   * ``replays/pro/tvt/`` 里 manifest ``quality == "pro"``；
+#:   * ``replays/pro/<选手>/`` 且目录名能与对局里的选手名对上。
+#: 不满足的直接丢，并记进 ``meta.excluded_non_pro``。
+IDENTITY_RULE = ("tvt 合集：manifest.quality == 'pro'；选手目录：目录名必须匹配对局里的选手名。"
+                 "两条都不满足的局不进职业样本。")
+
+
+class NotProGame(Exception):
+    """不是职业局（身份门槛没过），用于把局丢进 excluded_non_pro。"""
+
+    def __init__(self, reason, detail=""):
+        Exception.__init__(self, reason)
+        self.reason = reason
+        self.detail = detail
 
 #: 兵种分类（5~10 分钟出产的单位）。
 BIO_UNITS = frozenset(("Marine", "Marauder", "Reaper", "Ghost"))
@@ -440,13 +466,24 @@ def classify_flow(features):
 # --------------------------------------------------------------------------- 分析一局
 
 def analyze_game(path, matchup="TvT", source="mine", role="me",
-                 pro_bucket=None, corpus=None):
+                 pro_bucket=None, corpus=None, identity_required=False):
     """解析一局，给**双方**各抽流程特征并分类，返回一条游戏记录。
 
     ``source="pro"`` + ``pro_bucket="tvt"`` 表示来自 ``replays/pro/tvt/`` 这种
     批量对位合集：双方都是 T，都标 ``role="pro"``（不区分谁是目标选手）。
+    ``identity_required=True`` 时先过**职业身份门槛**，不合格抛 :class:`NotProGame`：
+    能播放不代表是职业，路人局不能混进职业样本。
     """
     parsed = load_replay(path, decode_events=True)
+    if identity_required:
+        if pro_bucket == "tvt":
+            quality = (corpus or {}).get("quality")
+            if quality != "pro":
+                raise NotProGame("tvt-manifest-quality-not-pro", str(quality))
+        elif pro_bucket == "player_dir":
+            if bo._player_from_folder(parsed, path) is None:
+                raise NotProGame("folder-name-not-a-player",
+                                 os.path.basename(os.path.dirname(os.path.abspath(path))))
     target_race = matchup[0] if matchup else "T"
     players = [player for player in parsed.players if player.race == target_race]
     if matchup.endswith("v" + target_race):
@@ -503,23 +540,37 @@ def analyze_game(path, matchup="TvT", source="mine", role="me",
 
 
 def analyze_matchup(paths, matchup="TvT", source="mine", progress=None, max_games=None,
-                    pro_bucket=None, corpus_by_file=None):
+                    pro_bucket=None, corpus_by_file=None, identity_required=False):
     """把一批 replay 逐局分析（双方都标），返回 ``[game_record]``。
 
     ``max_games`` 给了就只保留前 N 个**成功解析的 1v1 局**（非 1v1 的会跳过，
     所以可以多喂一些候选路径来补足数量）。
     ``corpus_by_file`` 是 corpus manifest 的 ``{文件名: 条目}``，会把 quality/playable
     的原始判断一起写进 JSON（和自己探测的 playable 对照，方便发现分歧）。
+    ``identity_required=True`` 时，职业身份不合格的局会被丢进
+    ``analyze_matchup.last_excluded``（供 ``meta.excluded_non_pro`` 用）。
     """
     games = []
     errors = []
+    excluded = []
     corpus_by_file = corpus_by_file or {}
     for index, path in enumerate(paths):
         usage_role = "me" if source == "mine" else "pro"
         corpus = corpus_by_file.get(os.path.basename(path))
         try:
             game = analyze_game(path, matchup=matchup, source=source, role=usage_role,
-                                pro_bucket=pro_bucket, corpus=corpus)
+                                pro_bucket=pro_bucket, corpus=corpus,
+                                identity_required=identity_required)
+        except NotProGame as exc:
+            excluded.append({
+                "file": os.path.basename(path),
+                "path": os.path.abspath(path),
+                "source": source,
+                "pro_bucket": pro_bucket,
+                "reason": exc.reason,
+                "detail": exc.detail,
+            })
+            continue
         except Exception as exc:                       # 坏档 / 版本不支持
             errors.append({"file": os.path.basename(path), "error": str(exc)[:160]})
             continue
@@ -532,10 +583,12 @@ def analyze_matchup(paths, matchup="TvT", source="mine", progress=None, max_game
         if max_games is not None and len(games) >= max_games:
             break
     analyze_matchup.last_errors = errors
+    analyze_matchup.last_excluded = excluded
     return games
 
 
 analyze_matchup.last_errors = []
+analyze_matchup.last_excluded = []
 
 
 # --------------------------------------------------------------------------- 汇总
@@ -617,10 +670,14 @@ def _pick_examples(players, fingerprint, games_by_key, limit=3):
     ranked.sort(key=lambda item: (0 if item[0]["playable"] else 1, item[2]))
     playable_pro = [item for item in ranked
                     if item[0]["playable"] and item[0]["source"] == "pro"]
+    pro_any = [item for item in ranked if item[0]["source"] == "pro"]
 
     ordered = []
     if playable_pro:
         ordered.append(playable_pro[0])                 # 先占一个可播放职业示例
+    elif pro_any:
+        # 这个 flow 没有可播放的职业局：退一条**不可播放的职业局**并如实标 playable=false
+        ordered.append(pro_any[0])
     ordered.extend(ranked)
 
     examples = []
@@ -746,27 +803,47 @@ def build_report(mine_dir=None, pro_dir=None, matchup="TvT", limit=60, pro_limit
     pro_paths = [game_bo["game"]["path"] for game_bo in pro_bos]
     sources["pro_player_dirs"] = {"candidates": len(pro_paths)}
 
-    # 批量下载的对位合集目录（replays/pro/tvt/）：全部当职业局，双方都标 pro
-    tvt_paths = [path for path in bo.expand_paths(PRO_TVT_DIR)
-                 if os.path.basename(os.path.dirname(path)).lower() == "tvt"]
+    # 批量下载的对位合集目录（replays/pro/tvt/）：只收 manifest quality == "pro" 的，
+    # 路人/ladder 局即使能播也不进职业样本（能播 ≠ 是职业）。
     manifest = _read_manifest(os.path.join(PRO_TVT_DIR, "manifest.json"))
-    sources["pro_tvt"] = {"candidates": len(tvt_paths),
+    tvt_paths, tvt_excluded = [], []
+    for path in bo.expand_paths(PRO_TVT_DIR):
+        if os.path.basename(os.path.dirname(path)).lower() != "tvt":
+            continue
+        entry = manifest.get(os.path.basename(path)) or {}
+        if entry.get("quality") == "pro":
+            tvt_paths.append(path)
+        else:
+            tvt_excluded.append({
+                "file": os.path.basename(path),
+                "path": os.path.abspath(path),
+                "source": "pro",
+                "pro_bucket": "tvt",
+                "reason": "tvt-manifest-quality-not-pro",
+                "detail": entry.get("quality"),
+            })
+    sources["pro_tvt"] = {"candidates": len(tvt_paths) + len(tvt_excluded),
                           "manifest": len(manifest),
-                          "playable_claim": _manifest_playable_counts(manifest)}
+                          "playable_claim": _manifest_playable_counts(manifest),
+                          "excluded_non_pro": len(tvt_excluded)}
 
     def sub_progress(done, total, name):
         if progress:
             progress(done, total, name)
 
     games = []
+    excluded_non_pro = list(tvt_excluded)
     games.extend(analyze_matchup(mine_paths, matchup, source="mine",
                                  progress=sub_progress, max_games=limit))
     games.extend(analyze_matchup(pro_paths, matchup, source="pro",
                                  progress=sub_progress, max_games=pro_limit,
-                                 pro_bucket="player_dir"))
+                                 pro_bucket="player_dir", identity_required=True))
+    excluded_non_pro.extend(analyze_matchup.last_excluded)
     games.extend(analyze_matchup(tvt_paths, matchup, source="pro",
                                  progress=sub_progress,
-                                 pro_bucket="tvt", corpus_by_file=manifest))
+                                 pro_bucket="tvt", corpus_by_file=manifest,
+                                 identity_required=True))
+    excluded_non_pro.extend(analyze_matchup.last_excluded)
     mine_count = len([game for game in games if game["source"] == "mine"])
     sources["mine"]["games"] = mine_count
     pro_dir_count = len([game for game in games
@@ -809,6 +886,9 @@ def build_report(mine_dir=None, pro_dir=None, matchup="TvT", limit=60, pro_limit
             "playable_rule": ("本机 SC2 客户端 Versions/Base<build> 里**有程序文件**的版本才算"
                               "（空壳目录不算）；探测不到才退回 build ≥ %d" % MIN_PLAYABLE_BUILD),
             "min_playable_build": MIN_PLAYABLE_BUILD,
+            "identity_rule": IDENTITY_RULE,
+            "excluded_non_pro": excluded_non_pro,
+            "excluded_non_pro_count": len(excluded_non_pro),
             "unknown_share": round(unknown_count / float(player_total or 1), 3),
             "merged_flows": sorted({label for flow in flows for label in flow["merged_from"]}),
             "vocabulary": FLOW_NAMES,
