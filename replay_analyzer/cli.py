@@ -354,6 +354,10 @@ def main(argv=None):
     dag_cmd.add_argument("--pro", type=int, default=100, help="职业录像最多几局")
     dag_cmd.add_argument("--pro-name", dest="pro_name", default=None, help="职业选手名字，默认 Maru")
     dag_cmd.add_argument("--min-edge", dest="min_edge", type=int, default=2, help="边上图的最小次数")
+    dag_cmd.add_argument("--min-games", dest="min_games", type=int, default=None,
+                         help="每组最少几局才画图（不足只标样本不足）")
+    dag_cmd.add_argument("--skip-appendix", dest="skip_appendix", action="store_true",
+                         help="不生成 Z/P 职业开局附注图")
     dag_cmd.add_argument("--force", action="store_true", help="丢弃信息事件缓存重新计算")
     dag_cmd.add_argument("-o", "--output", dest="dag_html", default=None, help="HTML 输出路径")
     dag_cmd.add_argument("--json", dest="json_path", default=None, help="JSON 输出路径")
@@ -611,6 +615,10 @@ def main(argv=None):
             forwarded += ["--bo", args.bo]
         if args.pro_name:
             forwarded += ["--pro-name", args.pro_name]
+        if args.min_games is not None:
+            forwarded += ["--min-games", str(args.min_games)]
+        if args.skip_appendix:
+            forwarded.append("--skip-appendix")
         output = args.dag_html or os.path.join("reports", "dag.html")
         forwarded += ["--out", output]
         if args.json_path:
