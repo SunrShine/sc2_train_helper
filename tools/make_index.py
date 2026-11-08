@@ -21,6 +21,7 @@ CATALOG = {
     "library.html": ("资料", "录像库索引", "扫描本机录像，按目录归类"),
     "micro-trend.html": ("操作", "操作趋势", "最近 N 局的多线/视角指标变化"),
     "pro-playlist.html": ("资料", "职业录像片单", "每局的地图、时长、版本、能不能直接播"),
+    "tutorial-index.html": ("资料", "教学视频索引（星际一招鲜）", "103 条合集盘点：对位、时长、招式拆解"),
 }
 
 CARD_REPORTS = ("micro", "fog")
