@@ -38,10 +38,12 @@ def probe(input_path):
     return 1280, 720
 
 
-def frames(input_path, fps=1.0):
-    cmd = [ffmpeg(), "-hide_banner", "-loglevel", "error", "-i", input_path,
-           "-vf", "fps=%s,scale=%d:%d,format=gray" % (fps, W, H),
-           "-f", "rawvideo", "-"]
+def frames(input_path, fps=1.0, until=None):
+    vf = "fps=%s,scale=%d:%d,format=gray" % (fps, W, H)
+    cmd = [ffmpeg(), "-hide_banner", "-loglevel", "error", "-i", input_path]
+    if until:
+        cmd += ["-t", str(until)]
+    cmd += ["-vf", vf, "-f", "rawvideo", "-"]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     size = W * H
     while True:
@@ -121,6 +123,7 @@ def main(argv=None):
     parser.add_argument("--min-hold", type=float, default=1.2, help="至少静止几秒")
     parser.add_argument("--rows", type=int, default=4, help="每张图拼几张卡")
     parser.add_argument("--width", type=int, default=760, help="卡片宽度")
+    parser.add_argument("--until", type=float, default=None, help="只扫前 N 秒")
     parser.add_argument("--text-only", dest="text_only", action="store_true",
                         help="只保留「有文字」的卡（亮像素数量过滤）")
     args = parser.parse_args(argv)
@@ -129,7 +132,7 @@ def main(argv=None):
     groups = []
     current = None
     previous = None
-    for index, frame in enumerate(frames(args.input)):
+    for index, frame in enumerate(frames(args.input, until=args.until)):
         if previous is not None and similar(previous, frame):
             current["end"] = index
         else:

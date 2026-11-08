@@ -457,6 +457,223 @@
    "note": "静帧卡片法抽取；本集用「大气2000」地图演示，后半段是操作讲解，步骤标注只到前 2 分钟"
   },
   {
+   "number": 33,
+   "bvid": "BV1eu411Q79k",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "双气 2 死神 1 火车 1 寡妇雷 2 渡鸦 2 运输机",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：双气 2 死神 1 火车 1 寡妇雷 2 渡鸦 2 运输机",
+     "tags": [
+      "gas:2",
+      "unit:reaper×2",
+      "unit:hellion",
+      "unit:widow_mine",
+      "unit:raven×2",
+      "unit:medivac×2"
+     ],
+     "clock": "0:13",
+     "video_t": 13,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "18 农民探路，调气矿农民",
+     "tags": [
+      "unit:SCV",
+      "gas:1"
+     ],
+     "clock": "1:04",
+     "video_t": 64,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 7,
+     "action": "点击死神、变形星轨、下补给站",
+     "tags": [
+      "unit:reaper",
+      "build:orbital",
+      "build:supply_depot"
+     ],
+     "clock": "1:29",
+     "video_t": 89,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "第一时间砸矿骡",
+     "tags": [
+      "tech:mule"
+     ],
+     "clock": "1:51",
+     "video_t": 111,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "出一个火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": "2:42",
+     "video_t": 162,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "VF 第一时间挂科技挂件",
+     "tags": [
+      "build:factory_techlab"
+     ],
+     "clock": "3:11",
+     "video_t": 191,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "第一时间出渡鸦、挂科技挂件",
+     "tags": [
+      "unit:raven",
+      "build:techlab"
+     ],
+     "clock": "3:37",
+     "video_t": 217,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "二矿第一时间变形星轨、下三气",
+     "tags": [
+      "expand",
+      "build:orbital",
+      "gas:3"
+     ],
+     "clock": "5:47",
+     "video_t": 347,
+     "source": "frame",
+     "confidence": "med"
+    }
+   ],
+   "note": "静帧卡片法抽取；前半段按中文序号（五、七、九）标注，后半段改为「第一时间…」句式"
+  },
+  {
+   "number": 34,
+   "bvid": "BV1tU4y1f7m7",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "双气开 5 死神 3 火车 枪兵 坦克 运输机",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：双气开 5 死神 3 火车 枪兵 坦克 运输机",
+     "tags": [
+      "gas:2",
+      "unit:reaper×5",
+      "unit:hellion×3",
+      "unit:siege_tank",
+      "unit:medivac"
+     ],
+     "clock": "0:15",
+     "video_t": 15,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "兵营 → 气矿 → 气矿",
+     "tags": [
+      "build:barracks",
+      "gas:1",
+      "gas:2"
+     ],
+     "clock": "0:43",
+     "video_t": 43,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "第一时间出两个死神、下补给站",
+     "tags": [
+      "unit:reaper×2",
+      "build:supply_depot"
+     ],
+     "clock": "2:37",
+     "video_t": 157,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "杀对手二矿的农民",
+     "tags": [],
+     "clock": "4:22",
+     "video_t": 262,
+     "source": "frame",
+     "confidence": "med"
+    }
+   ],
+   "note": "标注密度中等；本集前半是开流程，后半是打成型的思路"
+  },
+  {
+   "number": 35,
+   "bvid": "BV1aL4y1T75T",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "兵营气矿开：死神 两枪 地堡 火车 导弹车 运输机",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：兵营气矿开 死神 两枪 地堡 火车 导弹车 运输机",
+     "tags": [
+      "gas:1",
+      "unit:reaper",
+      "unit:marine×2",
+      "build:bunker",
+      "unit:hellion",
+      "unit:cyclone",
+      "unit:medivac"
+     ],
+     "clock": "0:11",
+     "video_t": 11,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 1,
+     "action": "下补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": "0:15",
+     "video_t": 15,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "接着再出一个枪兵",
+     "tags": [
+      "unit:marine"
+     ],
+     "clock": "2:19",
+     "video_t": 139,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "短集（5.3 分钟），标注只覆盖到前 2 分钟；剩余靠后续补读"
+  },
+  {
    "number": 36,
    "bvid": "BV1yL411A7N1",
    "matchup": "TvT",
