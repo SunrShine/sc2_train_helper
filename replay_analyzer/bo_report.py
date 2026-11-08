@@ -237,12 +237,17 @@ def _cluster_card(cluster, max_seconds, tone=0, show_members=True):
     return "".join(parts)
 
 
-def _k_selection_block(meta):
+def _k_selection_block(block, matchup):
     """选 k 的依据：k=2..6 的 silhouette / 类内平均距离 / 最小类占比。"""
-    clustering = meta.get("clustering") or {}
+    clustering = (block or {}).get("clustering") or {}
     scores = clustering.get("scores") or []
+    note = clustering.get("note")
     if not scores:
-        return ""
+        if not note:
+            return ""
+        return ('<div class="card" style="margin-bottom:12px">'
+                "<h3>%s 为什么只有一类</h3>"
+                '<div class="mini">%s</div></div>' % (h(matchup), h(note)))
     chosen = clustering.get("k")
     rows = []
     for entry in scores:
@@ -253,20 +258,20 @@ def _k_selection_block(meta):
     outliers = clustering.get("outliers") or []
     return (
         '<div class="card" style="margin-bottom:12px">'
-        "<h3>为什么选 k=%s</h3>"
+        "<h3>%s 为什么选 k=%s</h3>"
         '<div class="mini">口径：%s。</div>'
         '<table class="data" style="margin-top:8px"><thead><tr>'
         "<th>k</th><th>平均轮廓系数 ↑</th><th>类内平均距离 ↓</th><th>最小类占比</th>"
         "</tr></thead><tbody>%s</tbody></table>"
         '<div class="mini" style="margin-top:6px">离群（最近邻距离大于阈值、单独归入「其他」）'
         "：%d 局。</div></div>" % (
-            h(str(chosen)), h(clustering.get("criterion") or "-"),
+            h(matchup), h(str(chosen)), h(clustering.get("criterion") or "-"),
             "".join(rows), len(outliers)))
 
 
-def _version_block(meta):
-    """版本过滤：8/12 农民两个版本、排除多少局、实际用了哪段时间。"""
-    version = meta.get("version_filter") or {}
+def _version_block(block, matchup):
+    """单个对位的版本过滤：8/12 农民两个版本、排除了多少局、实际用了哪段时间。"""
+    version = (block or {}).get("version_filter") or {}
     if not version:
         return ""
     table = version.get("version_table") or []
@@ -276,7 +281,7 @@ def _version_block(meta):
             h(entry.get("month") or "?"), h(str(entry.get("start_workers"))),
             h(str(entry.get("build"))), entry.get("games", 0))
         for entry in table)
-    pace = meta.get("pace_dimension") or {}
+    pace = (block or {}).get("pace_dimension") or {}
     pace_text = "仍然存在" if pace.get("survives") else "基本消失（已被版本过滤吸收）"
     pace_detail = "第一气矿 p10~p90 = %s~%s（跨度 %s 秒），二矿 %s~%s（跨度 %s 秒）" % (
         clock(pace.get("gas_p10")), clock(pace.get("gas_p90")), h(_num(pace.get("gas_spread"))),
@@ -284,7 +289,7 @@ def _version_block(meta):
         h(_num(pace.get("expand_spread"))))
     return (
         '<div class="card" style="margin-bottom:12px">'
-        "<h3>版本过滤（开局农民数 = %s）</h3>"
+        "<h3>%s 版本过滤（开局农民数 = %s）</h3>"
         '<div class="mini">排除 8 农民版本 %d 局、按日期排除 %d 局；'
         "实际使用日期 %s ~ %s。判据用开局农民数（版本无关），日期只是可选项。</div>"
         '<table class="data" style="margin-top:8px"><thead><tr>'
@@ -293,7 +298,7 @@ def _version_block(meta):
         '<div class="mini" style="margin-top:8px">8 农民版本会让同一个 build 的开局时间点'
         "整体前移 20~30 秒，混在一起聚出来的是版本差而不是打法差——所以整批排除。"
         "过滤后「慢/快节奏」这个维度<b>%s</b>：%s。</div></div>" % (
-            h(str(version.get("start_workers"))),
+            h(matchup), h(str(version.get("start_workers"))),
             version.get("excluded_by_workers", 0), version.get("excluded_by_date", 0),
             h(dates.get("min") or "-"), h(dates.get("max") or "-"),
             rows, h(pace_text), h(pace_detail)))
@@ -430,77 +435,184 @@ def _expand_filter_block(meta, summary):
     return "".join(parts)
 
 
+def _matchup_summary_table(meta):
+    """顶部三对位对照摘要。"""
+    rows = []
+    for entry in meta.get("matchup_table") or []:
+        dates = entry.get("dates_used") or {}
+        rows.append(
+            "<tr><td class='l'><b>%s</b></td><td>%d</td><td>%d</td><td>%s</td>"
+            "<td>%s</td><td>%d</td><td class='l'>%s</td><td class='l'>%s ~ %s</td></tr>" % (
+                h(entry["matchup"]), entry["mine_games"], entry["pro_games"],
+                h("可用" if entry.get("pro_sufficient") else "样本不足"),
+                h(str(entry.get("k"))), entry.get("clusters", 0),
+                h(entry.get("top_cluster") or "-"),
+                h(dates.get("min") or "-"), h(dates.get("max") or "-")))
+    return ('<div class="card"><table class="data"><thead><tr>'
+            "<th class='l'>对位</th><th>我的局数</th><th>同对位职业局数</th><th>同对位对照</th>"
+            "<th>k</th><th>类数</th><th class='l'>最大类</th><th class='l'>我的日期范围</th>"
+            "</tr></thead><tbody>%s</tbody></table></div>" % "".join(rows))
+
+
+def _pro_scope_line(block):
+    """一行说明"对照用的职业样本是谁、多少局"，避免让人以为只有 Maru 一个人。"""
+    players = block.get("pro_players") or {}
+    breakdown = " / ".join("%s %d" % (name, count) for name, count in players.items()) or "-"
+    if not block.get("pro_sufficient"):
+        status = "样本不足（&lt; %d 局，不做差值结论）" % block.get("min_pro_games", 10)
+    elif block.get("pro_games") == block.get("min_pro_games"):
+        status = "刚好达到阈值 %d 局，样本偏薄" % block.get("min_pro_games", 10)
+    else:
+        status = "可用"
+    return '<div class="mini">同对位职业样本：%s 局 · 合并 %d 名 Terran 选手（%s）· %s</div>' % (
+        h(str(block.get("pro_games", 0))), len(players), h(breakdown), status)
+
+
+def _mine_median_chips(block):
+    median = block.get("median") or {}
+    if not median:
+        return '<div class="mini">没有可用中位数。</div>'
+    return "".join(_chip(label, clock(median.get(key)))
+                   for key, label, _c in TIMELINE_NODES)
+
+
+def _matchup_sections(blocks, matchups, games, meta, max_seconds):
+    """每个对位一节：版本过滤 + 选 k + 开局类别 + 同对位对照 + 分布。"""
+    parts = []
+    for matchup in matchups:
+        block = blocks.get(matchup) or {}
+        mine_clusters = block.get("clusters") or []
+        comparison = block.get("comparison") or {}
+        mine_games = [g for g in games if g["player"]["is_local"]
+                      and g["game"]["matchup"] == matchup]
+        pro_games = [g for g in games if not g["player"]["is_local"]
+                     and g["game"]["matchup"] == matchup]
+
+        parts.append("<h2>%s · 我的开局（按 0–3 分钟序列聚类）</h2>" % h(matchup))
+        if matchup == "TvT":
+            parts.append('<div class="bo-note"><b>注意</b>：signature 词表是「人族通用」的'
+                         "（按 生产建筑数量 + 气矿时机 + 扩张时机 判，不区分对手种族），"
+                         "所以 TvT 里出现 1-1-1 / 2-1-1 之外，也会出现 1-rax-fast-expand / "
+                         "3-rax / mech——这些在镜像战里同样成立（例如 1-rax 速二矿在 TvT 也很常见），"
+                         "不是把 TvZ 的名字硬套过来。镜像战双方同族，同一局两个玩家都套同一套词表，"
+                         "本报告只取我这一边。</div>")
+        parts.append(_version_block(block, matchup))
+        parts.append(_k_selection_block(block, matchup))
+        if not mine_clusters:
+            parts.append('<div class="card mini">这个对位样本不足，聚不出开局。</div>')
+        for tone, cluster in enumerate(mine_clusters):
+            parts.append(_cluster_card(cluster, max_seconds, tone))
+
+        parts.append("<h2>%s · 我 vs %s（同对位中位数）</h2>" % (h(matchup), h(meta["pro"])))
+        parts.append(_pro_scope_line(block))
+        if block.get("pro_sufficient") and comparison:
+            parts.append('<div class="card"><table class="data"><thead><tr>'
+                         '<th class="l">节点</th><th>我</th><th>%s</th><th>差值（我 − 职业）</th>'
+                         "</tr></thead><tbody>%s</tbody></table>"
+                         % (h(meta["pro"]), _comparison_rows(comparison)))
+            parts.append('<div class="mini">差值：+ 表示我比职业选手晚。差值 ≤ 5 秒算接近，'
+                         "&gt; 20 秒标黄。</div></div>")
+            parts.append('<div class="card"><div class="grid2">')
+            parts.append('<div class="chart-card"><h3>二矿（分钟）</h3>'
+                         '<div class="desc">每局一个点，按时间排序；虚线是 %s</div>%s</div>'
+                         % (h(meta["pro"]), _ecdf_chart(mine_games, pro_games, "first_expand")))
+            parts.append('<div class="chart-card"><h3>第一气矿（分钟）</h3>'
+                         '<div class="desc">同上</div>%s</div>'
+                         % _ecdf_chart(mine_games, pro_games, "first_gas"))
+            parts.append("</div></div>")
+        else:
+            parts.append('<div class="card"><div class="insight warn">'
+                         '<div class="t">样本不足，不做对照结论</div>'
+                         '<div class="d">%s 在自己这个对位只有 %d 局（&lt; %d 局）。'
+                         "下面只列我的中位数，不出差值。</div></div>%s</div>" % (
+                             h(meta["pro"]), block.get("pro_games", 0),
+                             block.get("min_pro_games", 10), _mine_median_chips(block)))
+
+        parts.append("<h2>%s · 签名与兵种构成</h2>" % h(matchup))
+        parts.append('<div class="card"><div class="grid2">')
+        parts.append('<div><h3 class="mini">我的开局签名</h3>%s</div>'
+                     % _distribution_bars(block.get("signatures") or {},
+                                          max(1, block.get("mine_games", 1))))
+        parts.append('<div><h3 class="mini">我的兵种构成（style）</h3>%s</div>'
+                     % _distribution_bars(block.get("styles") or {},
+                                          max(1, block.get("mine_games", 1))))
+        pro_sigs = block.get("pro_signatures") or {}
+        pro_styles = block.get("pro_styles") or {}
+        if pro_sigs or pro_styles:
+            parts.append('<div><h3 class="mini">%s 的签名（同对位）</h3>%s</div>'
+                         % (h(meta["pro"]),
+                            _distribution_bars(pro_sigs, max(1, block.get("pro_games", 1)))))
+            parts.append('<div><h3 class="mini">%s 的兵种构成（同对位）</h3>%s</div>'
+                         % (h(meta["pro"]),
+                            _distribution_bars(pro_styles, max(1, block.get("pro_games", 1)))))
+        parts.append("</div></div>")
+        unknown = block.get("unknown") or {}
+        if unknown.get("mine_signature_share") is not None:
+            parts.append('<div class="mini">%s unknown 占比：我的 signature %s / style %s；'
+                         '同对位职业 signature %s / style %s。</div>' % (
+                             h(matchup),
+                             _pct(unknown.get("mine_signature_share")),
+                             _pct(unknown.get("mine_style_share")),
+                             _pct(unknown.get("pro_signature_share")),
+                             _pct(unknown.get("pro_style_share"))))
+    return "".join(parts)
+
+
 def render(summary):
     meta = summary["meta"]
-    comparison = summary["comparison"]
-    mine_clusters = summary["clusters"]["mine"]
-    pro_clusters = summary["clusters"]["pro"]
+    blocks = summary.get("matchups") or {}
+    matchups = meta.get("matchups") or list(blocks)
     games = summary["games"]
-    mine_games = [g for g in games if g["player"]["is_local"]]
-    pro_games = [g for g in games
-                 if not g["player"]["is_local"] and g["game"]["matchup"] == meta["matchup"]]
     max_seconds = _durations(summary)
     elapsed = meta.get("elapsed_seconds")
 
     parts = ['<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">',
              '<meta name="viewport" content="width=device-width,initial-scale=1">',
-             "<title>BO 分析 · %s %s</title>" % (h(meta["mine"]), h(meta["pro"])),
+             "<title>BO 分析 · %s vs %s</title>" % (h(meta["mine"]), h(meta["pro"])),
              "<style>", CSS, EXTRA_CSS, "</style></head><body><div class=\"wrap\">"]
 
     # ---------------- header
-    parts.append('<header class="top"><h1 class="bo-title">BO 分析：%s vs %s</h1>'
+    parts.append('<header class="top"><h1 class="bo-title">BO 分析：%s vs %s · 按对位分别处理</h1>'
                  % (h(meta["mine"]), h(meta["pro"])))
-    parts.append('<div class="sub">对局类型 %s · 我 %d 局 + 职业 %d 局（其中 %s 对局 %d 局）'
-                 ' · 生成于 %s%s</div>' % (
-                     h(meta["matchup"]), meta["mine_games"], meta["pro_games"],
-                     h(meta["matchup"]), meta["pro_matchup_games"], h(meta["generated"]),
-                     "" if not elapsed else " · 解析耗时 %.0f 秒" % elapsed))
+    parts.append('<div class="sub">对位：%s · 我 %d 局 + 职业 %d 局 · 生成于 %s%s</div>' % (
+        h(" / ".join(matchups)), meta["mine_games"], meta["pro_games"],
+        h(meta["generated"]), "" if not elapsed else " · 解析耗时 %.0f 秒" % elapsed))
     parts.append('<div class="sub">阶段按时间切：%s</div>' % h(
         " / ".join("%s %s–%s" % (PHASE_ZH[p], clock(s), clock(e) if e else "∞")
                    for p, s, e in PHASES)))
     sampling = (summary.get("sampling") or {}).get("mine") or {}
     if sampling.get("scanned"):
-        parts.append('<div class="sub">语料：扫描 %d 个 replay 文件 → 入选 %d 局'
-                     '（其余被 matchup / 人类对手 / 版本 / 时长等条件筛掉）。</div>' % (
+        parts.append('<div class="sub">语料：扫描 %d 个 replay 文件 → 三个对位合计入选 %d 局'
+                     '（每个对位单独做 matchup / 人类对手 / 12 农民 / 时长过滤）。</div>' % (
                          sampling.get("scanned", 0), sampling.get("matched", 0)))
     parts.append("</header>")
 
-    # ---------------- 结论
+    # ---------------- 三对位摘要
+    parts.append("<h2>三对位摘要</h2>")
+    parts.append(_matchup_summary_table(meta))
+    parts.append('<div class="mini" style="margin-top:6px">TvZ / TvP / TvT 是三种不同的对抗：'
+                 "每个对位独立聚类、独立做版本过滤、只和同对位的职业局对照。"
+                 "抽样上限 %s 局/对位（实际用了多少见上表，全库不足上限的对位如实标出）；"
+                 "同对位职业局 &lt; %d 局标「样本不足」，不给结论。</div>"
+                 % (h(str(meta.get("per_matchup_limit") or "-")),
+                    int((blocks.get(matchups[0]) or {}).get("min_pro_games", 10))))
+
+    # ---------------- 结论（每个对位一句）
     parts.append("<h2>关键结论</h2>")
-    unknown = meta.get("unknown") or {}
-    sig_counts = comparison["mine"]["signatures"] or {}
-    top_sig = next(iter(sig_counts.items()), ("-", 0))
-    insight = [
-        ("info", "开局签名集中在 %s" % h(top_sig[0]),
-         "我 %d 局里 %d 局（%s）是 %s；签名是整局打法的短标签，开局细节看下面的序列聚类。" % (
-             meta["mine_games"], top_sig[1],
-             _pct(top_sig[1] / float(meta["mine_games"] or 1)), h(top_sig[0]))),
-        ("good", "按 0–3 分钟序列聚出 %d 类（k=%s）" % (
-            len(mine_clusters), (meta.get("clustering") or {}).get("k")),
-         " / ".join("%s（%d 局，%s）" % (h(c["name"]), c["games"], _pct(c["share"]))
-                    for c in mine_clusters) or "-"),
-        ("info", "节奏对照",
-         "二矿中位：我 %s / %s %s；气矿中位：我 %s / %s %s；版本过滤后「慢/快」维度%s。" % (
-             clock(comparison["mine"]["median"].get("first_expand")),
-             h(meta["pro"]), clock(comparison["pro"]["median"].get("first_expand")),
-             clock(comparison["mine"]["median"].get("first_gas")),
-             h(meta["pro"]), clock(comparison["pro"]["median"].get("first_gas")),
-             "仍存在" if (meta.get("pace_dimension") or {}).get("survives")
-             else "基本消失")),
-    ]
-    for tone, title, desc in insight:
-        parts.append('<div class="insight %s"><div class="t">%s</div><div class="d">%s</div></div>'
-                     % (tone, h(title), desc))
+    for matchup in matchups:
+        block = blocks.get(matchup) or {}
+        clusters = block.get("clusters") or []
+        head = " / ".join("%s（%d 局，%s）" % (h(c["name"]), c["games"], _pct(c["share"]))
+                          for c in clusters[:3]) or "样本不足"
+        pro_note = ("同对位职业 %d 局" % block.get("pro_games", 0)
+                    if block.get("pro_sufficient")
+                    else "同对位职业只有 %d 局 → 样本不足" % block.get("pro_games", 0))
+        parts.append('<div class="insight info"><div class="t">%s（我 %d 局 · %s）</div>'
+                     '<div class="d">%s</div></div>' % (
+                         h(matchup), block.get("mine_games", 0), h(pro_note), head))
 
     for note in summary.get("caveats") or []:
         parts.append('<div class="bo-note"><b>注意</b>：%s</div>' % h(note))
-    if unknown.get("mine_signature_share") is not None:
-        parts.append('<div class="mini">unknown 占比：我的 signature %s / style %s；'
-                     '职业 signature %s / style %s。</div>' % (
-                         _pct(unknown.get("mine_signature_share")),
-                         _pct(unknown.get("mine_style_share")),
-                         _pct(unknown.get("pro_signature_share")),
-                         _pct(unknown.get("pro_style_share"))))
 
     # ---------------- 单局验收（--replay 指定的局）
     checks = summary.get("replay_checks") or []
@@ -528,62 +640,8 @@ def render(summary):
                     for s in check["segments"])))
             parts.append("</div>")
 
-    # ---------------- 我的开局（按 0–3 分钟序列聚类）
-    parts.append("<h2>我的 %s 开局：按 0–3 分钟建造序列聚类</h2>" % h(meta["matchup"]))
-    parts.append(_version_block(meta))
-    parts.append(_k_selection_block(meta))
-    if not mine_clusters:
-        parts.append('<div class="card mini">样本不足，聚不出开局。</div>')
-    for tone, cluster in enumerate(mine_clusters):
-        parts.append(_cluster_card(cluster, max_seconds, tone))
-
-    # ---------------- Maru
-    parts.append("<h2>%s 的 %s 开局（同样处理）</h2>" % (h(meta["pro"]), h(meta["matchup"])))
-    if not pro_clusters:
-        parts.append('<div class="card mini">职业样本里 %s 对局太少，没有聚类。'
-                     % h(meta["matchup"]))
-        parts.append('<div class="card mini">全部 %d 局的签名分布：%s</div>' % (
-            meta["pro_games"], h(" · ".join("%s %d" % (k, v) for k, v in
-                                            (comparison["pro"]["signatures"] or {}).items()))))
-    else:
-        for tone, cluster in enumerate(pro_clusters):
-            parts.append(_cluster_card(cluster, max_seconds, tone + 1))
-
-    # ---------------- 对照
-    parts.append("<h2>我 vs %s：关键时间点（中位数）</h2>" % h(meta["pro"]))
-    parts.append('<div class="card"><table class="data"><thead><tr>'
-                 '<th class="l">节点</th><th>我</th><th>%s</th><th>差值（我 − 职业）</th>'
-                 "</tr></thead><tbody>%s</tbody></table>"
-                 % (h(meta["pro"]), _comparison_rows(comparison)))
-    parts.append('<div class="mini">差值：+ 表示我比职业选手晚。差值 ≤ 5 秒算接近，'
-                 "&gt; 20 秒标黄。</div></div>")
-
-    parts.append('<h2>二矿时间的逐局分布</h2>')
-    parts.append('<div class="card"><div class="grid2">')
-    parts.append('<div class="chart-card"><h3>二矿（分钟）</h3>'
-                 '<div class="desc">每局一个点，按时间排序；虚线是 %s</div>%s</div>'
-                 % (h(meta["pro"]), _ecdf_chart(mine_games, pro_games, "first_expand")))
-    parts.append('<div class="chart-card"><h3>第一气矿（分钟）</h3>'
-                 '<div class="desc">同上；节奏差异主要看这张</div>%s</div>'
-                 % _ecdf_chart(mine_games, pro_games, "first_gas"))
-    parts.append("</div></div>")
-
-    # ---------------- 分布
-    parts.append("<h2>签名与兵种构成</h2>")
-    parts.append('<div class="card"><div class="grid2">')
-    parts.append('<div><h3 class="mini">我的开局签名</h3>%s</div>'
-                 % _distribution_bars(comparison["mine"]["signatures"],
-                                      max(1, meta["mine_games"])))
-    parts.append('<div><h3 class="mini">我的兵种构成（style）</h3>%s</div>'
-                 % _distribution_bars(comparison["mine"]["styles"],
-                                      max(1, meta["mine_games"])))
-    parts.append('<div><h3 class="mini">%s 的开局签名</h3>%s</div>'
-                 % (h(meta["pro"]), _distribution_bars(comparison["pro"]["signatures"],
-                                                       max(1, meta["pro_games"]))))
-    parts.append('<div><h3 class="mini">%s 的兵种构成</h3>%s</div>'
-                 % (h(meta["pro"]), _distribution_bars(comparison["pro"]["styles"],
-                                                       max(1, meta["pro_games"]))))
-    parts.append("</div></div>")
+    # ---------------- 每个对位一节
+    parts.append(_matchup_sections(blocks, matchups, games, meta, max_seconds))
 
     # ---------------- 逐局明细
     parts.append("<h2>逐局明细（%d 局）</h2>" % len(games))
@@ -613,8 +671,12 @@ def render(summary):
                  "判定顺序（先命中先算，同一局永远得同一标签）：扩张前兵营数 → 3-rax / "
                  "2-rax-fast-expand / 1-rax-fast-expand → mech → 3-rax(5 分钟内) → "
                  "2-1-1 → 1-1-1 → unknown。<br>"
-                 "聚类轴 = <b>0–180 秒建造序列</b>：序列 → 归一化 Levenshtein 距离 → "
-                 "平均连接层次聚类；k 在 2~6 里按平均轮廓系数选（见上面那张表）。<br>"
+                 "聚类轴 = <b>0–180 秒建造序列</b>（三个对位各自独立）：序列 → 前缀感知的"
+                 "归一化编辑距离 → 平均连接层次聚类；k 在 2~6 里按平均轮廓系数选。<br>"
+                 "signature 词表人族通用（不区分对手种族），所以三个对位共用同一套名字，"
+                 "但各自的**分布**单独统计（见每节的柱子）；TvT 是镜像战，双方都套这套词表。<br>"
+                 "同对位对照：TvZ 只比职业 TvZ、TvP 只比职业 TvP、TvT 只比职业 TvT；"
+                 "同对位职业局 &lt; 10 局标「样本不足」。<br>"
                  "版本过滤：只收开局农民数 = %s 的局（8 农民版本的开局时间点整体前移，"
                  "混进来聚出的就是版本差）。<br>"
                  "每局的 steps 来自 <b>parsed.build_events</b>（loop/16 = 秒），"

@@ -248,8 +248,10 @@ def build_of(version):
         return 0
 
 
-def pick_candidates(player, rows, limit, min_build, seen_ids, seen_keys, race="any"):
-    """过滤出：5.x、目标选手种族对得上、还没在语料里的对局，按版本/日期从新到旧。"""
+def pick_candidates(player, rows, limit, min_build, seen_ids, seen_keys, race="any",
+                    opponent_race="any"):
+    """过滤出：5.x、目标选手种族对得上、对手种族对得上、还没在语料里的对局，
+    按版本/日期从新到旧。"""
     chosen = []
     for row in rows.values():
         if build_of(row["version"]) <= min_build:
@@ -263,6 +265,10 @@ def pick_candidates(player, rows, limit, min_build, seen_ids, seen_keys, race="a
             continue
         if len(row["players"]) != 2:
             continue
+        if opponent_race != "any":
+            others = [p for p in row["players"] if not name_matches(player, p["name"])]
+            if not others or others[0]["race"] != opponent_race:
+                continue
         if row["id"] in seen_ids:
             continue
         chosen.append(row)
@@ -277,7 +283,8 @@ def pick_candidates(player, rows, limit, min_build, seen_ids, seen_keys, race="a
 
 
 # --------------------------------------------------------------------------- 校验
-def verify_replay(path, player=None, min_build=MIN_BUILD, max_bytes=None, race="any"):
+def verify_replay(path, player=None, min_build=MIN_BUILD, max_bytes=None, race="any",
+                  opponent_race="any"):
     """解析校验；合格返回 (parsed, info)，不合格抛 Rejected。"""
     if not os.path.isfile(path):
         raise Rejected("missing-file")
@@ -318,6 +325,12 @@ def verify_replay(path, player=None, min_build=MIN_BUILD, max_bytes=None, race="
             raise Rejected("target-race-mismatch(want %s, got %s)"
                            % (RACE_NAMES.get(race, race),
                               ",".join(p.race for p in matched)))
+        if opponent_race != "any":
+            others = [p for p in players if not name_matches(player, p.name)]
+            if not others or others[0].race != opponent_race:
+                raise Rejected("opponent-race-mismatch(want %s, got %s)"
+                               % (RACE_NAMES.get(opponent_race, opponent_race),
+                                  ",".join(p.race for p in others)))
 
     info = {
         "build": build,
@@ -426,7 +439,8 @@ def cmd_list(args, players):
         print("searching %s ..." % player)
         rows = search_player(player, args.pages, (args.gap_min, args.gap_max), args.timeout)
         candidates = pick_candidates(player, rows, args.limit, args.min_build,
-                                     seen_ids, seen_keys, race=args.race)
+                                     seen_ids, seen_keys, race=args.race,
+                                     opponent_race=args.opponent_race)
         fresh = [row for row in candidates if row["id"] not in shown]
         for row in fresh:
             shown.add(row["id"])
@@ -490,9 +504,10 @@ def cmd_fetch(args, players):
         print("\n[%s] search -> %s" % (player, player_dir))
         rows = search_player(player, args.pages, (args.gap_min, args.gap_max), args.timeout)
         candidates = pick_candidates(player, rows, args.limit, args.min_build,
-                                     seen_ids, seen_keys, race=args.race)
-        print("  candidates=%d (limit=%d, race=%s)" % (len(candidates), args.limit,
-                                                      args.race))
+                                     seen_ids, seen_keys, race=args.race,
+                                     opponent_race=args.opponent_race)
+        print("  candidates=%d (limit=%d, race=%s, opp=%s)" % (
+            len(candidates), args.limit, args.race, args.opponent_race))
 
         new_entries = []
         stats = {"ok": 0, "rejected": 0, "http_fail": 0}
@@ -530,7 +545,8 @@ def cmd_fetch(args, players):
                 handle.write(raw)
             try:
                 _, info = verify_replay(path, player=player, min_build=args.min_build,
-                                        max_bytes=args.max_bytes, race=args.race)
+                                        max_bytes=args.max_bytes, race=args.race,
+                                        opponent_race=args.opponent_race)
                 key = (str(info["map"]).strip().lower(),
                        tuple(sorted((p.toon or norm_name(p.name)) for p in info["players"])),
                        round(info["duration"]))
@@ -625,7 +641,7 @@ def cmd_verify(args):
             total += 1
             try:
                 _, info = verify_replay(path, player=display, min_build=args.min_build,
-                                        race=args.race)
+                                        race=args.race, opponent_race=args.opponent_race)
             except Rejected as exc:
                 bad += 1
                 print("  BAD %-52s %s" % (fn[:52], exc))
@@ -678,6 +694,8 @@ def main(argv=None):
                                 "/".join(PROTOSS_PLAYERS)))
     parser.add_argument("--race", default="any", choices=["any", "T", "Z", "P"],
                         help="只抓目标选手是该种族的对局（T/Z/P，默认 any）")
+    parser.add_argument("--opponent-race", default="any", choices=["any", "T", "Z", "P"],
+                        help="只抓对手是该种族的对局，例如 Maru 的 TvP 用 --opponent-race P")
     parser.add_argument("--all-terran", action="store_true",
                         help="抓默认的六名职业人族")
     parser.add_argument("--limit", type=int, default=10, help="每个选手最多新增多少局")

@@ -66,6 +66,20 @@
 
 整局的 ``key_timings`` 保留不动，只用于"我 vs 职业"对照表和逐局明细。
 
+## 按对位分别处理（TvZ / TvP / TvT）
+
+TvT / TvZ / TvP 是三种不同的对抗，**不能混在一起聚类**（TvT 是镜像战，没有"防狗"的
+节奏；同一套开局序列在三个对位里的含义完全不同）。所以：
+
+* ``run()`` 默认一次跑三个对位（``--matchups TvZ,TvP,TvT``），每个对位**独立**抽样、
+  独立聚类、独立做版本过滤、只和**同对位**的职业局对照；
+* 输出顶层 ``matchups: {"TvZ": {...}, "TvP": {...}, "TvT": {...}}``，每个对位自带
+  clusters / comparison / 中位数 / version_filter / clustering；``clusters`` 与
+  ``comparison`` 保留为 TvZ 的兼容别名（dag 还读它们）；
+* 同对位职业样本 < :data:`MIN_PRO_GAMES`（10）局时标"样本不足"，只列数字不下结论；
+* 每个对位实际用了多少局、抽样上限多少，写在 ``meta.matchup_table`` /
+  ``meta.per_matchup_limit`` / ``sampling.per_matchup`` 里。
+
 ## 版本过滤：8 农民 vs 12 农民必须分开
 
 用户录像跨了多个版本：2026-07~10 那批是 **8 农民开局**，其余（2026-01~06、2026-10 部分、
@@ -103,10 +117,12 @@ bio 与 mech 都 ≥ 20%、或 air ≥ 20% 且另有 ≥ 20% 的地面伴随时�
 """
 
 import glob
+import html as _html
 import json
 import math
 import os
 import random
+import re
 import statistics
 
 from . import units as ud
@@ -125,6 +141,12 @@ PHASES = (
 )
 
 PHASE_ZH = {"opening": "开局", "early": "前期", "mid": "中期", "late": "后期"}
+
+#: 默认处理的三个对位。TvT 是镜像战，开局序列与 TvZ/TvP 完全不同，必须各自独立聚类。
+MATCHUPS = ("TvZ", "TvP", "TvT")
+
+#: 同对位职业样本少于这个数就标"样本不足"（不做结论，只列数字）。
+MIN_PRO_GAMES = 10
 
 TOWNHALL_BUILDS = frozenset(("CommandCenter", "Nexus", "Hatchery"))
 GAS_BUILDINGS = frozenset(("Refinery", "Assimilator", "Extractor"))
@@ -771,17 +793,74 @@ def _replay_day(parsed):
     return parsed.replay_time.astimezone().strftime("%Y-%m-%d")
 
 
+_PLAYER_TAG = re.compile(r"<[^>]*>")
+
+
+def _clean_player_name(name):
+    """把 replay 里的选手名洗干净：去掉 <sp/>、<RBLN> 这类战队标签和 HTML 实体。
+
+    用来做"职业选手样本构成"的展示（byun / ByuN / &lt;RBLN&gt;<sp/>ByuN 是同一个人）。
+    """
+    text = _html.unescape(name or "")
+    text = _PLAYER_TAG.sub("", text).strip()
+    return text or "?"
+
+
+def _player_tally(games):
+    """按清洗后的选手名统计局数（大小写合并，展示名统一首字母大写）。"""
+    tally = {}
+    for game_bo in games:
+        raw = _clean_player_name(game_bo["player"]["name"])
+        if raw.islower():
+            raw = raw[:1].upper() + raw[1:]
+        key = raw.casefold()
+        if key not in tally:
+            tally[key] = [raw, 0]
+        tally[key][1] += 1
+    return dict(sorted(((entry[0], entry[1]) for entry in tally.values()),
+                       key=lambda kv: (-kv[1], kv[0])))
+
+
+def _player_from_folder(parsed, path, player_filter=None):
+    """职业录像：用**文件夹名**认这个文件该分析谁（replays/pro/maru/x → Maru）。
+
+    不这么做的话，TvT 这种镜像战里 ``resolve_player`` 可能挑到对手（两个都是 T）。
+    文件夹名匹配不到玩家名时返回 None，调用方再退回通用规则。
+    """
+    folder = os.path.basename(os.path.dirname(os.path.abspath(path))).lower()
+    if not folder:
+        return None
+    for player in parsed.players:
+        name = (player.name or "").lower()
+        if name and (folder in name or name in folder):
+            if player_filter and player_filter.lower() not in name:
+                return None
+            return player
+    return None
+
+
+def _folder_skip(parsed, path, player_filter):
+    """指定了 ``--pro-player`` 时，文件夹不是该选手就跳过。"""
+    if not player_filter:
+        return False
+    folder = os.path.basename(os.path.dirname(os.path.abspath(path))).lower()
+    return player_filter.lower() not in folder
+
+
 def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
                 seed=20261108, with_moveout=True, progress=None,
                 ladder_only=False, min_duration=0.0,
                 require_local=False, exclude_ai=False,
-                since=None, until=None, start_workers_only=None):
+                since=None, until=None, start_workers_only=None,
+                folder_player=False, player_filter=None):
     """抽样解析一批 replay，返回 ``[GameBO]``。
 
     * ``paths`` 可以是目录或路径列表（递归找 .SC2Replay）
     * ``limit`` 最多返回多少局（匹配 matchup 的才算）
     * ``matchup`` 形如 ``"TvZ"``：本地玩家种族 + 对手种族都匹配才收
     * ``prefer_name`` 职业录像用来指定"我要分析谁"
+    * ``folder_player`` 职业录像：按**文件夹名**认选手（replays/pro/maru/x → Maru），
+      镜像战里不会认错人；``player_filter`` 可以进一步限定只看某个选手
     * ``ladder_only`` 只收暴雪官方地图上的局（过滤自建图/街机图）
     * ``min_duration`` 丢掉太短的对局（默认叫 120 秒的残局不算 BO）
     * ``require_local`` 只收"我在里面"的局（排除下载来的别人的录像）
@@ -801,7 +880,17 @@ def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
     random.Random(seed).shuffle(order)
 
     cheap_only = bool(matchup or require_local or exclude_ai or ladder_only or min_duration
-                      or since or until or start_workers_only is not None)
+                      or since or until or start_workers_only is not None
+                      or folder_player or player_filter)
+
+    def pick_player(current_parsed):
+        """职业录像优先按文件夹名认人，其次退回通用规则。"""
+        if folder_player:
+            found = _player_from_folder(current_parsed, path, player_filter)
+            if found is not None:
+                return found
+        return resolve_player(current_parsed, None, prefer_name)
+
     out = []
     errors = []
     stats = {"scanned": 0, "matched": 0, "skipped_filter": 0, "deep_parsed": 0,
@@ -826,7 +915,10 @@ def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
         if require_local and not any(p.is_local for p in parsed.players):
             stats["skipped_filter"] += 1
             continue
-        player = resolve_player(parsed, None, prefer_name)
+        if _folder_skip(parsed, path, player_filter):
+            stats["skipped_filter"] += 1
+            continue
+        player = pick_player(parsed)
         if player is None:
             errors.append({"file": os.path.basename(path), "error": "no player"})
             continue
@@ -865,8 +957,7 @@ def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
             except Exception as exc:
                 errors.append({"file": os.path.basename(path), "error": str(exc)[:160]})
                 continue
-            player = resolve_player(parsed, player if hasattr(player, "player_id") else None,
-                                    prefer_name)
+            player = pick_player(parsed)
             if player is None:
                 continue
             stats["deep_parsed"] += 1
@@ -894,6 +985,148 @@ def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
 
 mine_folder.last_errors = []
 mine_folder.last_stats = {}
+
+
+def mine_matchups(paths, matchups=MATCHUPS, limit=60, prefer_name=None, seed=20261108,
+                  with_moveout=True, progress=None, ladder_only=False, min_duration=0.0,
+                  require_local=False, exclude_ai=False,
+                  since=None, until=None, start_workers_only=None,
+                  folder_player=False, player_filter=None):
+    """**一次扫描、按对位分桶**的批量挖掘：返回 ``(bos_by_matchup, stats)``。
+
+    三个对位要分别抽样 60 局，如果各扫一遍目录就是三倍 I/O；这里只扫一遍：
+    先用 ``decode_events=False`` 便宜预筛，把候选按 matchup 分桶（每桶最多 ``limit`` 局），
+    再只对入桶的局做一次 ``decode_events=True`` 深解析。
+
+    过滤规则与 :func:`mine_folder` 完全一致（时长 / 官方图 / 本地玩家 / 人类对手 /
+    matchup / 开局农民数 / 日期），每个对位**单独**做一遍；被筛掉多少局、
+    每个对位实际用了多少局，都记在 ``stats["per_matchup"]`` 里。
+    ``folder_player`` / ``player_filter`` 同 :func:`mine_folder`（职业录像按文件夹认人）。
+    """
+    wanted = [m for m in matchups]
+    files = expand_paths(paths)
+    order = list(files)
+    random.Random(seed).shuffle(order)
+
+    def pick_player(current_parsed):
+        if folder_player:
+            found = _player_from_folder(current_parsed, path, player_filter)
+            if found is not None:
+                return found
+        return resolve_player(current_parsed, None, prefer_name)
+
+    buckets = {matchup: [] for matchup in wanted}
+    errors = []
+    stats = {
+        "scanned": 0, "skipped_filter": 0, "skipped_matchup": 0, "deep_parsed": 0,
+        "start_workers_seen": {}, "dates_seen": {}, "versions_seen": [],
+        "per_matchup": {matchup: {"matched": 0, "deep": 0, "skipped_workers": 0,
+                                  "skipped_date": 0, "start_workers_seen": {},
+                                  "dates_seen": {}, "versions_seen": []}
+                        for matchup in wanted},
+    }
+    for path in order:
+        if all(len(buckets[matchup]) >= limit for matchup in wanted):
+            break
+        stats["scanned"] += 1
+        try:
+            parsed = load_replay(path, decode_events=False)
+        except Exception as exc:
+            errors.append({"file": os.path.basename(path), "error": str(exc)[:160]})
+            continue
+        if min_duration and parsed.duration_seconds < min_duration:
+            stats["skipped_filter"] += 1
+            continue
+        if ladder_only and not parsed.is_ladder:
+            stats["skipped_filter"] += 1
+            continue
+        if require_local and not any(p.is_local for p in parsed.players):
+            stats["skipped_filter"] += 1
+            continue
+        if _folder_skip(parsed, path, player_filter):
+            stats["skipped_filter"] += 1
+            continue
+        player = pick_player(parsed)
+        if player is None:
+            errors.append({"file": os.path.basename(path), "error": "no player"})
+            continue
+        opp = opponent_of(parsed, player)
+        if exclude_ai and opp is not None and opp.is_ai:
+            stats["skipped_filter"] += 1
+            continue
+        matchup = "%sv%s" % (player.race, opp.race) if opp is not None else ""
+        if matchup not in buckets:
+            stats["skipped_matchup"] += 1
+            continue
+        if len(buckets[matchup]) >= limit:
+            continue                                   # 这个对位已经够了
+        bucket_stats = stats["per_matchup"][matchup]
+        workers = start_workers(parsed, player.player_id)
+        day = _replay_day(parsed)
+        for target in (stats, bucket_stats):
+            target["start_workers_seen"][workers] = target["start_workers_seen"].get(workers, 0) + 1
+            if day:
+                target["dates_seen"][day] = target["dates_seen"].get(day, 0) + 1
+        entry = {"file": os.path.basename(path), "date": day,
+                 "build": parsed.version.get("build"), "start_workers": workers,
+                 "matchup": matchup}
+        stats["versions_seen"].append(entry)
+        bucket_stats["versions_seen"].append(entry)
+        if start_workers_only is not None and workers != start_workers_only:
+            stats["skipped_filter"] += 1
+            bucket_stats["skipped_workers"] += 1
+            continue
+        if since and day and day < since:
+            stats["skipped_filter"] += 1
+            bucket_stats["skipped_date"] += 1
+            continue
+        if until and day and day > until:
+            stats["skipped_filter"] += 1
+            bucket_stats["skipped_date"] += 1
+            continue
+        buckets[matchup].append(path)
+
+    result = {matchup: [] for matchup in wanted}
+    for matchup in wanted:
+        for path in buckets[matchup]:
+            try:
+                parsed = load_replay(path, decode_events=True)
+            except Exception as exc:
+                errors.append({"file": os.path.basename(path), "error": str(exc)[:160]})
+                continue
+            player = pick_player(parsed)
+            if player is None:
+                continue
+            diag = {}
+            try:
+                game_bo = extract_bo(parsed, player, with_moveout=with_moveout, diag=diag)
+            except Exception as exc:
+                errors.append({"file": os.path.basename(path), "error": str(exc)[:160]})
+                continue
+            if diag.get("rejected_expands"):
+                stats.setdefault("rejected_expands", []).append({
+                    "file": os.path.basename(path),
+                    "build": parsed.version.get("build"),
+                    "matchup": matchup,
+                    "items": diag["rejected_expands"],
+                })
+            result[matchup].append(game_bo)
+            stats["per_matchup"][matchup]["matched"] += 1
+            stats["per_matchup"][matchup]["deep"] += 1
+            stats.setdefault("matched_dates", []).append(_replay_day(parsed))
+            stats["per_matchup"][matchup].setdefault("matched_dates", []).append(
+                _replay_day(parsed))
+            stats["deep_parsed"] += 1
+            if progress:
+                progress(sum(stats["per_matchup"][m]["matched"] for m in wanted),
+                         game_bo["game"]["file"])
+    mine_matchups.last_errors = errors
+    mine_matchups.last_stats = stats
+    return result, stats
+
+
+mine_matchups.last_errors = []
+mine_matchups.last_stats = {}
 
 
 # --------------------------------------------------------------------------- 开局特征 / 聚类
@@ -1249,35 +1482,74 @@ def cluster_openers(bos, k=None, k_range=(2, 6), info=None):
         return []
 
     sequences = [opening_sequence(bo) for bo in usable]
-    full_dist = _distance_matrix(sequences)
-    outlier_flags = _outlier_flags(full_dist)
-    inliers = [index for index, flag in enumerate(outlier_flags) if not flag]
-    outliers = [index for index, flag in enumerate(outlier_flags) if flag]
-    # 离群太多（>40%）说明这批数据本来就散，别硬切：全部当 inlier
-    if len(inliers) < 4 or len(outliers) > len(usable) * 0.4:
-        inliers = list(range(len(usable)))
-        outliers = []
-    sub_dist = [[full_dist[i][j] for j in inliers] for i in inliers]
-
-    if k is None:
-        chosen_k, scores = choose_k(sub_dist, k_range[0],
-                                    min(k_range[1], max(2, len(inliers) - 1)))
+    # 极端情况：绝大多数局的开场序列完全一样（例如 TvP 里 55/56 局都是 rax-gas-cc）。
+    # 这时 k-means/层切都没有意义，直接报"一类主导 + 其余少数变体"，并说明原因。
+    tally = {}
+    for sequence in sequences:
+        key = tuple(sequence)
+        tally[key] = tally.get(key, 0) + 1
+    dominant_sequence, dominant_count = max(tally.items(), key=lambda kv: kv[1])
+    dominant_mode = False
+    if len(usable) >= 8 and dominant_count / float(len(usable)) >= 0.9:
+        dominant_mode = True
+        info_extra = {
+            "k": 1,
+            "scores": [],
+            "note": ("该对位 %d/%d 局的开场序列完全一致（%s），没有可分的第二类；"
+                     "其余 %d 局是少数变体，单独归到「其他」。" % (
+                         dominant_count, len(usable),
+                         " → ".join(TOKEN_ZH.get(t, t) for t in dominant_sequence),
+                         len(usable) - dominant_count)),
+        }
+        if info is not None:
+            info.update(info_extra)
+            info["race"] = dominant
+            info["outliers"] = [usable[index]["game"]["file"]
+                                for index, sequence in enumerate(sequences)
+                                if tuple(sequence) != dominant_sequence]
+            info["criterion"] = info_extra["note"]
+        labels = [0 if tuple(sequence) == dominant_sequence else 1
+                  for sequence in sequences]
+        outliers = [index for index, sequence in enumerate(sequences)
+                    if tuple(sequence) != dominant_sequence]
+        chosen_k = 1
     else:
-        chosen_k, scores = k, []
-    if info is not None:
-        info["k"] = chosen_k
-        info["scores"] = scores
-        info["race"] = dominant
-        info["outliers"] = [usable[index]["game"]["file"] for index in outliers]
-        info["criterion"] = (
-            "先剔除离群序列（最近邻距离 > %.2f），再按平均轮廓系数选 k；"
-            "会产生单例的方案淘汰，轮廓系数差距 0.03 以内取最小的 k" % OUTLIER_DISTANCE)
-    labels = [chosen_k] * len(usable)                 # 离群局统一标成"最后那个类"
-    for position, index in enumerate(inliers):
-        labels[index] = None
-    if inliers:
-        for position, label in enumerate(_agglomerate(sub_dist, chosen_k)):
-            labels[inliers[position]] = label
+        full_dist = _distance_matrix(sequences)
+        outlier_flags = _outlier_flags(full_dist)
+        inliers = [index for index, flag in enumerate(outlier_flags) if not flag]
+        outliers = [index for index, flag in enumerate(outlier_flags) if flag]
+        # 离群太多（>40%）说明这批数据本来就散，别硬切：全部当 inlier
+        if len(inliers) < 4 or len(outliers) > len(usable) * 0.4:
+            inliers = list(range(len(usable)))
+            outliers = []
+        sub_dist = [[full_dist[i][j] for j in inliers] for i in inliers]
+
+        if k is None:
+            chosen_k, scores = choose_k(sub_dist, k_range[0],
+                                        min(k_range[1], max(2, len(inliers) - 1)))
+        else:
+            chosen_k, scores = k, []
+        if info is not None:
+            info["k"] = chosen_k
+            info["scores"] = scores
+            info["race"] = dominant
+            info["outliers"] = [usable[index]["game"]["file"] for index in outliers]
+            info["criterion"] = (
+                "先剔除离群序列（最近邻距离 > %.2f），再按平均轮廓系数选 k；"
+                "会产生单例的方案淘汰，轮廓系数差距 0.03 以内取最小的 k" % OUTLIER_DISTANCE)
+            if k is None and not scores:
+                info["note"] = (
+                    "该对位开场序列高度集中：k=2~%d 的每一种切法都会产生只有 1 局的碎类"
+                    "（说明除了主导开局之外只剩个别变体），所以 k 没有区分度；"
+                    "下面按 k=%d 展示「主导开局 + 少数变体」。" % (
+                        min(k_range[1], max(2, len(inliers) - 1)), chosen_k))
+        labels = [chosen_k] * len(usable)             # 离群局统一标成"最后那个类"
+        for position, index in enumerate(inliers):
+            labels[index] = None
+        if inliers:
+            for position, label in enumerate(_agglomerate(sub_dist, chosen_k)):
+                labels[inliers[position]] = label
+        outliers = outliers
 
     clusters = []
     for label in sorted(set(labels)):
@@ -1290,7 +1562,8 @@ def cluster_openers(bos, k=None, k_range=(2, 6), info=None):
         clusters.append({
             "id": label,
             "key": "other" if is_other else ("-".join(typical[:6]) or ("cluster-%d" % (label + 1))),
-            "name": ("其他（打法不典型，%d 局）" % len(members) if is_other
+            "name": (("其他（少数变体，%d 局）" if dominant_mode
+                      else "其他（打法不典型，%d 局）") % len(members) if is_other
                      else (_sequence_label(typical) or ("开局 %d" % (label + 1)))),
             "typical_sequence": typical,
             "sequence_medians": _sequence_medians(members, typical),
@@ -1373,11 +1646,16 @@ def _unknown_share(bos, field):
     return round(hits / float(len(bos)), 3)
 
 
-def _version_table(stats, group="mine"):
-    """把扫到的 (月份, 开局农民数, build) 组合汇总成表：版本分布一眼能看出来。"""
-    seen = ((stats or {}).get(group) or {}).get("versions_seen") or []
+def _version_table(group_stats, matchup=None):
+    """把扫到的 (月份, 开局农民数, build) 组合汇总成表：版本分布一眼能看出来。
+
+    ``group_stats`` 是单个对位（或全局）的统计 dict；给了 ``matchup`` 就只统计该对位。
+    """
+    seen = (group_stats or {}).get("versions_seen") or []
     table = {}
     for entry in seen:
+        if matchup and entry.get("matchup") != matchup:
+            continue
         month = (entry.get("date") or "")[:7] or "?"
         key = (month, entry.get("start_workers"), entry.get("build"))
         table[key] = table.get(key, 0) + 1
@@ -1424,12 +1702,12 @@ def _pace_dimension(mine, clusters):
     }
 
 
-def _version_note(stats):
-    """版本过滤 caveat：写明 8/12 农民两个版本、排除了多少局、为什么必须排除。"""
-    mine_stats = (stats or {}).get("mine") or {}
-    seen = mine_stats.get("start_workers_seen") or {}
-    skipped = mine_stats.get("skipped_workers", 0)
-    table = _version_table(stats, "mine")
+def _version_note(group_stats, matchup, start_workers=12):
+    """单个对位的版本过滤 caveat：8/12 农民两个版本、排除多少局、为什么必须排除。"""
+    group_stats = group_stats or {}
+    seen = group_stats.get("start_workers_seen") or {}
+    skipped = group_stats.get("skipped_workers", 0)
+    table = _version_table(group_stats, None)
     rows = {}
     for entry in table:
         month = entry["month"]
@@ -1444,44 +1722,64 @@ def _version_note(stats):
             "、".join(sorted(info["builds"]))))
     detail = "；".join(lines) if lines else "-"
     return (
-        "版本过滤（硬条件：开局农民数 = %s）：扫到的局里开局农民数分布 %s；本次因此排除 %d 局。"
-        "实测版本表：%s。混进 8 农民版本会让开局时间点整体前移（同一个 build 在 8 农民版本上"
-        "会早 20~30 秒），聚出来的类就是版本差而不是打法差——所以 8 农民版本必须整批排除。"
+        "%s 版本过滤（硬条件：开局农民数 = %s）：该对位扫到 %s；因此排除 %d 局。"
+        "版本表：%s。混进 8 农民版本会让开局时间点整体前移（同一个 build 会早 20~30 秒），"
+        "聚出来的类就是版本差而不是打法差——所以 8 农民版本整批排除。"
         % (
-            (mine_stats.get("start_workers_filter") or 12),
+            matchup, start_workers,
             "、".join("%s 农民 %d 局" % (key, value) for key, value in
-                     sorted(seen.items(), key=lambda kv: str(kv[0]))),
+                     sorted(seen.items(), key=lambda kv: str(kv[0]))) or "-",
             skipped, detail))
 
 
-def _caveats(clusters, mine, pro, matchup, rejects=None, stats=None, k_info=None):
-    """报告里必须说清楚的话：哪些结论是数据支撑的，哪些只是"看起来像"。"""
+def _caveats_multi(blocks, pro_all, pro_label, stats=None, rejects=None):
+    """报告里必须说清楚的话：每个对位分别写，最后再写跨对位/数据质量注意事项。"""
     notes = []
-    if stats:
-        notes.append(_version_note(stats))
-    for cluster in clusters:
-        builds = cluster.get("builds") or {}
-        total = sum(builds.values()) or 1
-        top_build, top_count = max(builds.items(), key=lambda kv: kv[1])
-        if top_count / float(total) >= 0.9 and total >= 5:
+    start_workers = ((stats or {}).get("mine") or {}).get("start_workers_filter") or 12
+    per_matchup = ((stats or {}).get("mine") or {}).get("per_matchup") or {}
+    for matchup in blocks:
+        block = blocks[matchup]
+        if block["mine_games"]:
+            notes.append(_version_note(per_matchup.get(matchup), matchup, start_workers))
+        if not block["pro_sufficient"]:
             notes.append(
-                "%s：%d/%d 局来自同一个 replay 补丁 %s。这一类的差异更可能是"
-                "版本/赛季差异，而不是两套不同的打法——看结论时请把这点考虑进去。"
-                % (cluster["name"], top_count, total, top_build))
-    if mine:
-        sig_share = {}
-        for bo in mine:
-            sig_share[bo["signature"]] = sig_share.get(bo["signature"], 0) + 1
-        top_sig, top_n = max(sig_share.items(), key=lambda kv: kv[1])
-        if top_n / float(len(mine)) >= 0.8:
+                "%s：%s 的同对位样本只有 %d 局（< %d 局），标为样本不足——"
+                "对照表只做参考，不下结论。" % (
+                    matchup, pro_label, block["pro_games"], MIN_PRO_GAMES))
+        elif block["pro_games"] == MIN_PRO_GAMES:
             notes.append(
-                "%d/%d 局（%.0f%%）都是同一套开局签名 %s。" % (
-                    top_n, len(mine), 100.0 * top_n / len(mine), top_sig))
-    if k_info:
+                "%s：%s 的同对位样本刚好达到阈值（%d 局），能出差值但样本偏薄，"
+                "看趋势别看小数点。" % (matchup, pro_label, block["pro_games"]))
+        for cluster in block["clusters"]:
+            builds = cluster.get("builds") or {}
+            total = sum(builds.values()) or 1
+            top_build, top_count = max(builds.items(), key=lambda kv: kv[1])
+            if top_count / float(total) >= 0.9 and total >= 5:
+                notes.append(
+                    "%s / %s：%d/%d 局来自同一个 replay 补丁 %s，这一类的差异可能更多是"
+                    "版本/赛季差异。" % (matchup, cluster["name"], top_count, total,
+                                   top_build))
+    if "TvT" in blocks and blocks["TvT"]["mine_games"]:
         notes.append(
-            "聚类口径：按 0~180 秒的建造序列（归一化编辑距离 + 平均连接层次聚类），"
-            "k 在 %d~%d 里按平均轮廓系数选，本次 k=%d。" % (
-                k_info.get("k_min", 2), k_info.get("k_max", 6), k_info.get("k", 0)))
+            "TvT 是镜像战：双方同种族，同一局的两个玩家都是人族，本报告的签名/序列"
+            "只描述我方那一边；而且 TvT 没有「防狗」的节奏，开局序列（如先兵营速二矿、"
+            "1-1-1）与 TvZ/TvP 不可互换，所以三个对位各自独立聚类、不看彼此的分组。")
+    notes.append(
+        "聚类口径（三个对位各自独立）：按 0~180 秒的建造序列（前缀感知的归一化编辑距离 + "
+        "平均连接层次聚类），先剔除离群序列，再在 k=2~%d 里按平均轮廓系数选 k。"
+        % 6)
+    if pro_all:
+        pieces = []
+        for matchup in blocks:
+            block = blocks[matchup]
+            players = " / ".join("%s %d" % (name, count)
+                                 for name, count in (block.get("pro_players") or {}).items())
+            pieces.append("%s %d 局%s" % (matchup, block["pro_games"],
+                                          "（%s）" % players if players else ""))
+        notes.append(
+            "同对位职业样本（%s，合并所有 Terran 选手）：%s。对照只用同一对位那一档，"
+            "不拿别的对位凑数；如果只想要单个选手，用 --pro-player 限定。" % (
+                pro_label, "；".join(pieces)))
 
     rejects = rejects or {}
     games_with_rejects = [item for group in ("mine", "pro")
@@ -1490,124 +1788,185 @@ def _caveats(clusters, mine, pro, matchup, rejects=None, stats=None, k_info=None
         items = [item for game in games_with_rejects for item in game["items"]]
         early = [item for item in items if item["reason"] == "too_early"]
         span = [item for item in items if item["reason"] == "span_mismatch"]
-        builds = sorted({str(game.get("build")) for game in games_with_rejects})
+        matchups = sorted({str(game.get("matchup") or "?") for game in games_with_rejects})
         notes.append(
             "数据噪音：%d 条扩张记录被丢弃（%d 条时间 < %d 秒，%d 条 done-start 与真实"
-            "建造时长不符，涉及 %d 局，replay 补丁 %s）。这类错配集中在 ESL/GameHeart "
-            "老 replay：overlay 单位 + tag 回收会让 tracker 事件挂到别的单位上，"
-            "出现 81~84 秒就下二矿这种物理不可能的记录。这些局的首个扩张已顺延到下一个"
-            "可信候选（所以它们看起来开矿偏晚，签名也可能跟着变），不要当成真实打法。"
+            "建造时长不符，涉及 %d 局、对位 %s）。集中在 ESL/GameHeart 老 replay："
+            "overlay 单位 + tag 回收会让 tracker 事件挂到别的单位上，出现 81~84 秒就下"
+            "二矿这种物理不可能的记录。这些局的首个扩张已顺延到下一个可信候选。"
             % (len(items), len(early), int(EXPAND_MIN_SECONDS), len(span),
-               len(games_with_rejects), "、".join(builds)))
-    if pro:
-        notes.append(
-            "职业选手样本只有 %d 局（其中 %s 对局 %d 局），中位数波动会比较大。" % (
-                len(pro), matchup,
-                len([bo for bo in pro if bo["game"]["matchup"] == matchup])))
+               len(games_with_rejects), "、".join(matchups)))
     return notes
+
+
+def _matchup_block(matchup, mine, pro_all, mine_label, pro_label, k_range,
+                   group_stats, start_workers):
+    """单个对位的全部分析：聚类 + 同对位对照 + 中位数 + 版本过滤。"""
+    pro = [game_bo for game_bo in pro_all if game_bo["game"]["matchup"] == matchup]
+    info = {}
+    clusters = cluster_openers(mine, k=None, k_range=k_range, info=info) if mine else []
+    sufficient = len(pro) >= MIN_PRO_GAMES
+    comparison = compare_profiles(mine, pro, mine_label, pro_label) if mine else None
+    clustering = {
+        "axis": "opening-sequence-0-180s",
+        "criterion": info.get("criterion", ""),
+        "note": info.get("note"),
+        "k_min": k_range[0], "k_max": k_range[1],
+        "k": info.get("k"), "scores": info.get("scores") or [],
+        "outliers": info.get("outliers") or [],
+    }
+    version = {
+        "start_workers": start_workers,
+        "dates_used": _date_span(group_stats),
+        "excluded_by_workers": (group_stats or {}).get("skipped_workers", 0),
+        "excluded_by_date": (group_stats or {}).get("skipped_date", 0),
+        "version_table": _version_table(group_stats),
+    }
+    pro_players = _player_tally(pro)
+    pro_scope = ("合并 %d 名 Terran 选手：%s" % (
+        len(pro_players),
+        " / ".join("%s %d 局" % (name, count) for name, count in pro_players.items())))
+    return {
+        "matchup": matchup,
+        "player_race": matchup[0] if matchup else "",
+        "mine_games": len(mine),
+        "pro_games": len(pro),
+        "pro_sufficient": sufficient,
+        "min_pro_games": MIN_PRO_GAMES,
+        "pro_players": pro_players,
+        "pro_scope": pro_scope,
+        "clusters": clusters,
+        "comparison": comparison,
+        "clustering": clustering,
+        "median": (comparison or {}).get("mine", {}).get("median"),
+        "pro_median": (comparison or {}).get("pro", {}).get("median"),
+        "signatures": (comparison or {}).get("mine", {}).get("signatures") or {},
+        "styles": (comparison or {}).get("mine", {}).get("styles") or {},
+        "pro_signatures": (comparison or {}).get("pro", {}).get("signatures") or {},
+        "pro_styles": (comparison or {}).get("pro", {}).get("styles") or {},
+        "unknown": {
+            "mine_signature_share": _unknown_share(mine, "signature"),
+            "mine_style_share": _unknown_share(mine, "style"),
+            "pro_signature_share": _unknown_share(pro, "signature"),
+            "pro_style_share": _unknown_share(pro, "style"),
+        },
+        "pace_dimension": _pace_dimension(mine, clusters),
+        "version_filter": version,
+    }
+
+
+def build_summary_multi(mine_by_matchup, pro_all, mine_label="我", pro_label="Maru",
+                        matchups=MATCHUPS, stats=None, k_range=(2, 6)):
+    """按对位分别分析，产出 reports/bo.json 的完整结构。
+
+    顶层：meta / games / matchups{对位: {...}} / clusters / comparison（TvZ 兼容别名）
+    / caveats / sampling / errors。
+    """
+    matchups = [matchup for matchup in matchups]
+    start_workers = ((stats or {}).get("mine") or {}).get("start_workers_filter") or 12
+    per_matchup_stats = ((stats or {}).get("mine") or {}).get("per_matchup") or {}
+    blocks = {}
+    all_mine = []
+    for matchup in matchups:
+        mine = list(mine_by_matchup.get(matchup) or [])
+        all_mine.extend(mine)
+        blocks[matchup] = _matchup_block(
+            matchup, mine, pro_all, mine_label, pro_label, k_range,
+            per_matchup_stats.get(matchup), start_workers)
+
+    primary = "TvZ" if "TvZ" in blocks else matchups[0]
+    primary_block = blocks[primary]
+    matchup_table = [{
+        "matchup": matchup,
+        "mine_games": blocks[matchup]["mine_games"],
+        "pro_games": blocks[matchup]["pro_games"],
+        "pro_sufficient": blocks[matchup]["pro_sufficient"],
+        "k": blocks[matchup]["clustering"].get("k"),
+        "clusters": len(blocks[matchup]["clusters"]),
+        "top_cluster": (blocks[matchup]["clusters"][0]["name"]
+                        if blocks[matchup]["clusters"] else None),
+        "pro_players": blocks[matchup].get("pro_players") or {},
+        "pro_scope": blocks[matchup].get("pro_scope"),
+        "dates_used": (blocks[matchup]["version_filter"] or {}).get("dates_used"),
+    } for matchup in matchups]
+    meta = {
+        "matchup": primary,
+        "matchups": matchups,
+        "primary_matchup": primary,
+        "per_matchup_limit": ((stats or {}).get("mine") or {}).get("limit"),
+        "matchup_table": matchup_table,
+        "mine": mine_label,
+        "pro": pro_label,
+        "generated": _today(),
+        "games": len(all_mine) + len(pro_all),
+        "mine_games": len(all_mine),
+        "pro_games": len(pro_all),
+        "pro_matchup_games": len([game_bo for game_bo in pro_all
+                                  if game_bo["game"]["matchup"] == primary]),
+        "signature_legend": {
+            "1-rax-fast-expand": "单兵营速二矿（重工/星港都在二矿之后）",
+            "2-rax-fast-expand": "两兵营速二矿",
+            "2-1-1": "两兵营 + 重工 + 星港（收气 timing）",
+            "1-1-1": "单兵营 + 重工 + 星港",
+            "3-rax": "三兵营压制，开矿晚",
+            "mech": "重工优先（机械流）",
+            "hatch-first": "虫族：先开二矿再补池",
+            "pool-first": "虫族：池子先于扩张",
+            "greedy-3hatch": "虫族：6 分钟内三基地（贪婪开）",
+            "nexus-first": "星灵：先二矿再兵营",
+            "gateway-expand": "星灵：先兵营再开矿（1 兵营开矿）",
+            "2gate-pressure": "星灵：双兵营压制、不开矿",
+            "proxy": "星灵：兵营贴脸（proxy）",
+            "unknown": "没匹配到已知开局（诚实标注，不硬塞）",
+        },
+        "style_legend": {
+            "bio": "生化（陆战队/劫掠者/死神）",
+            "mech": "机械（恶火/坦克/雷神/寡妇雷）",
+            "air": "空军（维京/女妖/渡鸦/解放者/大和）",
+            "mixed": "混合",
+            "unknown": "判不出来",
+        },
+        "phase_table": [{"phase": p, "t0": s, "t1": e} for p, s, e in PHASES],
+        # 兼容字段：以前 dag/汇总页读的是 meta.unknown / meta.clustering / meta.pace_dimension
+        "unknown": primary_block["unknown"],
+        "clustering": primary_block["clustering"],
+        "pace_dimension": primary_block["pace_dimension"],
+        "version_filter": primary_block["version_filter"],
+        "expand_filter": {
+            "min_seconds": EXPAND_MIN_SECONDS,
+            "span_tolerance": EXPAND_SPAN_TOLERANCE,
+            "expected_build_seconds": dict(EXPAND_BUILD_SECONDS),
+            "rejected": sum(len(entry["items"]) for entry in
+                            ((stats or {}).get("expand_rejects", {}) or {})
+                            .get("mine", []) +
+                            ((stats or {}).get("expand_rejects", {}) or {})
+                            .get("pro", [])),
+        },
+    }
+    return {
+        "meta": meta,
+        "games": all_mine + pro_all,
+        "matchups": blocks,
+        # TvZ 兼容别名（dag 还读这两个键）
+        "clusters": {"mine": primary_block["clusters"], "pro": []},
+        "comparison": primary_block["comparison"],
+        "caveats": _caveats_multi(blocks, pro_all, pro_label, stats,
+                                  (stats or {}).get("expand_rejects")),
+        "sampling": {
+            "mine": (stats or {}).get("mine") or {"matched": len(all_mine)},
+            "pro": (stats or {}).get("pro") or {"matched": len(pro_all)},
+            "per_matchup": per_matchup_stats,
+            "expand_rejects": (stats or {}).get("expand_rejects") or {"mine": [], "pro": []},
+        },
+        "errors": ((stats or {}).get("errors") or mine_folder.last_errors),
+    }
 
 
 def build_summary(mine, pro_all, mine_label="我", pro_label="Maru", matchup="TvZ",
                   stats=None, k_range=(2, 6)):
-    """把所有分析结果整理成一个 dict（就是 reports/bo.json 的内容）。
-
-    ``pro_all`` 是这个职业选手的全部录像；聚类/对照只用其中 matchup 匹配的局
-    （Maru 的 TvP 不会污染 TvZ 开局聚类），但 ``games`` 里全都保留。
-    聚类轴 = 0~180s 建造序列（见 :func:`cluster_openers`），k 自动选 2~6。
-    """
-    pro = [bo for bo in pro_all if not matchup or bo["game"]["matchup"] == matchup]
-    mine_info, pro_info = {}, {}
-    clusters = cluster_openers(mine, k=None, k_range=k_range, info=mine_info)
-    pro_clusters = (cluster_openers(pro, k=None, k_range=k_range, info=pro_info)
-                    if len(pro) >= 3 else [])
-    k_info = {
-        "axis": "opening-sequence-0-180s",
-        "criterion": mine_info.get("criterion", ""),
-        "k_min": k_range[0],
-        "k_max": k_range[1],
-        "k": mine_info.get("k"),
-        "scores": mine_info.get("scores") or [],
-        "outliers": mine_info.get("outliers") or [],
-        "pro_k": pro_info.get("k"),
-        "pro_scores": pro_info.get("scores") or [],
-    }
-    return {
-        "meta": {
-            "matchup": matchup,
-            "mine": mine_label,
-            "pro": pro_label,
-            "generated": _today(),
-            "games": len(mine) + len(pro_all),
-            "mine_games": len(mine),
-            "pro_games": len(pro_all),
-            "pro_matchup_games": len(pro),
-            "signature_legend": {
-                "1-rax-fast-expand": "单兵营速二矿（重工/星港都在二矿之后）",
-                "2-rax-fast-expand": "两兵营速二矿",
-                "2-1-1": "两兵营 + 重工 + 星港（收气 timing）",
-                "1-1-1": "单兵营 + 重工 + 星港",
-                "3-rax": "三兵营压制，开矿晚",
-                "mech": "重工优先（机械流）",
-                "hatch-first": "虫族：先开二矿再补池",
-                "pool-first": "虫族：池子先于扩张",
-                "greedy-3hatch": "虫族：6 分钟内三基地（贪婪开）",
-                "nexus-first": "星灵：先二矿再兵营",
-                "gateway-expand": "星灵：先兵营再开矿（1 兵营开矿）",
-                "2gate-pressure": "星灵：双兵营压制、不开矿",
-                "proxy": "星灵：兵营贴脸（proxy）",
-                "unknown": "没匹配到已知开局（诚实标注，不硬塞）",
-            },
-            "style_legend": {
-                "bio": "生化（陆战队/劫掠者/死神）",
-                "mech": "机械（恶火/坦克/雷神/寡妇雷）",
-                "air": "空军（维京/女妖/渡鸦/解放者/大和）",
-                "mixed": "混合",
-                "unknown": "判不出来",
-            },
-            "phase_table": [{"phase": p, "t0": s, "t1": e} for p, s, e in PHASES],
-            "unknown": {
-                "mine_signature_share": _unknown_share(mine, "signature"),
-                "mine_style_share": _unknown_share(mine, "style"),
-                "pro_signature_share": _unknown_share(pro, "signature"),
-                "pro_style_share": _unknown_share(pro, "style"),
-            },
-            "expand_filter": {
-                "min_seconds": EXPAND_MIN_SECONDS,
-                "span_tolerance": EXPAND_SPAN_TOLERANCE,
-                "expected_build_seconds": dict(EXPAND_BUILD_SECONDS),
-                "rejected": sum(len(entry["items"]) for entry in
-                                ((stats or {}).get("expand_rejects", {}) or {})
-                                .get("mine", []) +
-                                ((stats or {}).get("expand_rejects", {}) or {})
-                                .get("pro", [])),
-            },
-            "clustering": k_info,
-            "pace_dimension": _pace_dimension(mine, clusters),
-            "version_filter": {
-                "start_workers": ((stats or {}).get("mine") or {}).get("start_workers_filter"),
-                "since": ((stats or {}).get("mine") or {}).get("since"),
-                "until": ((stats or {}).get("mine") or {}).get("until"),
-                "dates_used": _date_span((stats or {}).get("mine")),
-                "excluded_by_workers": ((stats or {}).get("mine") or {}).get("skipped_workers", 0),
-                "excluded_by_date": ((stats or {}).get("mine") or {}).get("skipped_date", 0),
-                "version_table": _version_table(stats, "mine"),
-            },
-        },
-        "games": mine + pro_all,
-        "clusters": {
-            "mine": clusters,
-            "pro": pro_clusters,
-        },
-        "comparison": compare_profiles(mine, pro, mine_label, pro_label),
-        "caveats": _caveats(clusters, mine, pro, matchup,
-                            (stats or {}).get("expand_rejects"), stats, k_info),
-        "sampling": {
-            "mine": (stats or {}).get("mine") or {"matched": len(mine)},
-            "pro": (stats or {}).get("pro") or {"matched": len(pro_all)},
-            "expand_rejects": (stats or {}).get("expand_rejects") or {"mine": [], "pro": []},
-        },
-        "errors": mine_folder.last_errors,
-    }
+    """单对位兼容入口（老调用方式）：等价于 ``build_summary_multi({matchup: mine}, ...)``。"""
+    return build_summary_multi({matchup: mine}, pro_all, mine_label, pro_label,
+                               (matchup,), stats, k_range)
 
 
 def _date_span(group_stats):
@@ -1638,40 +1997,49 @@ def write_json(summary, output_path):
 # --------------------------------------------------------------------------- CLI
 
 MINE_DIR = r"C:\Users\sun\Documents\StarCraft II\Accounts\556922532\5-S2-1-8354391\Replays\Multiplayer"
+#: 职业语料根目录（replays/pro/<选手名>/…）。**合并所有 Terran 选手**做同对位对照，
+#: 不只是 Maru——按文件夹名认人，镜像战里也不会认错。
 PRO_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                       "replays", "pro", "maru")
+                       "replays", "pro")
 
 
 def run(mine_dir=MINE_DIR, pro_dir=PRO_DIR, limit=60, pro_limit=30,
-        matchup="TvZ", seed=20261108, progress=None,
-        since=None, until=None, start_workers_only=12, k_range=(2, 6)):
-    """挖矿 + 聚类 + 对照，返回 summary dict。
+        matchups=MATCHUPS, seed=20261108, progress=None,
+        since=None, until=None, start_workers_only=12, k_range=(2, 6),
+        pro_player=None):
+    """挖矿 + 按对位聚类 + 对照，返回 summary dict。
 
-    ``pro_limit`` 默认 30：职业录像文件夹现在有 24 局，得放够才不会抽样截断。
-    ``start_workers_only`` 默认 12 = 只收 12 农民版本（8 农民版本的开局时间点整体前移，
-    混在一起聚出来的是版本差，先整批排除）；``since`` / ``until`` 是按 replay 日期的
-    可选区间（默认不设，报告里会写明实际用了哪段时间）。
+    ``matchups`` 默认三个对位都跑（``limit`` 是**每个对位**的抽样局数）。
+    ``pro_limit`` 是**每个对位**的职业局上限；职业语料默认合并 ``replays/pro/`` 下
+    所有 Terran 选手（``pro_player="maru"`` 可只看一个人）。
+    ``start_workers_only`` 默认 12 = 只收 12 农民版本；``since`` / ``until`` 是按
+    replay 日期的可选区间（默认不设，报告里会写明每个对位实际用了哪段时间）。
     """
-    mine = mine_folder(mine_dir, limit=limit, matchup=matchup, seed=seed,
-                       progress=progress, ladder_only=True, min_duration=120.0,
-                       require_local=True, exclude_ai=True,
-                       since=since, until=until, start_workers_only=start_workers_only)
-    mine_stats = dict(mine_folder.last_stats)
+    mine_by_matchup, mine_stats = mine_matchups(
+        mine_dir, matchups=matchups, limit=limit, seed=seed, progress=progress,
+        ladder_only=True, min_duration=120.0, require_local=True, exclude_ai=True,
+        since=since, until=until, start_workers_only=start_workers_only)
     mine_stats["start_workers_filter"] = start_workers_only
     mine_stats["since"] = since
     mine_stats["until"] = until
+    mine_stats["limit"] = limit
     mine_rejects = mine_stats.pop("rejected_expands", [])
-    # 职业选手的录像全收（TvP/TvT 也留着），聚类和对照再按 matchup 过滤
-    pro = mine_folder(pro_dir, limit=pro_limit, matchup=None, prefer_name="maru",
-                      seed=seed, progress=progress, start_workers_only=start_workers_only)
-    pro_stats = dict(mine_folder.last_stats)
+    # 职业语料：合并所有 Terran 选手，每个对位最多 pro_limit 局
+    pro_by_matchup, pro_stats = mine_matchups(
+        pro_dir, matchups=matchups, limit=pro_limit, seed=seed, progress=progress,
+        folder_player=True, player_filter=pro_player,
+        start_workers_only=start_workers_only)
+    pro = [game_bo for matchup in matchups for game_bo in pro_by_matchup.get(matchup, [])]
     pro_stats["start_workers_filter"] = start_workers_only
+    pro_stats["pro_player"] = pro_player
     pro_rejects = pro_stats.pop("rejected_expands", [])
-    return build_summary(mine, pro, "我", "Maru", matchup, stats={
-        "mine": mine_stats,
-        "pro": pro_stats,
-        "expand_rejects": {"mine": mine_rejects, "pro": pro_rejects},
-    }, k_range=k_range)
+    return build_summary_multi(mine_by_matchup, pro, "我", "Terran 职业合并", tuple(matchups),
+                               stats={
+                                   "mine": mine_stats,
+                                   "pro": pro_stats,
+                                   "expand_rejects": {"mine": mine_rejects,
+                                                      "pro": pro_rejects},
+                               }, k_range=k_range)
 
 
 def main(argv=None):
@@ -1682,10 +2050,17 @@ def main(argv=None):
     parser = argparse.ArgumentParser(prog="python -m replay_analyzer.bo",
                                      description="BO 提取 + 开局聚类 + 报告")
     parser.add_argument("--mine", default=MINE_DIR, help="我的录像目录")
-    parser.add_argument("--pro", default=PRO_DIR, help="职业选手录像目录")
-    parser.add_argument("--limit", type=int, default=60, help="我的录像抽样局数")
-    parser.add_argument("--pro-limit", type=int, default=30, help="职业录像局数")
-    parser.add_argument("--matchup", default="TvZ")
+    parser.add_argument("--pro", default=PRO_DIR,
+                        help="职业录像根目录（默认 replays/pro，合并所有 Terran 选手）")
+    parser.add_argument("--pro-player", default=None,
+                        help="只和某一位职业选手对比（例如 maru；默认合并所有 Terran 选手）")
+    parser.add_argument("--limit", type=int, default=60, help="每个对位的抽样局数（默认 60/对位）")
+    parser.add_argument("--pro-limit", type=int, default=30,
+                        help="每个对位的职业局数上限（默认 30，合并所有 Terran 选手）")
+    parser.add_argument("--matchups", default=",".join(MATCHUPS),
+                        help="要跑的对位，逗号分隔（默认 %s）" % ",".join(MATCHUPS))
+    parser.add_argument("--matchup", default=None,
+                        help="兼容旧参数：等价于 --matchups 传单个对位")
     parser.add_argument("--seed", type=int, default=20261108)
     parser.add_argument("--json", default=os.path.join("reports", "bo.json"))
     parser.add_argument("--html", default=os.path.join("reports", "bo.html"))
@@ -1721,12 +2096,15 @@ def main(argv=None):
             game["game"]["file"], game["signature"], game["style"],
             game["key_timings"]["first_expand"]))
 
+    matchup_arg = args.matchups or args.matchup or ",".join(MATCHUPS)
+    wanted = tuple(part.strip() for part in matchup_arg.split(",") if part.strip())
     summary = run(args.mine, args.pro, args.limit, args.pro_limit,
-                  args.matchup, args.seed,
-                  progress=lambda done, name: sys.stderr.write("\r  parsed %d/%d games" % (done, args.limit)),
+                  wanted, args.seed,
+                  progress=lambda done, name: sys.stderr.write("\r  parsed %d games" % done),
                   since=args.since, until=args.until,
                   start_workers_only=(args.start_workers or None),
-                  k_range=(args.k_min, args.k_max))
+                  k_range=(args.k_min, args.k_max),
+                  pro_player=args.pro_player)
     summary["replay_checks"] = checks
     summary["meta"]["elapsed_seconds"] = round(time.time() - started, 1)
     write_json(summary, args.json)
@@ -1734,21 +2112,23 @@ def main(argv=None):
     from . import bo_report
     bo_report.write_report(summary, args.html)
     sys.stderr.write("\n")
-    clustering = summary["meta"].get("clustering") or {}
-    version = summary["meta"].get("version_filter") or {}
     sys.stdout.write("wrote %s (%d games) and %s in %.1fs\n" % (
         args.json, len(summary["games"]), args.html, time.time() - started))
-    sys.stdout.write("clustering: axis=%s k=%s  (start_workers=%s, excluded by workers=%s by date=%s)\n" % (
-        clustering.get("axis"), clustering.get("k"), version.get("start_workers"),
-        version.get("excluded_by_workers"), version.get("excluded_by_date")))
-    for cluster in summary["clusters"]["mine"]:
-        sys.stdout.write("  mine cluster: %-30s %2d games  share=%3.0f%%  seq=%s\n" % (
-            cluster["key"][:30], cluster["games"], cluster["share"] * 100,
-            "-".join(cluster.get("typical_sequence") or [])[:48]))
-    for cluster in summary["clusters"]["pro"]:
-        sys.stdout.write("  pro  cluster: %-30s %2d games  share=%3.0f%%  seq=%s\n" % (
-            cluster["key"][:30], cluster["games"], cluster["share"] * 100,
-            "-".join(cluster.get("typical_sequence") or [])[:48]))
+    for entry in summary["meta"].get("matchup_table") or []:
+        sys.stdout.write("  %-3s mine=%-2d pro=%-2d%s k=%-2s clusters=%d  top=%s\n" % (
+            entry["matchup"], entry["mine_games"], entry["pro_games"],
+            "" if entry["pro_sufficient"] else "(样本不足)",
+            entry.get("k"), entry.get("clusters", 0),
+            "-".join((entry.get("top_cluster") or "").split(" → "))[:40]))
+    for matchup in summary["meta"].get("matchups") or []:
+        block = summary["matchups"][matchup]
+        clustering = block.get("clustering") or {}
+        sys.stdout.write("  %s clustering: k=%s axis=%s\n" % (
+            matchup, clustering.get("k"), clustering.get("axis")))
+        for cluster in block["clusters"]:
+            sys.stdout.write("     %-40s %2d games  share=%3.0f%%  seq=%s\n" % (
+                cluster["name"][:40], cluster["games"], cluster["share"] * 100,
+                "-".join(cluster.get("typical_sequence") or [])[:44]))
     return summary
 
 

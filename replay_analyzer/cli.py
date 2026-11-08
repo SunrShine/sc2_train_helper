@@ -328,7 +328,9 @@ def main(argv=None):
     bo_cmd.add_argument("--pro", default=None, help="职业选手录像目录")
     bo_cmd.add_argument("--limit", type=int, default=60, help="我的录像抽样局数")
     bo_cmd.add_argument("--pro-limit", dest="pro_limit", type=int, default=30, help="职业录像局数")
-    bo_cmd.add_argument("--matchup", default="TvZ", help="只比对位，例如 TvZ / TvP")
+    bo_cmd.add_argument("--matchup", default=None, help="只做一个对位，例如 TvZ（旧参数，等价于 --matchups）")
+    bo_cmd.add_argument("--matchups", default=None,
+                        help="要做哪些对位，逗号分隔，默认 TvZ,TvP,TvT")
     bo_cmd.add_argument("--seed", type=int, default=None, help="抽样随机种子")
     bo_cmd.add_argument("--since", default=None, help="只收这一天之后的录像（YYYY-MM-DD）")
     bo_cmd.add_argument("--until", default=None, help="只收这一天之前的录像（YYYY-MM-DD）")
@@ -345,7 +347,9 @@ def main(argv=None):
 
     dag_cmd = sub.add_parser("dag", help="BO 转移 DAG：到点执行还是侦察后反应")
     dag_cmd.add_argument("--bo", default=None, help="bo.py 产出的 reports/bo.json")
-    dag_cmd.add_argument("--matchup", default="TvZ")
+    dag_cmd.add_argument("--matchup", default=None, help="只做一个对位（旧参数）")
+    dag_cmd.add_argument("--matchups", default=None,
+                         help="要做哪些对位，逗号分隔，默认 TvZ,TvP,TvT")
     dag_cmd.add_argument("--mine", type=int, default=100, help="我的录像最多几局")
     dag_cmd.add_argument("--pro", type=int, default=100, help="职业录像最多几局")
     dag_cmd.add_argument("--pro-name", dest="pro_name", default=None, help="职业选手名字，默认 Maru")
@@ -564,8 +568,10 @@ def main(argv=None):
     if args.command == "bo":
         from . import bo as bo_module
 
-        forwarded = ["--limit", str(args.limit), "--pro-limit", str(args.pro_limit),
-                     "--matchup", args.matchup]
+        forwarded = ["--limit", str(args.limit), "--pro-limit", str(args.pro_limit)]
+        matchups = args.matchups or args.matchup
+        if matchups:
+            forwarded += ["--matchups", matchups]
         if args.mine:
             forwarded += ["--mine", args.mine]
         if args.pro:
@@ -596,8 +602,11 @@ def main(argv=None):
     if args.command == "dag":
         from . import dag_report as dag_module
 
-        forwarded = ["--matchup", args.matchup, "--mine", str(args.mine),
+        forwarded = ["--mine", str(args.mine),
                      "--pro", str(args.pro), "--min-edge", str(args.min_edge)]
+        matchups = args.matchups or args.matchup
+        if matchups:
+            forwarded += ["--matchups", matchups]
         if args.bo:
             forwarded += ["--bo", args.bo]
         if args.pro_name:
