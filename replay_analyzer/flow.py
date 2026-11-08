@@ -34,10 +34,18 @@
 
 ## playable
 
-本机 SC2 客户端只认 build ≥ 93333 的 replay（``Versions/Base<build>``）。这里先探测
-本机 ``Versions/Base*`` 目录，探测不到就退回常量 93333。旧 build（84643 / 87702 /
-88500 / 93272 那批职业录像）会标 ``playable: false``，需要 corpus 补新版本的
-96163 replay。
+本机能否直接播放看的是 SC2 客户端 ``Versions/Base<build>`` 目录里**有没有程序文件**：
+实测 ``D:\\StarCraft II\\Versions`` 有 18 个 ``Base*`` 目录，但只有 **Base93333 /
+Base98370** 真的有文件，其余（95405…97579、96163）都是 0 文件空壳，照样播不了。
+所以 ``playable`` 只认"探测到 + 目录非空"的版本；探测不到 Versions 时才退回
+"build ≥ 93333" 的粗略判断。
+
+职业语料有两个来源：
+
+* ``replays/pro/<选手>/``：按文件夹认选手（``bo.PRO_NON_PLAYER_DIRS`` 以外的目录）；
+* ``replays/pro/tvt/``：批量下载的 TvT 对位合集，**双方都标 role="pro"**；
+  里面对应 build 93333 的那几局能本机播放，用来核对命名。这个目录**不是选手目录**，
+  bo 按选手抽样时会跳过（``bo.PRO_NON_PLAYER_DIRS``），避免把 "tvt" 当选手名。
 """
 
 import glob
@@ -54,11 +62,19 @@ from .loader import load_replay
 #: 本机 SC2 客户端支持的最低 replay build（Versions/Base93333 起）。
 MIN_PLAYABLE_BUILD = 93333
 
-#: 可能的 SC2 安装目录（只读探测，不写）。找不到就退回常量判断。
+#: 可能的 SC2 安装目录（只读探测，不写）。**目录存在不等于能播**：实测
+#: ``Versions/Base95405`` 之类是 0 文件的空壳，只有真正装着程序文件的版本目录
+#: 才算出可播放版本（本机实测只有 Base93333 / Base98370 有文件）。
 SC2_VERSION_ROOTS = (
+    r"D:\StarCraft II\Versions",
     r"C:\Program Files (x86)\StarCraft II\Versions",
     r"C:\Program Files\StarCraft II\Versions",
+    r"E:\StarCraft II\Versions",
 )
+
+#: 职业语料里"批量下载的对位合集"目录（不是选手目录）：flow 把它当职业来源，
+#: 但 bo 按选手抽样要跳过它（bo.PRO_NON_PLAYER_DIRS）。
+PRO_TVT_DIR = os.path.join(bo.PRO_DIR, "tvt")
 
 #: 兵种分类（5~10 分钟出产的单位）。
 BIO_UNITS = frozenset(("Marine", "Marauder", "Reaper", "Ghost"))
@@ -109,28 +125,52 @@ FLOW_NAMES = {
 # --------------------------------------------------------------------------- 本机版本
 
 def _local_version_builds():
-    """本机 SC2 客户端装了的 replay 版本（Versions/Base<build>），探测不到返回空集。"""
+    """本机 SC2 客户端**真正装了程序文件**的 replay 版本（Versions/Base<build>）。
+
+    只统计目录里至少有一个文件的版本：实测 ``D:\\StarCraft II\\Versions`` 里 18 个目录
+    只有 Base93333 / Base98370 有文件，其余是 0 文件空壳——空壳目录是播不了的。
+    """
     builds = set()
     for root in SC2_VERSION_ROOTS:
         try:
-            for name in os.listdir(root):
-                if name.lower().startswith("base") and name[4:].isdigit():
-                    builds.add(int(name[4:]))
+            entries = os.listdir(root)
         except Exception:
             continue
+        for name in entries:
+            if not (name.lower().startswith("base") and name[4:].isdigit()):
+                continue
+            path = os.path.join(root, name)
+            try:
+                if not os.path.isdir(path):
+                    continue
+                if any(os.path.isfile(os.path.join(path, child))
+                       for child in os.listdir(path)[:20]):
+                    builds.add(int(name[4:]))
+            except Exception:
+                continue
     return builds
 
 
 _LOCAL_BUILDS = None
 
 
-def playable_build(build):
-    """build 能否被本机客户端直接播放（探测不到 Versions 就按 ≥ 93333 判断）。"""
+def local_playable_builds():
+    """把本机可播放的 build 集合暴露出来（报告里用）。"""
     global _LOCAL_BUILDS
     if _LOCAL_BUILDS is None:
         _LOCAL_BUILDS = _local_version_builds()
-    if _LOCAL_BUILDS:
-        return bool(build and int(build) in _LOCAL_BUILDS)
+    return sorted(_LOCAL_BUILDS)
+
+
+def playable_build(build):
+    """build 能否被本机客户端直接播放。
+
+    优先用探测到的 Versions/Base<build>（只认有文件的那几个）；探测不到才退回
+    "build ≥ 93333" 的粗略判断。
+    """
+    builds = local_playable_builds()
+    if builds:
+        return bool(build and int(build) in builds)
     return bool(build and int(build) >= MIN_PLAYABLE_BUILD)
 
 
@@ -399,8 +439,13 @@ def classify_flow(features):
 
 # --------------------------------------------------------------------------- 分析一局
 
-def analyze_game(path, matchup="TvT", source="mine", role="me"):
-    """解析一局，给**双方**各抽流程特征并分类，返回一条游戏记录。"""
+def analyze_game(path, matchup="TvT", source="mine", role="me",
+                 pro_bucket=None, corpus=None):
+    """解析一局，给**双方**各抽流程特征并分类，返回一条游戏记录。
+
+    ``source="pro"`` + ``pro_bucket="tvt"`` 表示来自 ``replays/pro/tvt/`` 这种
+    批量对位合集：双方都是 T，都标 ``role="pro"``（不区分谁是目标选手）。
+    """
     parsed = load_replay(path, decode_events=True)
     target_race = matchup[0] if matchup else "T"
     players = [player for player in parsed.players if player.race == target_race]
@@ -410,7 +455,10 @@ def analyze_game(path, matchup="TvT", source="mine", role="me"):
             return None
     elif not players:
         return None
-    if source == "pro":
+    if source == "pro" and pro_bucket == "tvt":
+        # 批量下载的对位合集：双方都当职业选手处理
+        roles = dict((player.player_id, "pro") for player in players)
+    elif source == "pro":
         primary = bo._player_from_folder(parsed, path)
         if primary is None:
             primary = next((player for player in players if player.is_local), players[0])
@@ -445,25 +493,33 @@ def analyze_game(path, matchup="TvT", source="mine", role="me"):
         "map": parsed.map_name,
         "date": replay_day,
         "source": source,
+        "pro_bucket": pro_bucket,
         "build": build,
         "playable": playable_build(build),
+        "corpus": corpus,
         "duration": round(parsed.duration_seconds, 1),
         "players": records,
     }
 
 
-def analyze_matchup(paths, matchup="TvT", source="mine", progress=None, max_games=None):
+def analyze_matchup(paths, matchup="TvT", source="mine", progress=None, max_games=None,
+                    pro_bucket=None, corpus_by_file=None):
     """把一批 replay 逐局分析（双方都标），返回 ``[game_record]``。
 
     ``max_games`` 给了就只保留前 N 个**成功解析的 1v1 局**（非 1v1 的会跳过，
     所以可以多喂一些候选路径来补足数量）。
+    ``corpus_by_file`` 是 corpus manifest 的 ``{文件名: 条目}``，会把 quality/playable
+    的原始判断一起写进 JSON（和自己探测的 playable 对照，方便发现分歧）。
     """
     games = []
     errors = []
+    corpus_by_file = corpus_by_file or {}
     for index, path in enumerate(paths):
         usage_role = "me" if source == "mine" else "pro"
+        corpus = corpus_by_file.get(os.path.basename(path))
         try:
-            game = analyze_game(path, matchup=matchup, source=source, role=usage_role)
+            game = analyze_game(path, matchup=matchup, source=source, role=usage_role,
+                                pro_bucket=pro_bucket, corpus=corpus)
         except Exception as exc:                       # 坏档 / 版本不支持
             errors.append({"file": os.path.basename(path), "error": str(exc)[:160]})
             continue
@@ -543,24 +599,33 @@ def _distance_to_median(player_record, fingerprint):
 
 
 def _pick_examples(players, fingerprint, games_by_key, limit=3):
-    """每个 flow 挑 2~3 个代表性 replay：**能本机播放优先**（用户要开视频核对），
-    再按"离该 flow 中位数最近"排序。"""
+    """每个 flow 挑 2~3 个代表性 replay。
+
+    用户要开视频逐个核对命名，所以排序原则：
+    1. **能本机播放的优先**；
+    2. 可播放的**职业局优先占一个名额**（replays/pro/tvt/ 里那批 93333 的，
+       用户想拿职业录像核对命名）；
+    3. 其余按"离该 flow 中位数最近"补齐；同一路径只出现一次。
+    """
     ranked = []
     for player_record in players:
         game = games_by_key.get(player_record["_game_key"])
         if game is None:
             continue
-        ranked.append((
-            0 if game["playable"] else 1,
-            0 if game["source"] == "mine" else 1,
-            _distance_to_median(player_record, fingerprint),
-            game,
-            player_record,
-        ))
-    ranked.sort(key=lambda item: (item[0], item[1], item[2]))
+        ranked.append((game, player_record,
+                       _distance_to_median(player_record, fingerprint)))
+    ranked.sort(key=lambda item: (0 if item[0]["playable"] else 1, item[2]))
+    playable_pro = [item for item in ranked
+                    if item[0]["playable"] and item[0]["source"] == "pro"]
+
+    ordered = []
+    if playable_pro:
+        ordered.append(playable_pro[0])                 # 先占一个可播放职业示例
+    ordered.extend(ranked)
+
     examples = []
     seen = set()
-    for _p, _s, _dist, game, player_record in ranked:
+    for game, player_record, _dist in ordered:
         if game["path"] in seen:
             continue
         seen.add(game["path"])
@@ -568,6 +633,7 @@ def _pick_examples(players, fingerprint, games_by_key, limit=3):
             "path": game["path"],
             "file": game["file"],
             "source": game["source"],
+            "pro_bucket": game.get("pro_bucket"),
             "role": player_record["role"],
             "player": player_record["name"],
             "build": game["build"],
@@ -627,9 +693,39 @@ def summarize_flows(games, min_games=3):
     return flows, total
 
 
+def _read_manifest(path):
+    """读 corpus 写的 manifest.json（``{文件名: 条目}``）；没有就返回空 dict。"""
+    if not os.path.isfile(path):
+        return {}
+    try:
+        with open(path, encoding="utf-8") as handle:
+            data = json.load(handle)
+    except Exception:
+        return {}
+    if isinstance(data, list):
+        return dict((entry.get("file"), entry) for entry in data if entry.get("file"))
+    if isinstance(data, dict):
+        return data
+    return {}
+
+
+def _manifest_playable_counts(manifest):
+    counts = {}
+    for entry in manifest.values():
+        value = entry.get("playable") if isinstance(entry, dict) else None
+        counts[str(value)] = counts.get(str(value), 0) + 1
+    return counts
+
+
 def build_report(mine_dir=None, pro_dir=None, matchup="TvT", limit=60, pro_limit=30,
                  seed=20261108, progress=None):
-    """挖矿（我的 + 职业）→ 每局双方分类 → 汇总，返回 reports/tvt-flows.json 的内容。"""
+    """挖矿（我的 + 职业）→ 每局双方分类 → 汇总，返回 reports/tvt-flows.json 的内容。
+
+    职业来源有两处：
+      * ``replays/pro/<选手>/``：按文件夹认选手（bo.PRO_NON_PLAYER_DIRS 以外的目录）；
+      * ``replays/pro/tvt/``：批量下载的 TvT 对位合集，**双方都标 role="pro"**，
+        里那几局 build 93333 的可以本机播放，用来核对命名。
+    """
     started = time.time()
     mine_dir = mine_dir or bo.MINE_DIR
     pro_dir = pro_dir or bo.PRO_DIR
@@ -648,7 +744,15 @@ def build_report(mine_dir=None, pro_dir=None, matchup="TvT", limit=60, pro_limit
         folder_player=True, start_workers_only=12)
     pro_bos = pro_games[0].get(matchup) or []
     pro_paths = [game_bo["game"]["path"] for game_bo in pro_bos]
-    sources["pro"] = {"candidates": len(pro_paths)}
+    sources["pro_player_dirs"] = {"candidates": len(pro_paths)}
+
+    # 批量下载的对位合集目录（replays/pro/tvt/）：全部当职业局，双方都标 pro
+    tvt_paths = [path for path in bo.expand_paths(PRO_TVT_DIR)
+                 if os.path.basename(os.path.dirname(path)).lower() == "tvt"]
+    manifest = _read_manifest(os.path.join(PRO_TVT_DIR, "manifest.json"))
+    sources["pro_tvt"] = {"candidates": len(tvt_paths),
+                          "manifest": len(manifest),
+                          "playable_claim": _manifest_playable_counts(manifest)}
 
     def sub_progress(done, total, name):
         if progress:
@@ -658,10 +762,18 @@ def build_report(mine_dir=None, pro_dir=None, matchup="TvT", limit=60, pro_limit
     games.extend(analyze_matchup(mine_paths, matchup, source="mine",
                                  progress=sub_progress, max_games=limit))
     games.extend(analyze_matchup(pro_paths, matchup, source="pro",
-                                 progress=sub_progress, max_games=pro_limit))
+                                 progress=sub_progress, max_games=pro_limit,
+                                 pro_bucket="player_dir"))
+    games.extend(analyze_matchup(tvt_paths, matchup, source="pro",
+                                 progress=sub_progress,
+                                 pro_bucket="tvt", corpus_by_file=manifest))
     mine_count = len([game for game in games if game["source"] == "mine"])
     sources["mine"]["games"] = mine_count
-    sources["pro"]["games"] = len(games) - mine_count
+    pro_dir_count = len([game for game in games
+                         if game["source"] == "pro" and game.get("pro_bucket") == "player_dir"])
+    sources["pro_player_dirs"]["games"] = pro_dir_count
+    sources["pro_tvt"]["games"] = len([game for game in games
+                                       if game.get("pro_bucket") == "tvt"])
     # 同一个文件可能同时出现在两个职业文件夹里，按绝对路径去重
     seen, unique = set(), []
     for game in games:
@@ -675,6 +787,14 @@ def build_report(mine_dir=None, pro_dir=None, matchup="TvT", limit=60, pro_limit
     players = [player for game in games for player in game["players"]]
     unknown_count = len([record for record in players if record["flow"] == "other"])
     playable_games = len([game for game in games if game["playable"]])
+    playable_pro = len([game for game in games
+                        if game["playable"] and game["source"] == "pro"])
+    playable_mine = len([game for game in games
+                         if game["playable"] and game["source"] == "mine"])
+    for flow in flows:
+        flow["examples_playable"] = len([e for e in flow["examples"] if e.get("playable")])
+        flow["examples_playable_pro"] = len(
+            [e for e in flow["examples"] if e.get("playable") and e.get("source") == "pro"])
     return {
         "meta": {
             "generated": time.strftime("%Y-%m-%d"),
@@ -683,14 +803,17 @@ def build_report(mine_dir=None, pro_dir=None, matchup="TvT", limit=60, pro_limit
             "player_games": len(players),
             "sources": sources,
             "playable_games": playable_games,
-            "playable_rule": ("本机 SC2 客户端 Versions/Base<build>；探测不到就按 build ≥ %d 判断"
-                              % MIN_PLAYABLE_BUILD),
+            "playable_mine": playable_mine,
+            "playable_pro": playable_pro,
+            "local_playable_builds": local_playable_builds(),
+            "playable_rule": ("本机 SC2 客户端 Versions/Base<build> 里**有程序文件**的版本才算"
+                              "（空壳目录不算）；探测不到才退回 build ≥ %d" % MIN_PLAYABLE_BUILD),
             "min_playable_build": MIN_PLAYABLE_BUILD,
             "unknown_share": round(unknown_count / float(player_total or 1), 3),
             "merged_flows": sorted({label for flow in flows for label in flow["merged_from"]}),
             "vocabulary": FLOW_NAMES,
             "rules": ("单矿(12 分钟 ≤1 基地) → 空军(占比≥30% 或聚变核心/空军单位≥2 种) → "
-                      "机械(≥55%, 多矿/少矿) → 生化(≥55%, 多矿/少矿) → other"),
+                      "机械(≥55%, 多矿/少矿) → 生化(≥55%, 多矿/少矿) → 混编 → other"),
             "elapsed_seconds": round(time.time() - started, 1),
         },
         "flows": flows,

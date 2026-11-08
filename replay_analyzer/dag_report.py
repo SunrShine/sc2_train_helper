@@ -1128,15 +1128,22 @@ def extract_mine_matchups(directory, matchups, cache_path=None, limit=300,
 
 PRO_BO_CACHE = os.path.join(".tmp", "pro_bo_all.json")
 
+# 这些目录不是"选手目录"，只是按对位攒的素材（比如 replays/pro/tvt/），
+# 不能当某个选手的录像统计，否则会把别人的局混进样本。
+PRO_NON_PLAYER_DIRS = frozenset({"tvt", "watch", "extra", "misc"})
+
 
 def extract_pro_bos(root="replays/pro", races=("T", "Z", "P"),
                     cache_path=PRO_BO_CACHE, rebuild=False, verbose=True):
     """抽所有职业 replay 的 GameBO（T/Z/P 都抽），按 (对位, 选手) 分组用。
 
-    只抽"这个目录代表的选手种族在 races 里"的目录。缓存按全部 replay 的
+    只抽"这个目录代表的选手种族在 races 里"的目录；`PRO_NON_PLAYER_DIRS`
+    里的目录（按对位攒的素材）直接跳过。缓存按全部 replay 的
     (路径, 大小, mtime) 指纹失效；bo.py 换了签名逻辑时用 --force 重抽。
     """
     files = sorted(glob.glob(os.path.join(root, "*", "*.SC2Replay")))
+    files = [item for item in files
+             if os.path.basename(os.path.dirname(item)).lower() not in PRO_NON_PLAYER_DIRS]
     fingerprint = hashlib.sha1()
     for item in files:
         try:

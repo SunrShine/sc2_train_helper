@@ -145,6 +145,10 @@ PHASE_ZH = {"opening": "开局", "early": "前期", "mid": "中期", "late": "�
 #: 默认处理的三个对位。TvT 是镜像战，开局序列与 TvZ/TvP 完全不同，必须各自独立聚类。
 MATCHUPS = ("TvZ", "TvP", "TvT")
 
+#: 职业语料根目录下**不是选手目录**的子目录（批量下载的对位合集），
+#: 按文件夹认选手的逻辑必须跳过它们，否则会把 "tvt" 当成选手名、把局混进职业样本。
+PRO_NON_PLAYER_DIRS = frozenset(("tvt",))
+
 #: 同对位职业样本少于这个数就标"样本不足"（不做结论，只列数字）。
 MIN_PRO_GAMES = 10
 
@@ -839,12 +843,19 @@ def _player_from_folder(parsed, path, player_filter=None):
     return None
 
 
-def _folder_skip(parsed, path, player_filter):
-    """指定了 ``--pro-player`` 时，文件夹不是该选手就跳过。"""
-    if not player_filter:
-        return False
+def _folder_skip(parsed, path, player_filter, folder_player=False):
+    """职业语料里要跳过两类目录：
+
+    * ``replays/pro/tvt/`` 这种**不是选手目录**的批量下载目录（否则会被当成
+      "tvt" 这个选手，把 21 局混进职业样本）；
+    * 指定了 ``--pro-player`` 时，不是该选手的文件夹。
+    """
     folder = os.path.basename(os.path.dirname(os.path.abspath(path))).lower()
-    return player_filter.lower() not in folder
+    if folder_player and folder in PRO_NON_PLAYER_DIRS:
+        return True
+    if player_filter and player_filter.lower() not in folder:
+        return True
+    return False
 
 
 def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
@@ -915,7 +926,7 @@ def mine_folder(paths, limit=60, matchup=None, prefer_name=None,
         if require_local and not any(p.is_local for p in parsed.players):
             stats["skipped_filter"] += 1
             continue
-        if _folder_skip(parsed, path, player_filter):
+        if _folder_skip(parsed, path, player_filter, folder_player):
             stats["skipped_filter"] += 1
             continue
         player = pick_player(parsed)
@@ -1043,7 +1054,7 @@ def mine_matchups(paths, matchups=MATCHUPS, limit=60, prefer_name=None, seed=202
         if require_local and not any(p.is_local for p in parsed.players):
             stats["skipped_filter"] += 1
             continue
-        if _folder_skip(parsed, path, player_filter):
+        if _folder_skip(parsed, path, player_filter, folder_player):
             stats["skipped_filter"] += 1
             continue
         player = pick_player(parsed)
