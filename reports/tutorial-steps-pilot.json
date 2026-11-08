@@ -1138,6 +1138,146 @@
    "note": "8 秒采样漏掉了步骤 一/二/五…；画面右上有 SC2 计时器，可读（3:19 → 5:05）。补齐需要把采样降到 4 秒再跑一遍"
   },
   {
+   "number": 37,
+   "bvid": "BV11Z4y1r7aR",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "双气 6 火车 渡鸦",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：双气 6 火车 渡鸦",
+     "tags": [
+      "gas:2",
+      "unit:hellion×6",
+      "unit:raven"
+     ],
+     "clock": null,
+     "video_t": 8,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 6,
+     "action": "四百块下二基地",
+     "tags": [
+      "expand"
+     ],
+     "clock": "0:40",
+     "video_t": 40,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "死神在高台防一下对手的死神侦查",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": "1:05",
+     "video_t": 65,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "bb 再挂一个科技挂件",
+     "tags": [
+      "build:barracks_techlab"
+     ],
+     "clock": "1:16",
+     "video_t": 76,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "把多余的农民调到二矿",
+     "tags": [
+      "unit:SCV",
+      "expand"
+     ],
+     "clock": "1:36",
+     "video_t": 96,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "下一个补给站，出第二个渡鸦",
+     "tags": [
+      "build:supply_depot",
+      "unit:raven×2"
+     ],
+     "clock": "1:53",
+     "video_t": 113,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "双气 6 火车 + 双渡鸦；标注是「六、」等编号 + 一句说明的混排，时钟可读"
+  },
+  {
+   "number": 38,
+   "bvid": "BV1ZT4y1m7cz",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "双气 2 死神 1 火车 科技速导弹车 女妖",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：TVT 双气 2 死 1 火 科技速导弹车 女妖",
+     "tags": [
+      "gas:2",
+      "unit:reaper×2",
+      "unit:hellion",
+      "unit:cyclone",
+      "unit:banshee"
+     ],
+     "clock": null,
+     "video_t": 10,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "第一个死神进行纪律性侦查",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": "1:30",
+     "video_t": 90,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "可以判断出对手是 5 死神 3 火车开",
+     "tags": [
+      "unit:reaper×5",
+      "unit:hellion×3"
+     ],
+     "clock": "1:52",
+     "video_t": 112,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "VS 与 bb 交换挂件、出女妖",
+     "tags": [
+      "build:starport",
+      "unit:banshee"
+     ],
+     "clock": "2:03",
+     "video_t": 123,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "科技速女妖路线；前半段标注密度高，后半段转为操作讲解"
+  },
+  {
    "number": 39,
    "bvid": "BV1CF41147gq",
    "title": "【星际一招鲜 39】TVT双气2死1火1雷1运输   ByuN：TVT2-1-1套的迭代变化",
@@ -1196,6 +1336,52 @@
     }
    ],
    "note": "短平快的一集，标注密度低；时钟位置待校准"
+  },
+  {
+   "number": 41,
+   "bvid": "BV1D3411W7ju",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "双气 6 死 2 枪 光头空投",
+   "steps": [
+    {
+     "n": 5,
+     "action": "点击死神、变形星轨",
+     "tags": [
+      "unit:reaper",
+      "build:orbital"
+     ],
+     "clock": "1:29",
+     "video_t": 89,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "此时点击光头、停农民",
+     "tags": [
+      "unit:marauder",
+      "unit:SCV"
+     ],
+     "clock": "3:13",
+     "video_t": 193,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 20,
+     "action": "两光头装船，一个加速出门",
+     "tags": [
+      "unit:marauder×2",
+      "unit:medivac"
+     ],
+     "clock": null,
+     "video_t": 325,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "光头空投路线，标注含编号（5、20）；中间步骤被静帧法漏掉"
   },
   {
    "number": 42,
