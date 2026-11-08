@@ -21,6 +21,182 @@
  },
  "videos": [
   {
+   "number": 5,
+   "bvid": "BV1LT4y1X7E6",
+   "matchup": "TvT",
+   "status": "pending",
+   "build": "野 2 兵营",
+   "steps": [],
+   "note": "已下载 720p（24 分钟，含完整对局），待抽"
+  },
+  {
+   "number": 6,
+   "bvid": "BV1PT4y1X7Vc",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "野单兵营光头（野兵营 → 光头骚扰 → 隐形女妖）",
+   "steps": [
+    {
+     "n": 1,
+     "action": "第一步：拖第一个农民前去野兵营（对手视野盲区）",
+     "tags": [
+      "build:barracks(proxy)",
+      "unit:SCV"
+     ],
+     "clock": null,
+     "video_t": 282,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "第五步：农民下第二个气矿",
+     "tags": [
+      "gas:2"
+     ],
+     "clock": null,
+     "video_t": 55,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "以上为标准的单兵营双气开",
+     "tags": [
+      "build:barracks",
+      "gas:1",
+      "gas:2"
+     ],
+     "clock": null,
+     "video_t": 60,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "第九步：挂科技挂件",
+     "tags": [
+      "build:techlab"
+     ],
+     "clock": null,
+     "video_t": 165,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 14,
+     "action": "第十四步：再点一个光头（劫掠者）",
+     "tags": [
+      "unit:marauder"
+     ],
+     "clock": null,
+     "video_t": 224,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "第十五步：bs 农民准备下二基地",
+     "tags": [
+      "expand"
+     ],
+     "clock": null,
+     "video_t": 163,
+     "source": "frame",
+     "confidence": "med"
+    },
+    {
+     "n": 19,
+     "action": "第十九步：光头和火车打一个双线",
+     "tags": [
+      "unit:marauder",
+      "unit:hellion"
+     ],
+     "clock": null,
+     "video_t": 187,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "注意基地：造好的农民直接去采气",
+     "tags": [
+      "gas:1",
+      "unit:SCV"
+     ],
+     "clock": null,
+     "video_t": 157,
+     "source": "frame",
+     "confidence": "med"
+    }
+   ],
+   "note": "野兵营大招教学；视频有剪辑，游戏时钟不连续，暂用视频时间；编号步骤 1/5/9/14/15/19 被静帧法捕获，中间步骤需要降采样补"
+  },
+  {
+   "number": 7,
+   "bvid": "BV1wR4y1L7H7",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "野 2VS 大和（野两星港出大和）",
+   "steps": [
+    {
+     "n": 1,
+     "action": "1、下补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "video_t": 17,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 2,
+     "action": "2、下兵营和气矿",
+     "tags": [
+      "build:barracks",
+      "gas:1"
+     ],
+     "clock": null,
+     "video_t": 18,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "天梯上常见开局：对手野俩兵营",
+     "tags": [],
+     "clock": null,
+     "video_t": 24,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "或对手单兵营双气开 3 死神 2 火车",
+     "tags": [
+      "gas:2",
+      "unit:reaper×3",
+      "unit:hellion×2"
+     ],
+     "clock": null,
+     "video_t": 30,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "面对这两种开局都可以完美防守（本战术的应对说明）",
+     "tags": [],
+     "clock": null,
+     "video_t": 35,
+     "source": "frame",
+     "confidence": "med"
+    }
+   ],
+   "note": "野 2VS（星港）出大和；前半是防守思路讲解，编号步骤只到 2；后续步骤需补读"
+  },
+  {
    "number": 25,
    "bvid": "BV1Fi4y1171Y",
    "title": "【星际一招鲜 25】TVT双气2死1火1雷   TVT职业选手常用运营开局是什么？",
