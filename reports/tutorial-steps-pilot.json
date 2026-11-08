@@ -647,6 +647,64 @@
    "note": "短平快的一集，标注密度低；时钟位置待校准"
   },
   {
+   "number": 42,
+   "bvid": "BV1tP4y1u7sR",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "双气开 3 死神 2 火车 枪兵 导弹车",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：TVT 双气开 3 死神 2 火车 枪兵 导弹车",
+     "tags": [
+      "gas:2",
+      "unit:reaper×3",
+      "unit:hellion×2"
+     ],
+     "clock": "0:03",
+     "video_t": 3,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 6,
+     "action": "100 气下 VF，使 3 个气矿农民采集晶体矿",
+     "tags": [
+      "build:factory",
+      "gas:1"
+     ],
+     "clock": "1:04",
+     "video_t": 64,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "下补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": "2:45",
+     "video_t": 165,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "出三个死神两个火车",
+     "tags": [
+      "unit:reaper×3",
+      "unit:hellion×2"
+     ],
+     "clock": "2:50",
+     "video_t": 170,
+     "source": "frame",
+     "confidence": "med"
+    }
+   ],
+   "note": "标注带中文序号（六、九…）；静帧卡片只捕获到 4 条"
+  },
+  {
    "number": 43,
    "bvid": "BV13Z4y167Fk",
    "matchup": "TvT",
