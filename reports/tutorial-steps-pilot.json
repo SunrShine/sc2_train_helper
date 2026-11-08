@@ -176,6 +176,103 @@
    "note": "这是职业对局复盘，没有编号步骤；标注是解说性质的。游戏内时钟从画面左下角读出（视频起始就在 4:0x）"
   },
   {
+   "number": 29,
+   "bvid": "BV15F411b7YU",
+   "matchup": "TvT",
+   "status": "partial",
+   "build": "双气 3 死神 2 火车 枪兵 导弹车 运营",
+   "steps": [
+    {
+     "n": null,
+     "action": "本期战术名：TVT 三死神两火车枪兵导弹车运营",
+     "tags": [
+      "gas:2",
+      "unit:reaper×3",
+      "unit:hellion×2",
+      "unit:cyclone"
+     ],
+     "clock": "0:13",
+     "video_t": 18,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "补给站 → 兵营 → 气矿 → 气矿",
+     "tags": [
+      "build:supply_depot",
+      "build:barracks",
+      "gas:1",
+      "gas:2"
+     ],
+     "clock": "1:04",
+     "video_t": 41,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "接着死神、星轨、补给站",
+     "tags": [
+      "unit:reaper",
+      "build:orbital",
+      "build:supply_depot"
+     ],
+     "clock": "1:26",
+     "video_t": 50,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "并且使 3 个气矿农民采集晶体矿",
+     "tags": [
+      "gas:2",
+      "unit:SCV"
+     ],
+     "clock": "1:42",
+     "video_t": 58,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "使自己有三个死神两个火车",
+     "tags": [
+      "unit:reaper×3",
+      "unit:hellion×2"
+     ],
+     "clock": "2:06",
+     "video_t": 126,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": null,
+     "action": "残血火车瞬间被秒",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": "3:37",
+     "video_t": 217,
+     "source": "frame",
+     "confidence": "med"
+    },
+    {
+     "n": null,
+     "action": "这里 Maru 又损失一个火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": "4:03",
+     "video_t": 243,
+     "source": "frame",
+     "confidence": "med"
+    }
+   ],
+   "note": "用 Maru 职业对局讲解；静帧卡片法抓到 7 条，剩余待补"
+  },
+  {
    "number": 30,
    "bvid": "BV1bq4y147St",
    "matchup": "TvT",
