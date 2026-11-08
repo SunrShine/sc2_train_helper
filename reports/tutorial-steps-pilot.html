@@ -1,0 +1,33 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TvT 教学视频 · 步骤抽取试点</title><style>
+:root{--bg:#0e1116;--bg2:#151a22;--card:#1a2029;--card2:#202836;--line:#2a3340;
+--text:#e6ecf5;--muted:#93a1b5;--good:#46d17e;--warn:#f2c45a;--bad:#ff6b6b;--accent:#7c9cff}
+*{box-sizing:border-box}
+body{margin:0;padding:0 0 70px;color:var(--text);
+background:radial-gradient(1200px 600px at 50% -200px,#1b2436 0%,var(--bg) 60%);
+font:14.5px/1.65 "Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header.top{padding:32px 0 8px}
+h1{font-size:25px;margin:0 0 6px}
+.sub{color:var(--muted);font-size:13.5px}
+h2{font-size:17px;margin:28px 0 10px;display:flex;align-items:center;gap:8px}
+h2::before{content:"";width:4px;height:15px;border-radius:2px;background:var(--accent)}
+.card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--line);
+border-radius:13px;padding:14px 16px;margin-bottom:12px}
+.head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.head .name{font-size:16px;font-weight:700}
+.tag{color:var(--muted);font-size:12.5px}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11.5px;
+border:1px solid var(--line);background:#202836}
+.ok{color:var(--good);border-color:#2b5a3f}.warn{color:var(--warn);border-color:#5a4b2b}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th{text-align:left;color:var(--muted);font-weight:600;font-size:12px;padding:6px 8px;
+border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid #222b38}
+tr:last-child td{border-bottom:none}
+.num{text-align:right;color:#7d8ca3;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hi{color:var(--good)}.md{color:var(--warn)}.lo{color:var(--bad)}
+.note{color:var(--muted);font-size:12.5px;margin-top:8px;line-height:1.7}
+.hint{color:var(--muted);font-size:13px;line-height:1.85}
+.hint b{color:var(--text)}
+footer{margin-top:34px;color:#66748a;font-size:12.5px;border-top:1px solid var(--line);padding-top:14px}
+</style></head><body><div class="wrap"><header class="top"><h1>TvT 教学视频 · 步骤抽取试点</h1><div class="sub">bilibili 合集【星际一招鲜】(season 179867, UP 主 MakChao) · 试点 5 条 · 方法：帧读（画面里的屏上标注）+ ASR 文本交叉核对；ASR 单独不可用</div></header><h2>一、这个格式是什么</h2><div class="card"><div class="hint"><b>每条视频 -> 一套 BO 的步骤表</b>：步骤号（作者画面标注）、动作（我方术语）、时间点（视频秒数）、来源（frame/asr/both）、置信度。<br><b>为什么要标来源：</b>画面标注是作者手打的，最可靠；ASR 转写错字多，只能交叉核对。标 <span class='lo'>低</span> 的条目需要人工看一眼原片。<br><b>这张表的下游用途：</b>① 和 replay 的建造事件对齐，看实战第几步开始走偏；② 把同一对位的多套 BO 并成流派树；③ 生成可打印的练习卡。</div></div><div class="card"><div class="hint">⚠️ 屏上标注是作者手打的字，位置不固定（有时在画面中部），不能按固定字幕带裁剪</div></div><div class="card"><div class="hint">⚠️ ASR 质量差：背景音乐 + 语速快，实测「第N步」大量被吞，只能做交叉核对</div></div><div class="card"><div class="hint">⚠️ 步骤号来自画面标注，缺失的用 null；时间点取该标注首次出现的近似秒数</div></div><div class="card"><div class="hint">⚠️ 只抽取了 2 条做样本，其余 3 条标 pending —— 先确认格式再决定是否铺开</div></div><div class="card"><div class="head"><span class="name">#25 双气 2 死神 1 火车 1 寡妇雷（TVT 常规运营开局）</span><span class='pill ok'>已抽取</span><span class="tag">TvT · 6:52 · BV1Fi4y1171Y</span></div><div class="hint">【星际一招鲜 25】TVT双气2死1火1雷   TVT职业选手常用运营开局是什么？</div><table><thead><tr><th>步</th><th>动作</th><th>视频时间</th><th>来源</th><th>置信度</th></tr></thead><tbody><tr><td class='num'>5</td><td>调气矿农民（4 个农民下气矿）</td><td class='num'>1:05</td><td>frame</td><td><span class='hi'>高</span></td></tr><tr><td class='num'>7</td><td>拖两个气矿农民去采晶体矿，下 VF（重工）</td><td class='num'>1:40</td><td>frame</td><td><span class='hi'>高</span></td></tr><tr><td class='num'>-</td><td>下一个补给站</td><td class='num'>2:55</td><td>frame</td><td><span class='hi'>高</span></td></tr><tr><td class='num'>-</td><td>兵营挂双倍挂件</td><td class='num'>3:40</td><td>frame</td><td><span class='md'>中</span></td></tr><tr><td class='num'>-</td><td>出一颗寡妇雷</td><td class='num'>4:10</td><td>asr+frame</td><td><span class='md'>中</span></td></tr><tr><td class='num'>3</td><td>下三气（第三个气矿）</td><td class='num'>5:00</td><td>asr</td><td><span class='lo'>低</span></td></tr><tr><td class='num'>4</td><td>出枪兵，挂科技挂件</td><td class='num'>5:10</td><td>asr</td><td><span class='lo'>低</span></td></tr></tbody></table><div class="note">这集的步骤号在画面上不连续出现（只标关键节点），中间靠 ASR 补；ASR 段落错字多，标 low 的条目需要人工核对</div></div><div class="card"><div class="head"><span class="name">#39 双气 2 死神 1 火车 1 寡妇雷 1 运输机（2-1-1 变体）</span><span class='pill ok'>已抽取</span><span class="tag">TvT · 4:49 · BV1CF41147gq</span></div><div class="hint">【星际一招鲜 39】TVT双气2死1火1雷1运输   ByuN：TVT2-1-1套的迭代变化</div><table><thead><tr><th>步</th><th>动作</th><th>视频时间</th><th>来源</th><th>置信度</th></tr></thead><tbody><tr><td class='num'>-</td><td>本期战术：TVT 双气 2 死神 1 火车 1 寡妇雷</td><td class='num'>0:45</td><td>frame</td><td><span class='hi'>高</span></td></tr><tr><td class='num'>5</td><td>100 气下 VF，让 3 个气矿农民去采晶体矿</td><td class='num'>1:15</td><td>frame</td><td><span class='hi'>高</span></td></tr><tr><td class='num'>-</td><td>兵营挂双倍挂件</td><td class='num'>2:00</td><td>frame</td><td><span class='md'>中</span></td></tr><tr><td class='num'>-</td><td>下补给站</td><td class='num'>2:35</td><td>frame</td><td><span class='md'>中</span></td></tr></tbody></table><div class="note">这条只有 4 分 48 秒，属于「快讲」，标注密度低；完整的 2-1-1 步骤要参考 39 之后的几条</div></div><div class="card"><div class="head"><span class="name">#28 双气 5 死神 4 火车 1 运输机（死神流）</span><span class='pill warn'>待抽取</span><span class="tag">TvT · 5:56 · BV1n34y1k7b5</span></div><div class="hint">【星际一招鲜 28】TVT双气5死4火1运死吗流   Maru:没有人可以挡住我的死吗流！</div><div class='hint'>（这一步还没跑，格式同上）</div><div class="note">待抽取</div></div><div class="card"><div class="head"><span class="name">#36 3 兵营 7 死神 2 运输机（三兵营死神流）</span><span class='pill warn'>待抽取</span><span class="tag">TvT · 5:31 · BV1yL411A7N1</span></div><div class="hint">【星际一招鲜 36】TVT3兵营7死神2运输   Cure：TVT的3兵营7死神开局!</div><div class='hint'>（这一步还没跑，格式同上）</div><div class="note">待抽取</div></div><div class="card"><div class="head"><span class="name">#43 双气 2 死神 1 枪兵 2 火车 → 隐形女妖</span><span class='pill warn'>待抽取</span><span class="tag">TvT · 4:32 · BV13Z4y167Fk</span></div><div class="hint">【星际一招鲜 43】TVT双气2死1枪2火隐形女妖   ByuN：隐形女妖的打法，我比较爱用</div><div class='hint'>（这一步还没跑，格式同上）</div><div class="note">待抽取</div></div><footer>试点数据来自 B 站公开合集；步骤号为画面标注，动作已归一成本项目术语。本页只做格式预览，未做完整抽取。</footer></div></body></html>

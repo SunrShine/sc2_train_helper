@@ -22,6 +22,7 @@ CATALOG = {
     "micro-trend.html": ("操作", "操作趋势", "最近 N 局的多线/视角指标变化"),
     "pro-playlist.html": ("资料", "职业录像片单", "每局的地图、时长、版本、能不能直接播"),
     "tutorial-index.html": ("资料", "教学视频索引（星际一招鲜）", "103 条合集盘点：对位、时长、招式拆解"),
+    "tutorial-steps-pilot.html": ("资料", "教学视频 · 步骤抽取试点", "视频 → BO 步骤表的格式样例与可行性"),
 }
 
 CARD_REPORTS = ("micro", "fog")
