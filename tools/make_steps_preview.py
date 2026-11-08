@@ -38,6 +38,7 @@ border-bottom:1px solid var(--line);white-space:nowrap}
 td{padding:6px 8px;border-bottom:1px solid #222b38}
 tr:last-child td{border-bottom:none}
 .num{text-align:right;color:#7d8ca3;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tags{margin-top:2px}.tags code{background:#141a23;padding:0 5px;border-radius:4px;font-size:11px;color:#9fb0c8}
 .hi{color:var(--good)}.md{color:var(--warn)}.lo{color:var(--bad)}
 .note{color:var(--muted);font-size:12.5px;margin-top:8px;line-height:1.7}
 .hint{color:var(--muted);font-size:13px;line-height:1.85}
@@ -96,14 +97,20 @@ def render(data, title="TvT 教学视频 · 步骤抽取试点"):
         parts.append('<div class="hint">%s</div>' % h(video.get("title", "")))
         steps = video.get("steps") or []
         if steps:
-            parts.append("<table><thead><tr><th>步</th><th>动作</th><th>视频时间</th>"
+            parts.append("<table><thead><tr><th>步</th><th>动作 + 结构化标签</th>"
+                         "<th>游戏时钟</th><th>视频时间</th>"
                          "<th>来源</th><th>置信度</th></tr></thead><tbody>")
             for step in steps:
+                tags = step.get("tags") or []
+                tag_html = " ".join("<code>%s</code>" % h(tag) for tag in tags) or "-"
+                clock = step.get("clock") or "-"
                 parts.append(
-                    "<tr><td class='num'>%s</td><td>%s</td><td class='num'>%s</td>"
+                    "<tr><td class='num'>%s</td><td>%s<div class='tags'>%s</div></td>"
+                    "<td class='num'>%s</td><td class='num'>%s</td>"
                     "<td>%s</td><td>%s</td></tr>"
                     % (h(str(step.get("n"))) if step.get("n") is not None else "-",
-                       h(step.get("action", "")), _clock(step.get("t")),
+                       h(step.get("action", "")), tag_html,
+                       h(str(clock)), _clock(step.get("video_t")),
                        h(step.get("source", "")), _confidence(step.get("confidence"))))
             parts.append("</tbody></table>")
         else:
