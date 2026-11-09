@@ -45,10 +45,13 @@ def probe(input_path):
     return 1280, 720
 
 
-def frames(input_path, fps=1.0):
-    cmd = [ffmpeg(), "-hide_banner", "-loglevel", "error", "-i", input_path,
-           "-vf", "fps=%s,scale=%d:%d,format=rgb24" % (fps, W, H),
-           "-f", "rawvideo", "-"]
+def frames(input_path, fps=1.0, start=0.0):
+    cmd = [ffmpeg(), "-hide_banner", "-loglevel", "error"]
+    if start:
+        cmd += ["-ss", str(start)]
+    cmd += ["-i", input_path,
+            "-vf", "fps=%s,scale=%d:%d,format=rgb24" % (fps, W, H),
+            "-f", "rawvideo", "-"]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     size = W * H * 3
     while True:
@@ -159,12 +162,13 @@ def main(argv=None):
     parser.add_argument("--out", required=True)
     parser.add_argument("--top", type=int, default=4, help="每部最多保留几张")
     parser.add_argument("--width", type=int, default=700)
+    parser.add_argument("--start", type=float, default=0.0, help="从第几秒开始扫")
     args = parser.parse_args(argv)
 
     os.makedirs(args.out, exist_ok=True)
     hits = []
     current = None
-    for index, frame in enumerate(frames(args.input)):
+    for index, frame in enumerate(frames(args.input, start=args.start)):
         ok, rows, ratio, span = score(frame)
         if ok:
             if current is None:
@@ -187,7 +191,7 @@ def main(argv=None):
     src_w, src_h = probe(args.input)
     items = []
     for order, hit in enumerate(hits):
-        middle = (hit["start"] + hit["end"]) / 2.0
+        middle = (hit["start"] + hit["end"]) / 2.0 + args.start
         png = os.path.join(args.out, "sum%02d.png" % order)
         extract_frame(args.input, png, middle, args.width)
         items.append((png, args.width, int(args.width * src_h / float(src_w))))
