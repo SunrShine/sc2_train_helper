@@ -126,6 +126,12 @@ def render(steps_data, builds_data, title="TvT 教学流程库（第一版）"):
                          % (video["number"], h(video.get("build", "")), h(video.get("bvid", "")),
                             h(video.get("bvid", "")), h(video.get("bvid", ""))))
             parts.append('<div class="hint">%s</div>' % h(video.get("title") or meta.get("title") or ""))
+            if video.get("sequence_text"):
+                parts.append('<div class="hint" style="margin:4px 0 8px">'
+                             '<b>运营串：</b><code>%s</code></div>' % h(video["sequence_text"]))
+            if video.get("plan"):
+                parts.append('<div class="hint" style="margin:0 0 8px">'
+                             '<b>思路：</b>%s</div>' % " ｜ ".join(h(x) for x in video["plan"]))
             parts.append("<table><thead><tr><th>步</th><th>动作</th><th>标签</th>"
                          "<th>游戏时钟</th><th>视频时间</th><th>来源</th><th>置信</th></tr></thead><tbody>")
             for step in video["steps"]:

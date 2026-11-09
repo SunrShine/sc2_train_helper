@@ -95,6 +95,14 @@ def render(data, title="TvT 教学视频 · 步骤抽取试点"):
                         h(video.get("matchup", "")), _clock(video.get("duration")),
                         h(video.get("bvid", ""))))
         parts.append('<div class="hint">%s</div>' % h(video.get("title", "")))
+        if video.get("sequence_text"):
+            parts.append('<div class="hint" style="margin:6px 0">'
+                         '<b>运营串（视频总结卡原文）：</b><code>%s</code></div>'
+                         % h(video["sequence_text"]))
+        if video.get("plan"):
+            items = "".join("<li>%s</li>" % h(line) for line in video["plan"])
+            parts.append('<div class="hint" style="margin:6px 0">'
+                         '<b>思路（视频总结卡原文）：</b><ul style="margin:4px 0 0 18px">%s</ul></div>' % items)
         steps = video.get("steps") or []
         if steps:
             parts.append("<table><thead><tr><th>步</th><th>动作 + 结构化标签</th>"

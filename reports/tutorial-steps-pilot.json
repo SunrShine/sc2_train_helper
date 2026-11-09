@@ -383,580 +383,1275 @@
    "title": "【星际一招鲜 28】TVT双气5死4火1运死吗流   Maru:没有人可以挡住我的死吗流！",
    "matchup": "TvT",
    "duration": 355.6,
-   "status": "partial",
-   "build": "双气 5 死神 4 火车 1 运输机（Maru 的死神流；本集用 Maru vs INnoVation 的对局讲解）",
+   "status": "complete",
+   "build": "双气 5 死神 4 火车 1 运输机（死吗流，Maru 用过）",
    "clock_crop": "0,480,80,44",
    "steps": [
     {
-     "n": null,
-     "action": "本期战术名：双气 5 死神 4 火车 1 运输机",
+     "n": 1,
+     "action": "补给站",
      "tags": [
-      "gas:2",
-      "unit:reaper×5",
-      "unit:hellion×4",
-      "unit:medivac×1"
-     ],
-     "clock": "4:04",
-     "video_t": 41,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "上一次对阵是在 2020 年 3 月份",
-     "tags": [],
-     "clock": "4:08",
-     "video_t": 49,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "通过极限的拉扯上下船",
-     "tags": [],
-     "clock": "4:13",
-     "video_t": 57,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "他的农民死了很多",
-     "tags": [],
-     "clock": "4:21",
-     "video_t": 65,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "INnoVation 死了 13 个农民",
-     "tags": [],
-     "clock": "4:38",
-     "video_t": 81,
-     "source": "frame",
-     "confidence": "high"
-    }
-   ],
-   "note": "这是职业对局复盘，没有编号步骤；标注是解说性质的。游戏内时钟从画面左下角读出（视频起始就在 4:0x）"
-  },
-  {
-   "number": 29,
-   "bvid": "BV15F411b7YU",
-   "matchup": "TvT",
-   "status": "partial",
-   "build": "双气 3 死神 2 火车 枪兵 导弹车 运营",
-   "steps": [
-    {
-     "n": null,
-     "action": "本期战术名：TVT 三死神两火车枪兵导弹车运营",
-     "tags": [
-      "gas:2",
-      "unit:reaper×3",
-      "unit:hellion×2",
-      "unit:cyclone"
-     ],
-     "clock": "0:13",
-     "video_t": 18,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "补给站 → 兵营 → 气矿 → 气矿",
-     "tags": [
-      "build:supply_depot",
-      "build:barracks",
-      "gas:1",
-      "gas:2"
-     ],
-     "clock": "1:04",
-     "video_t": 41,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "接着死神、星轨、补给站",
-     "tags": [
-      "unit:reaper",
-      "build:orbital",
       "build:supply_depot"
      ],
-     "clock": "1:26",
-     "video_t": 50,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "并且使 3 个气矿农民采集晶体矿",
-     "tags": [
-      "gas:2",
-      "unit:SCV"
-     ],
-     "clock": "1:42",
-     "video_t": 58,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "使自己有三个死神两个火车",
-     "tags": [
-      "unit:reaper×3",
-      "unit:hellion×2"
-     ],
-     "clock": "2:06",
-     "video_t": 126,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "残血火车瞬间被秒",
-     "tags": [
-      "unit:hellion"
-     ],
-     "clock": "3:37",
-     "video_t": 217,
-     "source": "frame",
-     "confidence": "med"
-    },
-    {
-     "n": null,
-     "action": "这里 Maru 又损失一个火车",
-     "tags": [
-      "unit:hellion"
-     ],
-     "clock": "4:03",
-     "video_t": 243,
-     "source": "frame",
-     "confidence": "med"
-    }
-   ],
-   "note": "用 Maru 职业对局讲解；静帧卡片法抓到 7 条，剩余待补"
-  },
-  {
-   "number": 30,
-   "bvid": "BV1bq4y147St",
-   "matchup": "TvT",
-   "status": "partial",
-   "build": "双气 5 死神 3 火车（Maru IEM 用的开局）",
-   "steps": [
-    {
-     "n": null,
-     "action": "本期战术名：TVT 五死神三火车",
-     "tags": [
-      "gas:2",
-      "unit:reaper×5",
-      "unit:hellion×3"
-     ],
-     "clock": "0:18",
-     "video_t": 18,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "此战术是 Maru 在 IEM 中用过的",
-     "tags": [],
-     "clock": "0:30",
-     "video_t": 30,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "现在我们已经把所有碎片集齐（开始正式讲解）",
-     "tags": [],
-     "clock": "0:47",
-     "video_t": 47,
-     "source": "frame",
-     "confidence": "med"
-    },
-    {
-     "n": 1,
-     "action": "首先还是单兵营双气开",
-     "tags": [
-      "build:barracks",
-      "gas:1",
-      "gas:2"
-     ],
-     "clock": "1:13",
-     "video_t": 73,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 2,
-     "action": "第一时间点击死神、变形星轨、下补给站",
+     "action": "兵营",
      "tags": [
-      "unit:reaper",
-      "build:orbital",
-      "build:supply_depot"
+      "build:barracks"
      ],
-     "clock": "1:31",
-     "video_t": 91,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 3,
-     "action": "第一时间砸矿骡",
+     "action": "气矿（第 1 个）",
      "tags": [
-      "tech:mule"
+      "gas:1"
      ],
-     "clock": "1:50",
-     "video_t": 110,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 4,
-     "action": "第一时间下 2 基地",
+     "action": "气矿（第 2 个）",
      "tags": [
-      "expand"
+      "gas:2"
      ],
-     "clock": "2:04",
-     "video_t": 124,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 5,
-     "action": "第一时间点击火车、点击 2 个死神",
+     "action": "重工",
      "tags": [
-      "unit:hellion",
-      "unit:reaper×2"
-     ],
-     "clock": "2:11",
-     "video_t": 131,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "此开局优先出死神火车",
-     "tags": [
-      "unit:reaper",
-      "unit:hellion"
-     ],
-     "clock": "2:17",
-     "video_t": 137,
-     "source": "frame",
-     "confidence": "med"
-    }
-   ],
-   "note": "静帧卡片法抽取；标注按「第一时间…」排列，句式统一，适合直接转成步骤表"
-  },
-  {
-   "number": 31,
-   "bvid": "BV1hL4y1u78c",
-   "matchup": "TvT",
-   "status": "partial",
-   "build": "5 死神 3 火车 机械化（Bunny vs Heromarine 录像）",
-   "steps": [
-    {
-     "n": null,
-     "action": "本期战术名：5 死神 3 火车 机械化",
-     "tags": [
-      "gas:2",
-      "unit:reaper×5",
-      "unit:hellion×3",
-      "style:mech"
+      "build:factory"
      ],
      "clock": null,
-     "video_t": 8,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "本期 rep 来自 Bunny 对阵 Heromarine",
-     "tags": [],
-     "clock": null,
-     "video_t": 20,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": 1,
-     "action": "首先是 TVT 常见开局：兵营双气开",
+     "n": 6,
+     "action": "死神",
      "tags": [
-      "build:barracks",
-      "gas:1",
-      "gas:2"
+      "unit:reaper"
      ],
      "clock": null,
-     "video_t": 30,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "使 3 个气矿农民采集晶体矿",
-     "tags": [
-      "gas:2",
-      "unit:SCV"
-     ],
-     "clock": null,
-     "video_t": 55,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "探路农民回来下 2 基地",
-     "tags": [
-      "expand"
-     ],
-     "clock": null,
-     "video_t": 62,
-     "source": "frame",
-     "confidence": "high"
-    }
-   ],
-   "note": "机械化路线：开局与死神流相同，后续转重工；标注以解说为主"
-  },
-  {
-   "number": 32,
-   "bvid": "BV1jb4y1W7Eq",
-   "matchup": "TvT",
-   "status": "partial",
-   "build": "双气 3 死神 1 火车 导弹车 三渡鸦",
-   "steps": [
-    {
-     "n": null,
-     "action": "本期战术名：3 死神 1 火车 导弹车 三渡鸦",
-     "tags": [
-      "gas:2",
-      "unit:reaper×3",
-      "unit:hellion",
-      "unit:cyclone",
-      "unit:raven×3"
-     ],
-     "clock": "0:18",
-     "video_t": 18,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": 1,
-     "action": "首先是兵营双气开",
-     "tags": [
-      "build:barracks",
-      "gas:1",
-      "gas:2"
-     ],
-     "clock": "0:24",
-     "video_t": 24,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "在「大气 2000」这张图上演示",
-     "tags": [],
-     "clock": "0:33",
-     "video_t": 33,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": 2,
-     "action": "接着 100 气下 VF（重工）",
-     "tags": [
-      "build:factory",
-      "gas:1"
-     ],
-     "clock": "1:04",
-     "video_t": 64,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "我们的目标是三个死神一个火车",
-     "tags": [
-      "unit:reaper×3",
-      "unit:hellion"
-     ],
-     "clock": "2:12",
-     "video_t": 132,
-     "source": "frame",
-     "confidence": "high"
-    }
-   ],
-   "note": "静帧卡片法抽取；本集用「大气2000」地图演示，后半段是操作讲解，步骤标注只到前 2 分钟"
-  },
-  {
-   "number": 33,
-   "bvid": "BV1eu411Q79k",
-   "matchup": "TvT",
-   "status": "partial",
-   "build": "双气 2 死神 1 火车 1 寡妇雷 2 渡鸦 2 运输机",
-   "steps": [
-    {
-     "n": null,
-     "action": "本期战术名：双气 2 死神 1 火车 1 寡妇雷 2 渡鸦 2 运输机",
-     "tags": [
-      "gas:2",
-      "unit:reaper×2",
-      "unit:hellion",
-      "unit:widow_mine",
-      "unit:raven×2",
-      "unit:medivac×2"
-     ],
-     "clock": "0:13",
-     "video_t": 13,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": 5,
-     "action": "18 农民探路，调气矿农民",
-     "tags": [
-      "unit:SCV",
-      "gas:1"
-     ],
-     "clock": "1:04",
-     "video_t": 64,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 7,
-     "action": "点击死神、变形星轨、下补给站",
+     "action": "变形星轨",
      "tags": [
-      "unit:reaper",
-      "build:orbital",
+      "build:orbital"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 8,
+     "action": "补给站",
+     "tags": [
       "build:supply_depot"
      ],
-     "clock": "1:29",
-     "video_t": 89,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 9,
-     "action": "第一时间砸矿骡",
+     "action": "重工",
      "tags": [
-      "tech:mule"
+      "build:factory"
      ],
-     "clock": "1:51",
-     "video_t": 111,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "出一个火车",
+     "n": 10,
+     "action": "挂双倍（反应堆）",
+     "tags": [
+      "build:reactor"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "火车",
      "tags": [
       "unit:hellion"
      ],
-     "clock": "2:42",
-     "video_t": 162,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "VF 第一时间挂科技挂件",
+     "n": 12,
+     "action": "补给站",
      "tags": [
-      "build:factory_techlab"
+      "build:supply_depot"
      ],
-     "clock": "3:11",
-     "video_t": 191,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "第一时间出渡鸦、挂科技挂件",
+     "n": 13,
+     "action": "星港",
      "tags": [
-      "unit:raven",
-      "build:techlab"
+      "build:starport"
      ],
-     "clock": "3:37",
-     "video_t": 217,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "二矿第一时间变形星轨、下三气",
+     "n": 14,
+     "action": "死神 ×2",
      "tags": [
-      "expand",
-      "build:orbital",
-      "gas:3"
+      "unit:reaper×2"
      ],
-     "clock": "5:47",
-     "video_t": 347,
+     "clock": null,
      "source": "frame",
-     "confidence": "med"
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 16,
+     "action": "死神 ×2",
+     "tags": [
+      "unit:reaper×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 17,
+     "action": "运输机",
+     "tags": [
+      "unit:medivac"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
     }
    ],
-   "note": "静帧卡片法抽取；前半段按中文序号（五、七、九）标注，后半段改为「第一时间…」句式"
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿气矿VF死神星轨BS VF双倍 火车BS VS 2死神火车2死神运输机",
+   "plan": [
+    "此开局可以克制 3 死神 2 火车压制",
+    "3:58 装船，4:50 到脸：5 死神 4 火车 1 运输机操作",
+    "渡鸦第二板斧杀主矿农民"
+   ]
+  },
+  {
+   "number": 29,
+   "bvid": "BV15F411b7YU",
+   "matchup": "TvT",
+   "status": "complete",
+   "build": "双气 3 死神 2 火车 枪兵 导弹车 运营",
+   "steps": [
+    {
+     "n": 1,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 2,
+     "action": "兵营",
+     "tags": [
+      "build:barracks"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 3,
+     "action": "气矿（第 1 个）",
+     "tags": [
+      "gas:1"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 4,
+     "action": "气矿（第 2 个）",
+     "tags": [
+      "gas:2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 6,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 7,
+     "action": "变形星轨",
+     "tags": [
+      "build:orbital"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 8,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 10,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 12,
+     "action": "星港",
+     "tags": [
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 13,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 14,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "挂双科技挂件",
+     "tags": [
+      "build:techlab×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿气矿VF死神星轨BS火车死神BS VS死神火车，双科技",
+   "plan": [
+    "适合打实力比自己弱的、基本功差的人族；需熟练掌握侦查控图操作 3 要素",
+    "1 船兵极限 4 分半到脸",
+    "后续正常运营（前期可以在 3:55 偷 3 基地）",
+    "注意侦查女妖"
+   ]
+  },
+  {
+   "number": 30,
+   "bvid": "BV1bq4y147St",
+   "matchup": "TvT",
+   "status": "complete",
+   "build": "双气 5 死神 3 火车（Maru IEM 用的开局）",
+   "steps": [
+    {
+     "n": 1,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 2,
+     "action": "兵营",
+     "tags": [
+      "build:barracks"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 3,
+     "action": "气矿（第 1 个）",
+     "tags": [
+      "gas:1"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 4,
+     "action": "气矿（第 2 个）",
+     "tags": [
+      "gas:2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 6,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": "1:31",
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 7,
+     "action": "变形星轨",
+     "tags": [
+      "build:orbital"
+     ],
+     "clock": "1:31",
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 8,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": "1:31",
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 10,
+     "action": "挂双倍（反应堆）",
+     "tags": [
+      "build:reactor"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 12,
+     "action": "死神 ×2",
+     "tags": [
+      "unit:reaper×2"
+     ],
+     "clock": "2:11",
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 13,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": "2:11",
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 14,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "星港",
+     "tags": [
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 16,
+     "action": "死神 ×2",
+     "tags": [
+      "unit:reaper×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 17,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 18,
+     "action": "挂双科技挂件",
+     "tags": [
+      "build:techlab×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿气矿VF死神星轨BS VF双倍 火车2死神BS火车VS2死神火车双科技",
+   "plan": [
+    "此开局比死吗流（28 期）TIMING 快 30 秒；4 分钟强换，后续导弹车渡鸦标准运营",
+    "可有效克制对手 3 死神 2 火车开",
+    "也可作为死吗流的 2 种变化，欺骗性开局"
+   ]
+  },
+  {
+   "number": 31,
+   "bvid": "BV1hL4y1u78c",
+   "matchup": "TvT",
+   "status": "complete",
+   "build": "5 死神 3 火车 机械化（Bunny vs HeroMarine）",
+   "steps": [
+    {
+     "n": 1,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 2,
+     "action": "兵营",
+     "tags": [
+      "build:barracks"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 3,
+     "action": "气矿（第 1 个）",
+     "tags": [
+      "gas:1"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 4,
+     "action": "气矿（第 2 个）",
+     "tags": [
+      "gas:2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 6,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 7,
+     "action": "变形星轨",
+     "tags": [
+      "build:orbital"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 8,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 10,
+     "action": "挂双倍（反应堆）",
+     "tags": [
+      "build:reactor"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 12,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 13,
+     "action": "星港",
+     "tags": [
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 14,
+     "action": "死神 ×2",
+     "tags": [
+      "unit:reaper×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 16,
+     "action": "死神 ×2",
+     "tags": [
+      "unit:reaper×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 17,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 18,
+     "action": "星港",
+     "tags": [
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 19,
+     "action": "挂双科技挂件",
+     "tags": [
+      "build:techlab×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿气矿VF死神星轨BS VF双倍 火车BS VS2死神火车2死神(VF VS 双科技)",
+   "plan": [
+    "可克制 3 死神 2 火车压制",
+    "可以不第一时间下 2VA（2VF 后）优先爆兵，防住对手一拳",
+    "200 气 2VF 优先级：维京 > 坦克"
+   ]
+  },
+  {
+   "number": 32,
+   "bvid": "BV1jb4y1W7Eq",
+   "matchup": "TvT",
+   "status": "complete",
+   "build": "双气 3 死神 1 火车 导弹车 三渡鸦",
+   "steps": [
+    {
+     "n": 1,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 2,
+     "action": "兵营",
+     "tags": [
+      "build:barracks"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 3,
+     "action": "气矿（第 1 个）",
+     "tags": [
+      "gas:1"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 4,
+     "action": "气矿（第 2 个）",
+     "tags": [
+      "gas:2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 6,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 7,
+     "action": "变形星轨",
+     "tags": [
+      "build:orbital"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 8,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 10,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "星港",
+     "tags": [
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 12,
+     "action": "死神 ×3",
+     "tags": [
+      "unit:reaper×3"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 13,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 14,
+     "action": "导弹车",
+     "tags": [
+      "unit:cyclone"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "渡鸦 ×3",
+     "tags": [
+      "unit:raven×3"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿气矿VF死神星轨BS VF BS VS 3死神1火车1导弹车3渡鸦",
+   "plan": [
+    "3 死神 1 火车需要通过操作占据主动；如果操作失误，请出到 3 死神 2 火车",
+    "2 死神第一时间侦查，1 死神第 2 时间侦查",
+    "3 渡鸦可以配合维京提高中期推进能力"
+   ]
+  },
+  {
+   "number": 33,
+   "bvid": "BV1eu411Q79k",
+   "matchup": "TvT",
+   "status": "complete",
+   "build": "双气 2 死神 1 火车 1 雷 2 渡鸦 2 运输机",
+   "steps": [
+    {
+     "n": 1,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": "1:04",
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 2,
+     "action": "兵营",
+     "tags": [
+      "build:barracks"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 3,
+     "action": "气矿（第 1 个）",
+     "tags": [
+      "gas:1"
+     ],
+     "clock": "1:29",
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 4,
+     "action": "气矿（第 2 个）",
+     "tags": [
+      "gas:2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 6,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 7,
+     "action": "变形星轨",
+     "tags": [
+      "build:orbital"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 8,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 10,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "星港",
+     "tags": [
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 12,
+     "action": "死神 ×2",
+     "tags": [
+      "unit:reaper×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 13,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 14,
+     "action": "寡妇雷",
+     "tags": [
+      "unit:widow_mine"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "渡鸦 ×2",
+     "tags": [
+      "unit:raven×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 16,
+     "action": "运输机 ×2",
+     "tags": [
+      "unit:medivac×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    }
+   ],
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿气矿VF死神星轨BS VF BS VS 2死神1火车1雷2渡鸦2船兵",
+   "plan": [
+    "三板斧：1、2 渡鸦主矿二矿杀农民",
+    "2、7 分钟 2 船兵到脸（二矿投下）",
+    "3、保存渡鸦，有 4 运枪坦 2 渡鸦一拳 TIMING"
+   ]
   },
   {
    "number": 34,
    "bvid": "BV1tU4y1f7m7",
    "matchup": "TvT",
-   "status": "partial",
+   "status": "complete",
    "build": "双气开 5 死神 3 火车 枪兵 坦克 运输机",
    "steps": [
     {
-     "n": null,
-     "action": "本期战术名：双气开 5 死神 3 火车 枪兵 坦克 运输机",
+     "n": 1,
+     "action": "补给站",
      "tags": [
-      "gas:2",
-      "unit:reaper×5",
-      "unit:hellion×3",
-      "unit:siege_tank",
-      "unit:medivac"
-     ],
-     "clock": "0:15",
-     "video_t": 15,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "兵营 → 气矿 → 气矿",
-     "tags": [
-      "build:barracks",
-      "gas:1",
-      "gas:2"
-     ],
-     "clock": "0:43",
-     "video_t": 43,
-     "source": "frame",
-     "confidence": "high"
-    },
-    {
-     "n": null,
-     "action": "第一时间出两个死神、下补给站",
-     "tags": [
-      "unit:reaper×2",
       "build:supply_depot"
      ],
-     "clock": "2:37",
-     "video_t": 157,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "杀对手二矿的农民",
-     "tags": [],
-     "clock": "4:22",
-     "video_t": 262,
+     "n": 2,
+     "action": "兵营",
+     "tags": [
+      "build:barracks"
+     ],
+     "clock": null,
      "source": "frame",
-     "confidence": "med"
+     "confidence": "high"
+    },
+    {
+     "n": 3,
+     "action": "气矿（第 1 个）",
+     "tags": [
+      "gas:1"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 4,
+     "action": "气矿（第 2 个）",
+     "tags": [
+      "gas:2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 6,
+     "action": "变形星轨",
+     "tags": [
+      "build:orbital"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 7,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 8,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 10,
+     "action": "挂双倍（反应堆）",
+     "tags": [
+      "build:reactor"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "火车 ×2",
+     "tags": [
+      "unit:hellion×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 12,
+     "action": "星港",
+     "tags": [
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 13,
+     "action": "死神 ×5",
+     "tags": [
+      "unit:reaper×5"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 14,
+     "action": "火车 ×3",
+     "tags": [
+      "unit:hellion×3"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "运输机",
+     "tags": [
+      "unit:medivac"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 16,
+     "action": "挂双科技挂件",
+     "tags": [
+      "build:techlab×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
     }
    ],
-   "note": "标注密度中等；本集前半是开流程，后半是打成型的思路"
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿气矿死神星轨BS VF BS双倍 2火车后下VS 5死神3火车枪坦运双科技",
+   "plan": [
+    "4:00 5 死 3 火压 2 矿",
+    "4:40 一船枪坦运高地压双倍挂件，可选择双线（吸引注意力杀二矿农民或正面）",
+    "2 渡鸦出门压对手 3 基地（封视野）"
+   ]
   },
   {
    "number": 35,
@@ -1011,131 +1706,218 @@
    "number": 36,
    "bvid": "BV1yL411A7N1",
    "matchup": "TvT",
-   "status": "partial",
-   "build": "3 兵营 7 死神 2 运输机",
+   "status": "complete",
+   "build": "双气开 三兵营 七死神 两运输机（Cure）",
    "steps": [
     {
-     "n": null,
-     "action": "本期战术名：双气开三兵营七死神两船兵",
+     "n": 1,
+     "action": "补给站",
      "tags": [
-      "gas:2",
-      "unit:reaper×7",
-      "unit:medivac×2"
+      "build:supply_depot"
      ],
-     "clock": "3:05",
-     "video_t": 40,
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 2,
+     "action": "兵营",
+     "tags": [
+      "build:barracks"
+     ],
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 3,
-     "action": "150 气再下一个兵营",
+     "action": "气矿（第 1 个）",
      "tags": [
-      "build:barracks×3"
+      "gas:1"
      ],
-     "clock": "3:19",
-     "video_t": 48,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 4,
-     "action": "第一时间调气矿农民",
+     "action": "兵营",
      "tags": [
-      "gas:2",
-      "unit:SCV"
+      "build:barracks"
      ],
-     "clock": "3:23",
-     "video_t": 56,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "一共出到 7 个（死神）",
+     "n": 5,
+     "action": "兵营",
      "tags": [
-      "unit:reaper×7"
+      "build:barracks"
      ],
-     "clock": "3:33",
-     "video_t": 80,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "第一时间砸矿骡",
+     "n": 6,
+     "action": "气矿（第 2 个）",
      "tags": [
-      "tech:mule"
+      "gas:2"
      ],
-     "clock": "3:47",
-     "video_t": 104,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "三个死神后出门",
+     "n": 7,
+     "action": "死神",
      "tags": [
-      "unit:reaper×3"
+      "unit:reaper"
      ],
-     "clock": "4:05",
-     "video_t": 128,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "死神只出到 7 个（提示：上限）",
+     "n": 8,
+     "action": "死神",
      "tags": [
-      "unit:reaper×7"
+      "unit:reaper"
      ],
-     "clock": "4:12",
-     "video_t": 136,
-     "source": "frame",
-     "confidence": "med"
-    },
-    {
-     "n": null,
-     "action": "可以凭借操作打赢他们",
-     "tags": [],
-     "clock": "4:30",
-     "video_t": 160,
-     "source": "frame",
-     "confidence": "med"
-    },
-    {
-     "n": null,
-     "action": "这里先下基地（开二矿）",
-     "tags": [
-      "expand"
-     ],
-     "clock": "4:38",
-     "video_t": 168,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "奠定优势",
-     "tags": [],
-     "clock": "4:48",
-     "video_t": 176,
+     "n": 9,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
      "source": "frame",
-     "confidence": "med"
+     "confidence": "high"
     },
     {
-     "n": null,
-     "action": "死了三个农民",
+     "n": 10,
+     "action": "死神",
      "tags": [
-      "unit:SCV"
+      "unit:reaper"
      ],
-     "clock": "5:05",
-     "video_t": 200,
+     "clock": null,
      "source": "frame",
-     "confidence": "med"
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 12,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 13,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 14,
+     "action": "开矿 ×2",
+     "tags": [
+      "expand×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "挂双倍（反应堆）",
+     "tags": [
+      "build:reactor"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 16,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 17,
+     "action": "挂科技挂件",
+     "tags": [
+      "build:techlab"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 18,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 19,
+     "action": "兴奋剂（研究）",
+     "tags": [
+      "tech:stim"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 20,
+     "action": "星港",
+     "tags": [
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
     }
    ],
-   "note": "8 秒采样漏掉了步骤 一/二/五…；画面右上有 SC2 计时器，可读（3:19 → 5:05）。补齐需要把采样降到 4 秒再跑一遍"
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿兵营兵营气矿死神死神BS死神死神死神死神2基地双倍BS科技VF兴奋剂VS",
+   "plan": [
+    "前期注意封侦查！死神不要轻易送掉",
+    "三板斧：1、3 分钟 4 个死神到脸",
+    "2、6:30 2 船兵到脸",
+    "3、4 船兵一拳"
+   ]
   },
   {
    "number": 37,
@@ -1221,61 +2003,197 @@
    "number": 38,
    "bvid": "BV1ZT4y1m7cz",
    "matchup": "TvT",
-   "status": "partial",
+   "status": "complete",
    "build": "双气 2 死神 1 火车 科技速导弹车 女妖",
    "steps": [
     {
-     "n": null,
-     "action": "本期战术名：TVT 双气 2 死 1 火 科技速导弹车 女妖",
+     "n": 1,
+     "action": "补给站",
      "tags": [
-      "gas:2",
-      "unit:reaper×2",
-      "unit:hellion",
-      "unit:cyclone",
-      "unit:banshee"
+      "build:supply_depot"
      ],
      "clock": null,
-     "video_t": 10,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "第一个死神进行纪律性侦查",
+     "n": 2,
+     "action": "兵营",
+     "tags": [
+      "build:barracks"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 3,
+     "action": "气矿（第 1 个）",
+     "tags": [
+      "gas:1"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 4,
+     "action": "气矿（第 2 个）",
+     "tags": [
+      "gas:2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "死神",
      "tags": [
       "unit:reaper"
      ],
-     "clock": "1:30",
-     "video_t": 90,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "可以判断出对手是 5 死神 3 火车开",
+     "n": 6,
+     "action": "变形星轨",
      "tags": [
-      "unit:reaper×5",
-      "unit:hellion×3"
+      "build:orbital"
      ],
-     "clock": "1:52",
-     "video_t": 112,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "VS 与 bb 交换挂件、出女妖",
+     "n": 7,
+     "action": "补给站",
      "tags": [
-      "build:starport",
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 8,
+     "action": "重工",
+     "tags": [
+      "build:factory"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 9,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 10,
+     "action": "开矿 ×2",
+     "tags": [
+      "expand×2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "火车",
+     "tags": [
+      "unit:hellion"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 12,
+     "action": "挂科技挂件",
+     "tags": [
+      "build:techlab"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 13,
+     "action": "星港",
+     "tags": [
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 14,
+     "action": "导弹车",
+     "tags": [
+      "unit:cyclone"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 15,
+     "action": "女妖",
+     "tags": [
       "unit:banshee"
      ],
-     "clock": "2:03",
-     "video_t": 123,
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 16,
+     "action": "挂双倍（反应堆）",
+     "tags": [
+      "build:reactor"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 17,
+     "action": "变形星轨",
+     "tags": [
+      "build:orbital"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 18,
+     "action": "导弹车",
+     "tags": [
+      "unit:cyclone"
+     ],
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     }
    ],
-   "note": "科技速女妖路线；前半段标注密度高，后半段转为操作讲解"
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿气矿死神星轨BS VF死神二基地火车科技VS导弹车3气女妖双倍星轨导弹车",
+   "plan": [
+    "克制一船兵、5 死 3 火、火车 RUSH",
+    "3 分半 2 死 1 火 1 导弹车可以防住 3 死 2 火等很多开局；女妖杀农民侦查",
+    "更适合控图、占据主动"
+   ]
   },
   {
    "number": 39,
@@ -1387,59 +2305,137 @@
    "number": 42,
    "bvid": "BV1tP4y1u7sR",
    "matchup": "TvT",
-   "status": "partial",
+   "status": "complete",
    "build": "双气开 3 死神 2 火车 枪兵 导弹车",
    "steps": [
     {
-     "n": null,
-     "action": "本期战术名：TVT 双气开 3 死神 2 火车 枪兵 导弹车",
+     "n": 1,
+     "action": "补给站",
      "tags": [
-      "gas:2",
-      "unit:reaper×3",
-      "unit:hellion×2"
+      "build:supply_depot"
      ],
-     "clock": "0:03",
-     "video_t": 3,
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 2,
+     "action": "兵营",
+     "tags": [
+      "build:barracks"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 3,
+     "action": "气矿（第 1 个）",
+     "tags": [
+      "gas:1"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 4,
+     "action": "气矿（第 2 个）",
+     "tags": [
+      "gas:2"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 5,
+     "action": "死神",
+     "tags": [
+      "unit:reaper"
+     ],
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 6,
-     "action": "100 气下 VF，使 3 个气矿农民采集晶体矿",
+     "action": "变形星轨",
      "tags": [
-      "build:factory",
-      "gas:1"
+      "build:orbital"
      ],
      "clock": "1:04",
-     "video_t": 64,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 7,
+     "action": "补给站",
+     "tags": [
+      "build:supply_depot"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 8,
+     "action": "开矿 ×2",
+     "tags": [
+      "expand×2"
+     ],
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
      "n": 9,
-     "action": "下补给站",
+     "action": "重工",
      "tags": [
-      "build:supply_depot"
+      "build:factory"
      ],
-     "clock": "2:45",
-     "video_t": 165,
+     "clock": null,
      "source": "frame",
      "confidence": "high"
     },
     {
-     "n": null,
-     "action": "出三个死神两个火车",
+     "n": 10,
+     "action": "星港",
      "tags": [
-      "unit:reaper×3",
+      "build:starport"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 11,
+     "action": "死神 ×3",
+     "tags": [
+      "unit:reaper×3"
+     ],
+     "clock": null,
+     "source": "frame",
+     "confidence": "high"
+    },
+    {
+     "n": 12,
+     "action": "火车 ×2",
+     "tags": [
       "unit:hellion×2"
      ],
-     "clock": "2:50",
-     "video_t": 170,
+     "clock": null,
      "source": "frame",
-     "confidence": "med"
+     "confidence": "high"
     }
    ],
-   "note": "标注带中文序号（六、九…）；静帧卡片只捕获到 4 条"
+   "note": "步骤来源：视频结尾「运营：」总结卡（作者手打完整建造串），已解析成结构化步骤；游戏时钟仅标出作者口播/画面明确给出的点。",
+   "sequence_text": "BS兵营气矿气矿死神星轨BS 2基地VF VS 3死神2火车",
+   "plan": [
+    "3 死 2 火 3 分半到达对手 2 矿",
+    "面对出 1 渡鸦不要强上了",
+    "曾经流行的开局，比较怕 5 死 3 火等 RUSH"
+   ]
   },
   {
    "number": 43,
