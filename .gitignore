@@ -4,4 +4,8 @@ __pycache__/
 reports/cards/*_frames/
 *.gif
 *.mp4
+
+# 录像不入库（体积大、且是赛事素材）：
+# 别人克隆后用 tools/fetch_pro_replays.py 自己抓，
+# 自己的录像用 --mine 指向本地目录即可。
 replays/
