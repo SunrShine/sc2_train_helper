@@ -31,6 +31,14 @@ Windows 上还可以把 replay 文件直接拖到 `sc2analyze.cmd` 上（脚本�
 
 环境要求：Python 3.8+（开发和验证环境为 Windows + Python 3.14）。
 
+**仓库里不带录像**（赛事素材 + 体积原因）。要用职业对局对照，先自己抓：
+
+```powershell
+python tools\fetch_pro_replays.py --player Maru,Clem,Serral --limit 10 --out replays\pro
+```
+
+自己的录像不用拷贝，直接在命令里用 `--mine "C:\Users\…\Replays\Multiplayer"` 指过去即可。
+
 ## 操作细节分析（micro）：多线重叠与操作顺序
 
 除了"这局谁赢了"，工具还能只看**操作层面**：视角节奏、多线重叠窗口、操作顺序、编队使用、交火反应时间。
