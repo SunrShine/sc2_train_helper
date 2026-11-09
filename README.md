@@ -288,6 +288,61 @@ bo 看的是"建造时间点"，dag 看的是"什么时候看见对方"，两者
 所以信息事件的时间精度中位 **±22 秒**（90 分位 ±42 秒），20 秒窗口和采样精度同量级，
 条件只能当"大致同时"读，**不是因果**。地形遮挡未计算，雷达/隐形/潜地未实现。
 
+## 教学视频抽流程（tutorial）：把 B 站视频变成 BO 步骤表
+
+录像能回答「实际发生了什么」，但回答不了「作者想让你怎么做」。所以补了一条支线：
+从 B 站合集【星际一招鲜】（UP 主 MakChao，100 条编号招式）里抽结构化流程。
+
+```powershell
+# 1) 盘点合集（103 条：对位、时长、招式拆解）
+python tools\make_tutorial_index.py
+
+# 2) 从一条视频里挑出「运营 / 思路」总结卡（按红黄文字检测）
+python tools\summary_cards.py "视频.mp4" --out ".tmp\summary\BVxxxx" --top 2
+
+# 3) 把总结卡上的建造串解析成结构化步骤
+python -m replay_analyzer.flowtext
+
+# 4) 生成流程库页面
+python tools\make_tutorial_library.py
+```
+
+**关键发现：每期视频结尾都有一张「运营：」总结卡**，作者用一行 token 写完整建造顺序，
+比如 #30：
+
+```
+运营：BS兵营气矿气矿VF死神星轨BS VF双倍 火车2死神BS火车VS2死神火车双科技
+思路：1、此开局比死吗流（28 期）TIMING 快 30S；4 分钟强换，后续导弹车渡鸦标准运营
+      2、可以有效克制对手 3 死神 2 火车开
+      3、也可以作为死吗流的 2 种变化，欺骗性开局
+```
+
+**一张卡 = 一整套 BO**，比逐帧读画面高效一个数量级。已抽 20 条 / 259 个步骤，
+其中 15 条是完整流程（12~20 步）。报告：[reports/tutorial-library.html](reports/tutorial-library.html)。
+
+踩过的坑（详见 [docs/教学视频抽取笔记.md](docs/教学视频抽取笔记.md)）：
+
+- **ASR 完全不可用**：背景音乐大、语速快，「第 N 步」大量丢失，转写是「何必E」「普子战」这种串
+- **标注位置每期都不一样**，不能按固定字幕带裁；要按**红/黄文字**检测（白色字幕会骗过亮度检测）
+- **UP 主会插动漫片段**，片头片尾的动漫字幕经常被误判成总结卡
+- 2022 年的老视频没有总结卡（片尾是动漫 ED），只能读画面上的「第 N 步」标注
+
+## 野兵营检测（find_proxy）：从录像里找大招局
+
+野兵营的特征是「兵营造得离自己基地很远」，用单位出生坐标就能判：
+
+```powershell
+python tools\find_proxy.py "C:\Users\sun\Documents\…\Replays\Multiplayer" --matchup TvT --json hits.json
+```
+
+本机实测：950 局里扫出 **30 局野兵营**，其中 **14 局是本机玩家自己野的**。
+判据是兵营与最近基地距离 ≥ 25 格（正常开局 8~12 格，野兵营 60~130 格）。
+
+它的用处是：**不用重打素材，库里已有的对局就能做「视频流程 vs 实战」对照**。
+14 局自己野兵营的中位数——野兵营落地 **60 秒**（55~89 秒，跨度 34 秒）、
+第一个死神 175 秒、重工 220 秒、星港 311 秒，对照见
+[reports/野兵营-视频vs实战.md](reports/野兵营-视频vs实战.md)。
+
 ## 报告里有什么
 
 | 板块 | 内容 |
@@ -336,6 +391,7 @@ replay_analyzer/
   bo_report.py  BO 报告（时间轴 SVG）
   dag.py        段转移图：信息事件推断 + 到点/侦察触发标注
   dag_report.py DAG 报告（纯手绘 SVG）
+  flowtext.py   把「运营：」总结卡的一行建造串解析成结构化步骤
   library.py    录像库扫描与归类（只读）
   compare.py    对照组：我和职业选手的指标对比 + 窗口相似度配对
   charts.py     纯 Python 生成内联 SVG 折线图
@@ -343,16 +399,24 @@ replay_analyzer/
   micro_report.py  操作细节报告 + 批量趋势报告
   compare_report.py  对照组报告 + 录像库索引
   cli.py        命令行入口（analyze / batch / micro / library / compare / card / fog /
-                econ / bo / dag / dump）
+                econ / bo / dag / flow / dump）
 docs/
   多线练习手册.md   配合 micro / compare 的练习流程（drill、打分卡、一周排期）
   经济模型设计.md   经济/BO 模型的设计与推导
   BO数据契约.md     BO / DAG 的数据契约（改结构先改它）
+  教学视频抽取笔记.md 从 B 站视频抽 BO 的方法、踩过的坑
 tools/
   fetch_maru.py     从 sc2rep.ru 抓指定选手的 replay（默认 Maru）
   fetch_pro_replays.py  参数化抓取多名职业 Terran + 三道校验
   make_playlist.py  生成职业录像片单
   make_index.py     生成 reports/index.html 汇总页
+  make_flow_table.py / make_pro_flow_table.py  flow 核对表
+  find_proxy.py     从录像里找野兵营对局
+  summary_cards.py  挑出视频里的「运营/思路」总结卡（红黄文字检测）
+  static_cards.py   挑出视频里的静止画面卡
+  video_frames.py   抽宫格图 / 时钟条
+  make_tutorial_index.py / make_tutorial_library.py  教学视频索引与流程库
+  rebuild_from_summary.py / rebuild_from_summary2.py  从总结卡重建步骤数据
 vendor/
   mpyq.py       MPQ 读取库（MIT）
   s2protocol/   暴雪官方的 replay 二进制协议解码库（MIT，已打补丁适配 Python 3.12+）
