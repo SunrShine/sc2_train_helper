@@ -4,3 +4,4 @@ __pycache__/
 reports/cards/*_frames/
 *.gif
 *.mp4
+replays/
